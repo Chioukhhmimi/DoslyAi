@@ -1,0 +1,335 @@
+{
+  "common": {
+    "appName": "ميديتراك",
+    "continue": "متابعة",
+    "skip": "تخطي",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "back": "رجوع",
+    "done": "تم",
+    "loading": "جارٍ التحميل...",
+    "error": "حدث خطأ",
+    "retry": "إعادة المحاولة",
+    "search": "بحث",
+    "add": "إضافة",
+    "confirm": "تأكيد",
+    "close": "إغلاق",
+    "notFound": "غير موجود",
+    "required": "مطلوب",
+    "activate": "تفعيل",
+    "restart": "إعادة التشغيل"
+  },
+  "onboarding": {
+    "slide1": {
+      "title": "امسح وصفتك الطبية",
+      "description": "التقط صورة لوصفتك الطبية ودع ميديتراك يستخرج أدويتك تلقائيًا."
+    },
+    "slide2": {
+      "title": "لا تفوّت أي جرعة",
+      "description": "احصل على تذكيرات مخصصة لتناول أدويتك في الوقت المناسب كل يوم."
+    },
+    "slide3": {
+      "title": "أدِر ملفات متعددة بأمان",
+      "description": "تابع علاجات عائلتك بأكملها من تطبيق واحد. تبقى بياناتك على جهازك.",
+      "getStarted": "ابدأ الآن"
+    },
+    "slide4": {
+      "title": "فعّل التذكيرات",
+      "description": "احصل على إشعار عند كل موعد جرعة حتى لا تفوتك أي دواء. يمكنك تغيير ذلك في أي وقت من الإعدادات."
+    }
+  },
+  "tabs": {
+    "home": "الرئيسية",
+    "history": "السجل",
+    "add": "إضافة",
+    "profile": "الملف",
+    "medications": "الأدوية",
+    "settings": "الإعدادات"
+  },
+  "home": {
+    "title": "الرئيسية",
+    "greeting": "مرحبًا، {{name}} 👋",
+    "todayMeds": "أدوية اليوم",
+    "noMeds": "لا توجد أدوية مجدولة اليوم",
+    "noMedsDescription": "أضف دواءً لبدء التتبع.",
+    "changeProfile": "تغيير الملف ▾",
+    "manageProfiles": "إدارة الملفات",
+    "snoozeLater": "⏱ لاحقًا",
+    "status": {
+      "taken": "مأخوذ",
+      "skipped": "متخطى",
+      "overdue": "متأخر",
+      "pending": "في الانتظار",
+      "upcoming": "قادمة"
+    },
+    "stats": {
+      "adherence": "الالتزام",
+      "today": "اليوم",
+      "missed": "الفائتة"
+    },
+    "buckets": {
+      "morning": "🌅 الصباح",
+      "afternoon": "☀️ الظهر",
+      "evening": "🌆 المساء",
+      "night": "🌙 الليل"
+    }
+  },
+  "medications": {
+    "title": "الأدوية",
+    "active": "نشطة",
+    "paused": "موقوفة",
+    "empty": {
+      "title": "لا توجد أدوية",
+      "description": "أضف دواءك الأول."
+    }
+  },
+  "history": {
+    "title": "السجل",
+    "empty": "لا يوجد سجل",
+    "emptyDescription": "سيظهر سجل تناولك هنا.",
+    "export": "⬆ تصدير",
+    "filters": {
+      "all": "الكل",
+      "taken": "مأخوذة",
+      "missed": "الفائتة",
+      "skipped": "المتخطاة"
+    },
+    "ranges": {
+      "seven": "7 أ",
+      "thirty": "30 أ",
+      "ninety": "90 أ"
+    },
+    "stats": {
+      "adherence": "الالتزام",
+      "taken": "مأخوذة",
+      "missed": "الفائتة",
+      "skipped": "المتخطاة"
+    }
+  },
+  "medication": {
+    "types": {
+      "pill": "حبة",
+      "syrup": "شراب",
+      "injection": "حقنة",
+      "supplement": "مكمل غذائي",
+      "other": "أخرى"
+    },
+    "freq": {
+      "daily": "يومي",
+      "weekly": "أسبوعي",
+      "interval": "فترة",
+      "custom": "مخصص",
+      "everyN": "كل",
+      "days": "ي",
+      "customLabel": "جدول مخصص"
+    },
+    "schedule": {
+      "start": "البداية",
+      "end": "النهاية",
+      "indefinite": "غير محدد",
+      "times": "المواعيد",
+      "upcoming": "الجرعات القادمة",
+      "addTime": "＋ إضافة موعد",
+      "alarmTimes": "مواعيد التذكير",
+      "duplicateTime": "هذا الوقت مستخدم بالفعل"
+    },
+    "actions": {
+      "pause": "⏸ إيقاف مؤقت",
+      "resume": "▶ استئناف",
+      "delete": "حذف"
+    },
+    "detail": {
+      "title": "الدواء",
+      "notFound": "لم يتم العثور على هذا الدواء.",
+      "frequency": "التكرار",
+      "notes": "ملاحظات",
+      "dose": "جرعة",
+      "type": "الشكل"
+    },
+    "form": {
+      "step": "خطوة",
+      "of": "/",
+      "nameLabel": "اسم الدواء *",
+      "namePlaceholder": "مثال: أموكسيسيلين",
+      "nameRequired": "الاسم مطلوب",
+      "nameMax": "الحد الأقصى 80 حرفًا",
+      "doseLabel": "الجرعة *",
+      "qtyInvalid": "كمية غير صالحة (مثال: 1، 2.5)",
+      "qtyMax": "الحد الأقصى 999",
+      "unitRequired": "الوحدة مطلوبة (مثال: ملغ، حبة)",
+      "colorLabel": "اللون (اختياري)",
+      "notesLabel": "ملاحظات (اختيارية)",
+      "notesPlaceholder": "تعليمات خاصة...",
+      "schedulingLabel": "الجدولة",
+      "summaryLabel": "الملخص",
+      "endAfterStart": "يجب أن يكون تاريخ الانتهاء بعد تاريخ البداية",
+      "next": "التالي",
+      "previous": "رجوع",
+      "typeLabel": "الشكل",
+      "indefinite": "مدة غير محددة"
+    },
+    "units": {
+      "mg": "ملغ",
+      "g": "غ",
+      "ml": "مل",
+      "mcg": "ميكروغرام",
+      "tablet": "حبة/حبات",
+      "capsule": "كبسولة/كبسولات",
+      "drop": "قطرة/قطرات",
+      "dose": "جرعة/جرعات"
+    },
+    "confirm": {
+      "noteLabel": "ملاحظة (اختيارية)",
+      "taken": "✓ تم الأخذ",
+      "snooze": "⏱ تأجيل",
+      "skip": "→ تخطي",
+      "notFound": "الدواء غير موجود",
+      "snooze10": "10 دقائق",
+      "snooze30": "30 دقيقة",
+      "snooze60": "ساعة واحدة",
+      "snoozeTitle": "تأجيل التذكير"
+    },
+    "scan": {
+      "cameraRequired": "الكاميرا مطلوبة",
+      "cameraDescription": "يحتاج ميديتراك إلى الوصول إلى كاميرتك لمسح الوصفات الطبية.",
+      "allowCamera": "السماح بالكاميرا",
+      "addManually": "إضافة يدويًا",
+      "processing": "جارٍ التحليل...",
+      "detected": "الأدوية المكتشفة",
+      "failed": "فشل التحليل",
+      "failedDescription": "تعذّر تحليل الصورة.",
+      "noneDetected": "لم يتم اكتشاف أي أدوية",
+      "noneDescription": "لم تتمكن الصورة من استخراج أي أدوية. جرّب التقاط صورة أوضح أو أضف يدويًا.",
+      "alignGuide": "ضع الوصفة داخل الإطار",
+      "gallery": "المعرض",
+      "approveAndAdd": "موافقة وإضافة ({{count}})",
+      "nameLabel": "الاسم",
+      "dosageLabel": "الجرعة"
+    }
+  },
+  "notFound": {
+    "title": "الصفحة غير موجودة",
+    "backHome": "العودة إلى الرئيسية"
+  },
+  "profile": {
+    "title": "الملفات",
+    "new": "جديد",
+    "hint": "اضغط على ملف لتحديده.",
+    "active": "نشط",
+    "medCount_one": "{{count}} دواء",
+    "medCount_other": "{{count}} أدوية",
+    "noProfiles": "لا توجد ملفات",
+    "noProfilesDescription": "أنشئ ملفًا لبدء إدارة الأدوية.",
+    "createFirst": "إنشاء ملفي الأول",
+    "ageYears": "سنة",
+    "medAbbrev": "دواء",
+    "bornOn": "تاريخ الميلاد",
+    "editTitle": "تعديل الملف",
+    "notFound": "لم يتم العثور على هذا الملف.",
+    "dangerZone": "منطقة الخطر",
+    "deleteProfile": "حذف هذا الملف",
+    "deleteTitle": "حذف الملف",
+    "deleteConfirm": "حذف \"{{name}}\"؟ سيتم حذف {{count}} دواء/أدوية أيضًا.",
+    "form": {
+      "nameLabel": "الاسم *",
+      "namePlaceholder": "مثال: أحمد",
+      "nameRequired": "الاسم مطلوب.",
+      "dobLabel": "تاريخ الميلاد",
+      "dobPlaceholder": "يي/شش/سسسس",
+      "relationLabel": "العلاقة",
+      "relationPlaceholder": "مثال: أنا، طفل..."
+    },
+    "detail": {
+      "medCount_one": "{{count}} دواء",
+      "medCount_other": "{{count}} أدوية",
+      "saved_one": "مسجّل",
+      "saved_other": "مسجّلة"
+    }
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "language": "اللغة",
+    "privacy": "سياسة الخصوصية",
+    "terms": "شروط الاستخدام",
+    "about": "حول التطبيق",
+    "notifications": "الإشعارات",
+    "version": "الإصدار",
+    "biometric": {
+      "label": "القفل البيومتري",
+      "description": "يطلب Face ID / بصمة الإصبع عند كل فتح."
+    },
+    "restart": {
+      "title": "إعادة التشغيل مطلوبة",
+      "body": "يرجى إعادة تشغيل التطبيق لتطبيق اتجاه التخطيط الجديد."
+    },
+    "notificationsScreen": {
+      "enable": "تفعيل الإشعارات",
+      "quietHours": "ساعات الهدوء",
+      "quietDescription": "لن يتم إرسال أي إشعارات خلال هذه الفترة.",
+      "start": "البداية",
+      "end": "النهاية"
+    },
+    "aboutScreen": {
+      "tagline": "أدِر أدويتك ببساطة.",
+      "developer": "المطوّر",
+      "platform": "المنصة",
+      "platformValue": "iOS وAndroid",
+      "database": "قاعدة البيانات",
+      "databaseValue": "SQLite محلي",
+      "sharedData": "البيانات المشتركة",
+      "sharedDataValue": "لا شيء"
+    },
+    "privacyBody": "يخزّن ميديتراك جميع بياناتك محليًا على جهازك. لا يتم إرسال أي بيانات شخصية إلى خوادم خارجية. تبقى معلوماتك الطبية خاصة تمامًا وتحت سيطرتك.\n\nيتم تخزين البيانات التالية محليًا:\n• ملفات المرضى (الاسم، تاريخ الميلاد، العلاقة)\n• الأدوية وجداول الجرعات\n• سجل تناول الأدوية\n\nيمكنك حذف جميع بياناتك في أي وقت بإلغاء تثبيت التطبيق.",
+    "termsScreen": {
+      "intro": "باستخدام ميديتراك، فإنك توافق على الشروط التالية:",
+      "section1Title": "1. الاستخدام",
+      "section1Body": "ميديتراك أداة مساعدة لإدارة الأدوية. لا يحل محل استشارة متخصص الرعاية الصحية.",
+      "section2Title": "2. المسؤولية",
+      "section2Body": "المستخدم وحده مسؤول عن إدخال المعلومات الطبية الصحيحة واتباع وصفات طبيبه.",
+      "section3Title": "3. البيانات",
+      "section3Body": "جميع البيانات مخزّنة محليًا. لا يملك الناشر إمكانية الوصول إلى أي معلومات شخصية أو طبية.",
+      "section4Title": "4. التعديلات",
+      "section4Body": "قد يتم تحديث هذه الشروط. سيتم إبلاغك بالتحديثات عبر ملاحظات إصدار التطبيق."
+    }
+  },
+  "export": {
+    "title": "تصدير البيانات",
+    "period": "الفترة",
+    "last7": "آخر 7 أيام",
+    "last30": "آخر 30 يومًا",
+    "last90": "آخر 90 يومًا",
+    "custom": "مخصص",
+    "from": "من",
+    "to": "إلى",
+    "summary": "من {{from}} إلى {{to}} · {{count}} سجل",
+    "csv": "⬇ تصدير CSV",
+    "pdf": "⬇ تصدير PDF",
+    "generating": "جارٍ الإنشاء…"
+  },
+  "lock": {
+    "subtitle": "محمي ببصمة",
+    "unlock": "فتح القفل"
+  },
+  "scheduler": {
+    "days": {
+      "sun": "أح",
+      "mon": "ن",
+      "tue": "ث",
+      "wed": "ر",
+      "thu": "خ",
+      "fri": "ج",
+      "sat": "س"
+    },
+    "pattern": {
+      "label": "نمط متكرر (1 = جرعة، 0 = راحة)",
+      "preset11": "1/1 (تناوب)",
+      "preset21": "2/1",
+      "preset52": "5/2 (أسبوع)",
+      "preset217": "21/7"
+    },
+    "everyN": "كل",
+    "days_label": "يوم/أيام"
+  }
+}

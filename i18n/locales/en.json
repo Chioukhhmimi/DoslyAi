@@ -1,0 +1,335 @@
+{
+  "common": {
+    "appName": "MediTrack",
+    "continue": "Continue",
+    "skip": "Skip",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "done": "Done",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "search": "Search",
+    "add": "Add",
+    "confirm": "Confirm",
+    "close": "Close",
+    "notFound": "Not found",
+    "required": "Required",
+    "activate": "Activate",
+    "restart": "Restart"
+  },
+  "onboarding": {
+    "slide1": {
+      "title": "Scan your prescription",
+      "description": "Photograph your prescription and let MediTrack automatically extract your medications."
+    },
+    "slide2": {
+      "title": "Never miss a dose",
+      "description": "Receive personalised reminders to take your medications at the right time, every day."
+    },
+    "slide3": {
+      "title": "Manage multiple profiles safely",
+      "description": "Track treatments for your whole family from one app. Your data stays on your device.",
+      "getStarted": "Get started"
+    },
+    "slide4": {
+      "title": "Enable reminders",
+      "description": "Receive a notification at each dose time so you never miss a medication. You can change this at any time in Settings."
+    }
+  },
+  "tabs": {
+    "home": "Home",
+    "history": "History",
+    "add": "Add",
+    "profile": "Profile",
+    "medications": "Medications",
+    "settings": "Settings"
+  },
+  "home": {
+    "title": "Home",
+    "greeting": "Hello, {{name}} 👋",
+    "todayMeds": "Today's medications",
+    "noMeds": "No medications scheduled today",
+    "noMedsDescription": "Add a medication to start tracking.",
+    "changeProfile": "Switch profile ▾",
+    "manageProfiles": "Manage profiles",
+    "snoozeLater": "⏱ Later",
+    "status": {
+      "taken": "Taken",
+      "skipped": "Skipped",
+      "overdue": "Overdue",
+      "pending": "Pending",
+      "upcoming": "Upcoming"
+    },
+    "stats": {
+      "adherence": "Adherence",
+      "today": "Today",
+      "missed": "Missed"
+    },
+    "buckets": {
+      "morning": "🌅 Morning",
+      "afternoon": "☀️ Afternoon",
+      "evening": "🌆 Evening",
+      "night": "🌙 Night"
+    }
+  },
+  "medications": {
+    "title": "Medications",
+    "active": "Active",
+    "paused": "Paused",
+    "empty": {
+      "title": "No medications",
+      "description": "Add your first medication."
+    }
+  },
+  "history": {
+    "title": "History",
+    "empty": "No history",
+    "emptyDescription": "Your intake history will appear here.",
+    "export": "⬆ Export",
+    "filters": {
+      "all": "All",
+      "taken": "Taken",
+      "missed": "Missed",
+      "skipped": "Skipped"
+    },
+    "ranges": {
+      "seven": "7 d",
+      "thirty": "30 d",
+      "ninety": "90 d"
+    },
+    "stats": {
+      "adherence": "Adherence",
+      "taken": "Taken",
+      "missed": "Missed",
+      "skipped": "Skipped"
+    }
+  },
+  "medication": {
+    "types": {
+      "pill": "Pill",
+      "syrup": "Syrup",
+      "injection": "Injection",
+      "supplement": "Supplement",
+      "other": "Other"
+    },
+    "freq": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "interval": "Interval",
+      "custom": "Custom",
+      "everyN": "Every",
+      "days": "d",
+      "customLabel": "Custom schedule"
+    },
+    "schedule": {
+      "start": "Start",
+      "end": "End",
+      "indefinite": "Indefinite",
+      "times": "Times",
+      "upcoming": "Upcoming doses",
+      "addTime": "＋ Add a time",
+      "alarmTimes": "Reminder times",
+      "duplicateTime": "This time is already set"
+    },
+    "actions": {
+      "pause": "⏸ Pause",
+      "resume": "▶ Resume",
+      "delete": "Delete"
+    },
+    "detail": {
+      "title": "Medication",
+      "notFound": "This medication was not found.",
+      "frequency": "Frequency",
+      "notes": "Notes",
+      "dose": "Dose",
+      "type": "Form"
+    },
+    "form": {
+      "step": "Step",
+      "of": "/",
+      "nameLabel": "Medication name *",
+      "namePlaceholder": "e.g. Amoxicillin",
+      "nameRequired": "Name is required",
+      "nameMax": "Max 80 characters",
+      "doseLabel": "Dose *",
+      "qtyInvalid": "Invalid quantity (e.g. 1, 2.5)",
+      "qtyMax": "Maximum 999",
+      "unitRequired": "Unit required (e.g. mg, tablet)",
+      "colorLabel": "Colour (optional)",
+      "notesLabel": "Notes (optional)",
+      "notesPlaceholder": "Special instructions...",
+      "schedulingLabel": "Scheduling",
+      "summaryLabel": "Summary",
+      "endAfterStart": "End date must be after start date",
+      "next": "Next",
+      "previous": "Back",
+      "typeLabel": "Form",
+      "indefinite": "Indefinite duration"
+    },
+    "units": {
+      "mg": "mg",
+      "g": "g",
+      "ml": "ml",
+      "mcg": "mcg",
+      "tablet": "tablet(s)",
+      "capsule": "capsule(s)",
+      "drop": "drop(s)",
+      "dose": "dose(s)"
+    },
+    "confirm": {
+      "noteLabel": "Note (optional)",
+      "taken": "✓ Taken",
+      "snooze": "⏱ Snooze",
+      "skip": "→ Skip",
+      "notFound": "Medication not found",
+      "snooze10": "10 min",
+      "snooze30": "30 min",
+      "snooze60": "1 hour",
+      "snoozeTitle": "Snooze reminder"
+    },
+    "scan": {
+      "cameraRequired": "Camera required",
+      "cameraDescription": "MediTrack needs access to your camera to scan prescriptions.",
+      "allowCamera": "Allow camera",
+      "addManually": "Add manually",
+      "processing": "Analysing...",
+      "detected": "Detected medications",
+      "failed": "Analysis failed",
+      "failedDescription": "Could not analyse the image.",
+      "noneDetected": "No medications detected",
+      "noneDescription": "The image could not extract any medications. Try a better shot or add manually.",
+      "alignGuide": "Align the prescription within the frame",
+      "gallery": "Gallery",
+      "approveAndAdd": "Approve and add ({{count}})",
+      "nameLabel": "Name",
+      "dosageLabel": "Dosage"
+    }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "backHome": "Back to home"
+  },
+  "profile": {
+    "title": "Profiles",
+    "new": "New",
+    "hint": "Tap a profile to select it.",
+    "active": "Active",
+    "medCount_one": "{{count}} medication",
+    "medCount_other": "{{count}} medications",
+    "noProfiles": "No profiles yet",
+    "noProfilesDescription": "Create a profile to start managing medications.",
+    "createFirst": "Create my first profile",
+    "ageYears": "yr",
+    "medAbbrev": "med.",
+    "bornOn": "Born on",
+    "editTitle": "Edit profile",
+    "notFound": "This profile was not found.",
+    "dangerZone": "Danger zone",
+    "deleteProfile": "Delete this profile",
+    "deleteTitle": "Delete profile",
+    "deleteConfirm": "Delete \"{{name}}\"? Their {{count}} medication(s) will also be deleted.",
+    "form": {
+      "nameLabel": "Name *",
+      "namePlaceholder": "e.g. Ahmed",
+      "nameRequired": "Name is required.",
+      "dobLabel": "Date of birth",
+      "dobPlaceholder": "DD/MM/YYYY",
+      "relationLabel": "Relationship",
+      "relationPlaceholder": "e.g. Myself, Child..."
+    },
+    "detail": {
+      "medCount_one": "{{count}} medication",
+      "medCount_other": "{{count}} medications",
+      "saved_one": "saved",
+      "saved_other": "saved"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "privacy": "Privacy policy",
+    "terms": "Terms of use",
+    "about": "About",
+    "notifications": "Notifications",
+    "version": "Version",
+    "biometric": {
+      "label": "Biometric lock",
+      "description": "Requires Face ID / fingerprint on every open."
+    },
+    "restart": {
+      "title": "Restart required",
+      "body": "Please restart the app to apply the new layout direction."
+    },
+    "notificationsScreen": {
+      "enable": "Enable notifications",
+      "quietHours": "Quiet hours",
+      "quietDescription": "No notifications will be sent during this period.",
+      "start": "Start",
+      "end": "End"
+    },
+    "aboutScreen": {
+      "tagline": "Manage your medications simply.",
+      "developer": "Developer",
+      "platform": "Platform",
+      "platformValue": "iOS & Android",
+      "database": "Database",
+      "databaseValue": "Local SQLite",
+      "sharedData": "Shared data",
+      "sharedDataValue": "None"
+    },
+    "privacyBody": "MediTrack stores all your data locally on your device. No personal data is transmitted to external servers. Your medical information remains entirely private and under your control.\n\nThe following data is stored locally:\n• Patient profiles (name, date of birth, relationship)\n• Medications and dosing schedules\n• Intake history\n\nYou can delete all your data at any time by uninstalling the app.",
+    "termsScreen": {
+      "intro": "By using MediTrack, you agree to the following terms:",
+      "section1Title": "1. Use",
+      "section1Body": "MediTrack is a medication management aid. It does not replace the advice of a healthcare professional.",
+      "section2Title": "2. Responsibility",
+      "section2Body": "The user is solely responsible for correctly entering medical information and following their doctor's prescriptions.",
+      "section3Title": "3. Data",
+      "section3Body": "All data is stored locally. The publisher has no access to any personal or medical information.",
+      "section4Title": "4. Changes",
+      "section4Body": "These terms may be updated. Updates will be communicated via the app's release notes."
+    }
+  },
+  "export": {
+    "title": "Export data",
+    "period": "Period",
+    "last7": "Last 7 days",
+    "last30": "Last 30 days",
+    "last90": "Last 90 days",
+    "custom": "Custom",
+    "from": "From",
+    "to": "To",
+    "summary": "From {{from}} to {{to}} · {{count}} records",
+    "csv": "⬇ Export CSV",
+    "pdf": "⬇ Export PDF",
+    "generating": "Generating…"
+  },
+  "lock": {
+    "subtitle": "Protected by biometrics",
+    "unlock": "Unlock"
+  },
+  "scheduler": {
+    "days": {
+      "sun": "S",
+      "mon": "M",
+      "tue": "T",
+      "wed": "W",
+      "thu": "T",
+      "fri": "F",
+      "sat": "S"
+    },
+    "pattern": {
+      "label": "Repeating pattern (1 = take, 0 = skip)",
+      "preset11": "1/1 (alternate)",
+      "preset21": "2/1",
+      "preset52": "5/2 (week)",
+      "preset217": "21/7"
+    },
+    "everyN": "Every",
+    "days_label": "day(s)"
+  }
+}

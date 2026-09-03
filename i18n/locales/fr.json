@@ -1,0 +1,335 @@
+{
+  "common": {
+    "appName": "MediTrack",
+    "continue": "Continuer",
+    "skip": "Passer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "back": "Retour",
+    "done": "Terminer",
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "retry": "Réessayer",
+    "search": "Rechercher",
+    "add": "Ajouter",
+    "confirm": "Confirmer",
+    "close": "Fermer",
+    "notFound": "Introuvable",
+    "required": "Requis",
+    "activate": "Activer",
+    "restart": "Redémarrer"
+  },
+  "onboarding": {
+    "slide1": {
+      "title": "Scannez votre ordonnance",
+      "description": "Photographiez votre ordonnance et laissez MediTrack extraire automatiquement vos médicaments."
+    },
+    "slide2": {
+      "title": "Ne manquez plus vos prises",
+      "description": "Recevez des rappels personnalisés pour prendre vos médicaments au bon moment, chaque jour."
+    },
+    "slide3": {
+      "title": "Gérez plusieurs profils en toute sécurité",
+      "description": "Suivez les traitements de toute votre famille depuis une seule application. Vos données restent sur votre appareil.",
+      "getStarted": "Commencer"
+    },
+    "slide4": {
+      "title": "Activez les rappels",
+      "description": "Recevez une notification à chaque heure de prise pour ne jamais manquer un médicament. Vous pouvez modifier cela à tout moment dans les Paramètres."
+    }
+  },
+  "tabs": {
+    "home": "Accueil",
+    "history": "Historique",
+    "add": "Ajouter",
+    "profile": "Profil",
+    "medications": "Médicaments",
+    "settings": "Paramètres"
+  },
+  "home": {
+    "title": "Accueil",
+    "greeting": "Bonjour, {{name}} 👋",
+    "todayMeds": "Médicaments du jour",
+    "noMeds": "Aucun médicament prévu aujourd'hui",
+    "noMedsDescription": "Ajoutez un médicament pour commencer le suivi.",
+    "changeProfile": "Changer de profil ▾",
+    "manageProfiles": "Gérer les profils",
+    "snoozeLater": "⏱ Plus tard",
+    "status": {
+      "taken": "Pris",
+      "skipped": "Passé",
+      "overdue": "En retard",
+      "pending": "En attente",
+      "upcoming": "À venir"
+    },
+    "stats": {
+      "adherence": "Observance",
+      "today": "Aujourd'hui",
+      "missed": "Manqués"
+    },
+    "buckets": {
+      "morning": "🌅 Matin",
+      "afternoon": "☀️ Après-midi",
+      "evening": "🌆 Soir",
+      "night": "🌙 Nuit"
+    }
+  },
+  "medications": {
+    "title": "Médicaments",
+    "active": "Actifs",
+    "paused": "En pause",
+    "empty": {
+      "title": "Aucun médicament",
+      "description": "Ajoutez votre premier médicament."
+    }
+  },
+  "history": {
+    "title": "Historique",
+    "empty": "Aucun historique",
+    "emptyDescription": "Votre historique de prises apparaîtra ici.",
+    "export": "⬆ Export",
+    "filters": {
+      "all": "Tous",
+      "taken": "Pris",
+      "missed": "Manqués",
+      "skipped": "Passés"
+    },
+    "ranges": {
+      "seven": "7 j",
+      "thirty": "30 j",
+      "ninety": "90 j"
+    },
+    "stats": {
+      "adherence": "Observance",
+      "taken": "Pris",
+      "missed": "Manqués",
+      "skipped": "Passés"
+    }
+  },
+  "medication": {
+    "types": {
+      "pill": "Pilule",
+      "syrup": "Sirop",
+      "injection": "Injection",
+      "supplement": "Supplément",
+      "other": "Autre"
+    },
+    "freq": {
+      "daily": "Quotidien",
+      "weekly": "Hebdomadaire",
+      "interval": "Intervalle",
+      "custom": "Schéma",
+      "everyN": "Toutes les",
+      "days": "j",
+      "customLabel": "Schéma personnalisé"
+    },
+    "schedule": {
+      "start": "Début",
+      "end": "Fin",
+      "indefinite": "Indéfinie",
+      "times": "Horaires",
+      "upcoming": "Prochaines prises",
+      "addTime": "＋ Ajouter une heure",
+      "alarmTimes": "Heures de rappel",
+      "duplicateTime": "Cette heure est déjà utilisée"
+    },
+    "actions": {
+      "pause": "⏸ Mettre en pause",
+      "resume": "▶ Reprendre",
+      "delete": "Supprimer"
+    },
+    "detail": {
+      "title": "Médicament",
+      "notFound": "Ce médicament est introuvable.",
+      "frequency": "Fréquence",
+      "notes": "Notes",
+      "dose": "Dose",
+      "type": "Forme"
+    },
+    "form": {
+      "step": "Étape",
+      "of": "/",
+      "nameLabel": "Nom du médicament *",
+      "namePlaceholder": "ex: Amoxicilline",
+      "nameRequired": "Le nom est requis",
+      "nameMax": "Max 80 caractères",
+      "doseLabel": "Dose *",
+      "qtyInvalid": "Quantité invalide (ex: 1, 2.5)",
+      "qtyMax": "Maximum 999",
+      "unitRequired": "Unité requise (ex: mg, comprimé)",
+      "colorLabel": "Couleur (optionnel)",
+      "notesLabel": "Notes (optionnel)",
+      "notesPlaceholder": "Instructions particulières...",
+      "schedulingLabel": "Planification",
+      "summaryLabel": "Récapitulatif",
+      "endAfterStart": "La date de fin doit être après la date de début",
+      "next": "Suivant",
+      "previous": "Retour",
+      "typeLabel": "Forme",
+      "indefinite": "Durée indéfinie"
+    },
+    "units": {
+      "mg": "mg",
+      "g": "g",
+      "ml": "ml",
+      "mcg": "mcg",
+      "tablet": "comprimé(s)",
+      "capsule": "gélule(s)",
+      "drop": "goutte(s)",
+      "dose": "dose(s)"
+    },
+    "confirm": {
+      "noteLabel": "Note (optionnel)",
+      "taken": "✓ Pris",
+      "snooze": "⏱ Reporter",
+      "skip": "→ Passer",
+      "notFound": "Médicament introuvable",
+      "snooze10": "10 min",
+      "snooze30": "30 min",
+      "snooze60": "1 heure",
+      "snoozeTitle": "Reporter le rappel"
+    },
+    "scan": {
+      "cameraRequired": "Caméra requise",
+      "cameraDescription": "MediTrack a besoin d'accéder à votre caméra pour scanner les ordonnances.",
+      "allowCamera": "Autoriser la caméra",
+      "addManually": "Ajouter manuellement",
+      "processing": "Analyse en cours...",
+      "detected": "Médicaments détectés",
+      "failed": "Analyse échouée",
+      "failedDescription": "Erreur lors de l'analyse.",
+      "noneDetected": "Aucun médicament détecté",
+      "noneDescription": "L'image n'a pas permis d'extraire des médicaments. Essayez une meilleure prise de vue ou ajoutez manuellement.",
+      "alignGuide": "Alignez l'ordonnance dans le cadre",
+      "gallery": "Galerie",
+      "approveAndAdd": "Approuver et ajouter ({{count}})",
+      "nameLabel": "Nom",
+      "dosageLabel": "Dosage"
+    }
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "backHome": "Retour à l'accueil"
+  },
+  "profile": {
+    "title": "Profils",
+    "new": "Nouveau",
+    "hint": "Appuyez sur un profil pour le sélectionner.",
+    "active": "Actif",
+    "medCount_one": "{{count}} médicament",
+    "medCount_other": "{{count}} médicaments",
+    "noProfiles": "Aucun profil créé",
+    "noProfilesDescription": "Créez un profil pour commencer à gérer les médicaments.",
+    "createFirst": "Créer mon premier profil",
+    "ageYears": "ans",
+    "medAbbrev": "méd.",
+    "bornOn": "Né(e) le",
+    "editTitle": "Modifier le profil",
+    "notFound": "Ce profil est introuvable.",
+    "dangerZone": "Zone de danger",
+    "deleteProfile": "Supprimer ce profil",
+    "deleteTitle": "Supprimer le profil",
+    "deleteConfirm": "Supprimer \"{{name}}\" ? Ses {{count}} médicament(s) seront également supprimés.",
+    "form": {
+      "nameLabel": "Nom *",
+      "namePlaceholder": "ex: Ahmed",
+      "nameRequired": "Le nom est requis.",
+      "dobLabel": "Date de naissance",
+      "dobPlaceholder": "JJ/MM/AAAA",
+      "relationLabel": "Relation",
+      "relationPlaceholder": "ex: Moi-même, Enfant..."
+    },
+    "detail": {
+      "medCount_one": "{{count}} médicament",
+      "medCount_other": "{{count}} médicaments",
+      "saved_one": "enregistré",
+      "saved_other": "enregistrés"
+    }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language": "Langue",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions d'utilisation",
+    "about": "À propos",
+    "notifications": "Notifications",
+    "version": "Version",
+    "biometric": {
+      "label": "Verrou biométrique",
+      "description": "Demande Face ID / empreinte à chaque ouverture."
+    },
+    "restart": {
+      "title": "Redémarrage requis",
+      "body": "Veuillez redémarrer l'application pour appliquer la nouvelle direction de mise en page."
+    },
+    "notificationsScreen": {
+      "enable": "Activer les notifications",
+      "quietHours": "Heures silencieuses",
+      "quietDescription": "Aucune notification ne sera envoyée pendant cette période.",
+      "start": "Début",
+      "end": "Fin"
+    },
+    "aboutScreen": {
+      "tagline": "Gérez vos médicaments simplement.",
+      "developer": "Développeur",
+      "platform": "Plateforme",
+      "platformValue": "iOS & Android",
+      "database": "Base de données",
+      "databaseValue": "SQLite local",
+      "sharedData": "Données partagées",
+      "sharedDataValue": "Aucune"
+    },
+    "privacyBody": "MediTrack stocke toutes vos données localement sur votre appareil. Aucune donnée personnelle n'est transmise à des serveurs externes. Vos informations médicales restent entièrement privées et sous votre contrôle.\n\nLes données suivantes sont stockées localement :\n• Profils patients (nom, date de naissance, relation)\n• Médicaments et plannings de prise\n• Historique des prises\n\nVous pouvez supprimer toutes vos données à tout moment en désinstallant l'application.",
+    "termsScreen": {
+      "intro": "En utilisant MediTrack, vous acceptez les conditions suivantes :",
+      "section1Title": "1. Usage",
+      "section1Body": "MediTrack est un outil d'aide à la gestion des médicaments. Il ne remplace pas l'avis d'un professionnel de santé.",
+      "section2Title": "2. Responsabilité",
+      "section2Body": "L'utilisateur est seul responsable de la saisie correcte des informations médicales et du respect des prescriptions de son médecin.",
+      "section3Title": "3. Données",
+      "section3Body": "Toutes les données sont stockées localement. L'éditeur n'a accès à aucune information personnelle ou médicale.",
+      "section4Title": "4. Modifications",
+      "section4Body": "Ces conditions peuvent être mises à jour. Les mises à jour seront communiquées via les notes de version de l'application."
+    }
+  },
+  "export": {
+    "title": "Exporter les données",
+    "period": "Période",
+    "last7": "7 derniers jours",
+    "last30": "30 derniers jours",
+    "last90": "90 derniers jours",
+    "custom": "Personnalisé",
+    "from": "Du",
+    "to": "Au",
+    "summary": "Du {{from}} au {{to}} · {{count}} enregistrements",
+    "csv": "⬇ Export CSV",
+    "pdf": "⬇ Export PDF",
+    "generating": "Génération en cours…"
+  },
+  "lock": {
+    "subtitle": "Protégé par biométrie",
+    "unlock": "Déverrouiller"
+  },
+  "scheduler": {
+    "days": {
+      "sun": "D",
+      "mon": "L",
+      "tue": "M",
+      "wed": "M",
+      "thu": "J",
+      "fri": "V",
+      "sat": "S"
+    },
+    "pattern": {
+      "label": "Schéma répétitif (1 = prise, 0 = pause)",
+      "preset11": "1/1 (alternance)",
+      "preset21": "2/1",
+      "preset52": "5/2 (sem.)",
+      "preset217": "21/7"
+    },
+    "everyN": "Toutes les",
+    "days_label": "jour(s)"
+  }
+}

@@ -1,0 +1,179 @@
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, SectionList, StyleSheet, Alert } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { useRouter } from 'expo-router';
+import { ScreenContainer } from '@components/layout/ScreenContainer';
+import { EmptyState } from '@components/ui/EmptyState';
+import { Badge } from '@components/ui/Badge';
+import { BottomSheet } from '@components/ui/BottomSheet';
+import { PillIllustration } from '@components/ui/EmptyIllustrations';
+import { Colors } from '@constants/colors';
+import { Spacing, Radius } from '@constants/spacing';
+import { FontSize } from '@constants/typography';
+import { useMedications } from '@hooks/useMedications';
+import { useMedicationStore, Medication } from '@store/medicationStore';
+import { cancelNotificationsForMedication, scheduleNotificationsForMedication } from '@hooks/useNotifications';
+import { formatTime } from '@utils/dateHelpers';
+
+const TYPE_COLOR: Record<string, string> = {
+  pill: Colors.pill ?? '#6366F1',
+  syrup: Colors.syrup ?? '#EC4899',
+  injection: Colors.injection ?? '#F97316',
+  supplement: Colors.supplement ?? '#059669',
+  other: Colors.other ?? Colors.textSecondary,
+};
+
+function MedRow({ item }: { item: Medication }) {
+  const { t } = useTranslation();
+  const router = useRouter();
+  const { updateMedication, deleteMedication } = useMedicationStore();
+  const [sheetVisible, setSheetVisible] = useState(false);
+  const freqLabel = t(`medication.freq.${item.schedule.frequency}`, { defaultValue: item.schedule.frequency });
+
+  function handleDelete() {
+    setSheetVisible(false);
+    setTimeout(() => {
+      Alert.alert(
+        t('common.delete'),
+        `${t('common.delete')} "${item.name}" ?`,
+        [
+          { text: t('common.cancel'), style: 'cancel' },
+          {
+            text: t('common.delete'), style: 'destructive',
+            onPress: () => {
+              cancelNotificationsForMedication(item.id);
+              deleteMedication(item.id);
+            },
+          },
+        ],
+      );
+    }, 300);
+  }
+
+  async function handleTogglePause() {
+    setSheetVisible(false);
+    const newPaused = !item.paused;
+    updateMedication(item.id, { paused: newPaused });
+    if (newPaused) {
+      await cancelNotificationsForMedication(item.id);
+    } else {
+      await scheduleNotificationsForMedication({ ...item, paused: false });
+    }
+  }
+
+  function handleEdit() {
+    setSheetVisible(false);
+    router.push(`/medication/${item.id}?edit=1`);
+  }
+
+  return (
+    <>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => router.push(`/medication/${item.id}`)}
+        onLongPress={() => setSheetVisible(true)}
+        activeOpacity={0.8}
+        delayLongPress={400}
+      >
+        <View style={[styles.accent, { backgroundColor: TYPE_COLOR[item.type] ?? TYPE_COLOR.other }]} />
+        <View style={styles.info}>
+          <Text style={styles.name}>{item.name}</Text>
+          <Text style={styles.sub}>
+            {item.doseQuantity} {item.unit} · {freqLabel}
+          </Text>
+          <Text style={styles.times}>{item.schedule.times.map(formatTime).join(' · ')}</Text>
+        </View>
+        {item.paused && <Badge label={t('medications.paused')} variant="warning" size="sm" />}
+      </TouchableOpacity>
+
+      <BottomSheet visible={sheetVisible} onClose={() => setSheetVisible(false)}>
+        <Text style={actionStyles.medName}>{item.name}</Text>
+
+        <TouchableOpacity style={actionStyles.row} onPress={handleEdit}>
+          <Text style={actionStyles.icon}>✏️</Text>
+          <Text style={actionStyles.label}>{t('common.edit')}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={actionStyles.row} onPress={handleTogglePause}>
+          <Text style={actionStyles.icon}>{item.paused ? '▶' : '⏸'}</Text>
+          <Text style={actionStyles.label}>
+            {item.paused ? t('medication.actions.resume') : t('medication.actions.pause')}
+          </Text>
+        </TouchableOpacity>
+
+        <View style={actionStyles.divider} />
+
+        <TouchableOpacity style={actionStyles.row} onPress={handleDelete}>
+          <Text style={actionStyles.icon}>🗑️</Text>
+          <Text style={[actionStyles.label, actionStyles.danger]}>{t('medication.actions.delete')}</Text>
+        </TouchableOpacity>
+      </BottomSheet>
+    </>
+  );
+}
+
+export default function MedicationsScreen() {
+  const { t } = useTranslation();
+  const router = useRouter();
+  const { medications } = useMedications();
+  const hydrate = useMedicationStore((s) => s.hydrate);
+
+  const active = medications.filter((m) => !m.paused);
+  const paused = medications.filter((m) => m.paused);
+
+  const sections = [
+    ...(active.length > 0 ? [{ title: t('medications.active'), data: active }] : []),
+    ...(paused.length > 0 ? [{ title: t('medications.paused'), data: paused }] : []),
+  ];
+
+  if (medications.length === 0) {
+    return (
+      <ScreenContainer scrollable onRefresh={hydrate}>
+        <Text style={styles.title}>{t('medications.title')}</Text>
+        <EmptyState
+          illustration={<PillIllustration />}
+          title={t('medications.empty.title')}
+          description={t('medications.empty.description')}
+          actionLabel={t('common.add')}
+          onAction={() => router.push('/(tabs)/add')}
+        />
+      </ScreenContainer>
+    );
+  }
+
+  return (
+    <ScreenContainer scrollable onRefresh={hydrate}>
+      <Text style={styles.title}>{t('medications.title')}</Text>
+      <SectionList
+        sections={sections}
+        keyExtractor={(item) => item.id}
+        stickySectionHeadersEnabled={false}
+        scrollEnabled={false}
+        renderSectionHeader={({ section }) => (
+          <Text style={styles.sectionHeader}>{section.title}</Text>
+        )}
+        renderItem={({ item }) => <MedRow item={item} />}
+      />
+    </ScreenContainer>
+  );
+}
+
+const styles = StyleSheet.create({
+  title:         { fontSize: FontSize.xxl, fontWeight: '700', color: Colors.textPrimary, marginBottom: Spacing.lg },
+  sectionHeader: { fontSize: FontSize.sm, fontWeight: '700', color: Colors.textSecondary, marginBottom: Spacing.sm, marginTop: Spacing.md, textTransform: 'uppercase', letterSpacing: 0.5 },
+  card:          { flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.surface, borderRadius: Radius.md, marginBottom: Spacing.sm, borderWidth: 1, borderColor: Colors.border, overflow: 'hidden' },
+  accent:        { width: 4, alignSelf: 'stretch', flexShrink: 0 },
+  info:          { flex: 1, paddingVertical: Spacing.md, paddingHorizontal: Spacing.md },
+  name:          { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary },
+  sub:           { fontSize: FontSize.sm, color: Colors.textSecondary, marginTop: 2 },
+  times:         { fontSize: FontSize.xs, color: Colors.textDisabled, marginTop: 1 },
+});
+
+const actionStyles = StyleSheet.create({
+  medName:  { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary, marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.border },
+  row:      { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, paddingVertical: Spacing.md },
+  icon:     { fontSize: 20, width: 28, textAlign: 'center' },
+  label:    { fontSize: FontSize.md, color: Colors.textPrimary },
+  danger:   { color: Colors.danger },
+  divider:  { height: 1, backgroundColor: Colors.border, marginVertical: Spacing.xs },
+});
