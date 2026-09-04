@@ -42,8 +42,10 @@ async function runMigrations(db: SQLiteDatabase): Promise<void> {
 
 export async function deleteAllData(): Promise<void> {
   const db = await getDatabase();
-  await db.execAsync('DELETE FROM intake_records');
-  await db.execAsync('DELETE FROM medications');
-  await db.execAsync('DELETE FROM profiles');
-  await db.execAsync("DELETE FROM settings WHERE key != 'onboardingComplete'");
+  await db.withTransactionAsync(async () => {
+    await db.execAsync('DELETE FROM intake_records');
+    await db.execAsync('DELETE FROM medications');
+    await db.execAsync('DELETE FROM profiles');
+    await db.execAsync("DELETE FROM settings WHERE key != 'onboardingComplete'");
+  });
 }
