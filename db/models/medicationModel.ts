@@ -5,8 +5,11 @@ export async function dbInsertMedication(med: Medication): Promise<void> {
   const db = await getDatabase();
   await db.runAsync(
     `INSERT OR REPLACE INTO medications
-       (id, profile_id, name, dose_quantity, unit, type, schedule, start_date, end_date, notes, prescription_image_uri, paused, pill_color, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (id, profile_id, name, dose_quantity, unit, type, schedule, start_date, end_date,
+        notes, prescription_image_uri, paused, pill_color,
+        refill_reminder_enabled, refill_reminder_days,
+        created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       med.id, med.profileId, med.name, med.doseQuantity, med.unit, med.type,
       JSON.stringify(med.schedule),
@@ -14,6 +17,8 @@ export async function dbInsertMedication(med: Medication): Promise<void> {
       med.notes ?? null, med.prescriptionImageUri ?? null,
       med.paused ? 1 : 0,
       med.pillColor ?? null,
+      med.refillReminderEnabled ? 1 : 0,
+      med.refillReminderDays ?? 7,
       med.createdAt, med.updatedAt,
     ]
   );
@@ -35,6 +40,8 @@ export async function dbUpdateMedication(id: string, data: Partial<Medication>):
   if (data.prescriptionImageUri !== undefined) { fields.push('prescription_image_uri = ?'); values.push(data.prescriptionImageUri ?? null); }
   if (data.paused !== undefined)               { fields.push('paused = ?');                  values.push(data.paused ? 1 : 0); }
   if (data.pillColor !== undefined)            { fields.push('pill_color = ?');              values.push(data.pillColor ?? null); }
+  if (data.refillReminderEnabled !== undefined) { fields.push('refill_reminder_enabled = ?'); values.push(data.refillReminderEnabled ? 1 : 0); }
+  if (data.refillReminderDays !== undefined)    { fields.push('refill_reminder_days = ?');    values.push(data.refillReminderDays); }
   if (data.updatedAt !== undefined)            { fields.push('updated_at = ?');              values.push(data.updatedAt); }
 
   if (fields.length === 0) return;
@@ -54,7 +61,9 @@ export async function dbGetAllMedications(): Promise<Medication[]> {
     dose_quantity: number; unit: string; type: string;
     schedule: string; start_date: string; end_date: string | null;
     notes: string | null; prescription_image_uri: string | null;
-    paused: number; pill_color: string | null; created_at: string; updated_at: string;
+    paused: number; pill_color: string | null;
+    refill_reminder_enabled: number | null; refill_reminder_days: number | null;
+    created_at: string; updated_at: string;
   }>('SELECT * FROM medications ORDER BY created_at ASC');
 
   return rows.map((r) => ({
@@ -71,6 +80,8 @@ export async function dbGetAllMedications(): Promise<Medication[]> {
     prescriptionImageUri: r.prescription_image_uri ?? undefined,
     paused: r.paused === 1,
     pillColor: r.pill_color ?? undefined,
+    refillReminderEnabled: r.refill_reminder_enabled === 1,
+    refillReminderDays:    r.refill_reminder_days ?? 7,
     createdAt: r.created_at,
     updatedAt: r.updated_at,
   }));

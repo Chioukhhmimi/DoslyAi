@@ -33,6 +33,8 @@ export interface Medication {
   prescriptionImageUri?: string;
   paused: boolean;
   pillColor?: string;
+  refillReminderEnabled?: boolean;
+  refillReminderDays?: number;
   createdAt: string;
   updatedAt: string;
 }
