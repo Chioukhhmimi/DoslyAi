@@ -13,6 +13,16 @@ export interface Profile {
   dateOfBirth?: string;
   relationship?: string;
   avatarUri?: string;
+  bloodType?: string;
+  weight?: number;
+  height?: number;
+  allergies?: string[];
+  conditions?: string[];
+  doctorName?: string;
+  doctorPhone?: string;
+  emergencyContact?: string;
+  emergencyPhone?: string;
+  medicalNotes?: string;
   createdAt: string;
 }
 
