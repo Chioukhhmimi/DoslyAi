@@ -1,6 +1,11 @@
 import { getDatabase } from '../database';
 import type { Profile } from '@store/profileStore';
 
+function safeParseArray(value: string | null): string[] | undefined {
+  if (value == null) return undefined;
+  try { return JSON.parse(value); } catch { return undefined; }
+}
+
 export async function dbInsertProfile(profile: Profile): Promise<void> {
   const db = await getDatabase();
   await db.runAsync(
@@ -76,8 +81,8 @@ export async function dbGetAllProfiles(): Promise<Profile[]> {
     bloodType:         r.blood_type ?? undefined,
     weight:            r.weight ?? undefined,
     height:            r.height ?? undefined,
-    allergies:         r.allergies ? JSON.parse(r.allergies) : undefined,
-    conditions:        r.conditions ? JSON.parse(r.conditions) : undefined,
+    allergies:         safeParseArray(r.allergies),
+    conditions:        safeParseArray(r.conditions),
     doctorName:        r.doctor_name ?? undefined,
     doctorPhone:       r.doctor_phone ?? undefined,
     emergencyContact:  r.emergency_contact ?? undefined,
