@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -78,6 +78,10 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [nameSuggestions, setNameSuggestions] = useState<string[]>([]);
 
+  useEffect(() => {
+    setNameSuggestions([]);
+  }, [step]);
+
   function validateStep1(): boolean {
     const errs: Record<string, string> = {};
     if (!name.trim()) errs.name = t('medication.form.nameRequired');
@@ -153,11 +157,11 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
         {t('medication.form.step')} {step} {t('medication.form.of')} {totalSteps}
       </Text>
 
-      <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
         {step === 1 && (
           <View>
             <Text style={styles.label}>{t('medication.form.nameLabel')}</Text>
-            <View>
+            <View style={{ zIndex: 10, position: 'relative' }}>
               <TextInput
                 style={[styles.input, !!errors.name && styles.inputError]}
                 value={name}
@@ -168,7 +172,10 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
                     const matches = COMMON_DRUG_NAMES.filter((d) =>
                       d.toLowerCase().startsWith(v.toLowerCase())
                     ).slice(0, 5);
-                    setNameSuggestions(matches);
+                    const filtered = matches.filter(
+                      (m) => !(matches.length === 1 && m.toLowerCase() === v.toLowerCase())
+                    );
+                    setNameSuggestions(filtered);
                   } else {
                     setNameSuggestions([]);
                   }
@@ -642,7 +649,7 @@ const styles = StyleSheet.create({
   },
   pickerDone: { fontSize: FontSize.md, color: Colors.primary, fontWeight: '600' },
   picker: { width: '100%' },
-  suggestionList: { backgroundColor: Colors.surface, borderWidth: 1, borderColor: Colors.border, borderRadius: Radius.sm, marginTop: -1, zIndex: 10 },
+  suggestionList: { position: 'absolute', top: '100%' as any, left: 0, right: 0, backgroundColor: Colors.surface, borderWidth: 1, borderColor: Colors.border, borderRadius: Radius.sm, elevation: 4, zIndex: 10 },
   suggestion:     { padding: Spacing.sm, borderBottomWidth: 1, borderBottomColor: Colors.border },
   suggestionText: { fontSize: FontSize.md, color: Colors.textPrimary },
 });
