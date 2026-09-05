@@ -73,6 +73,12 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
     initialValues?.endDate ? new Date(initialValues.endDate + 'T00:00:00') : null,
   );
   const [ongoing, setOngoing] = useState(!initialValues?.endDate);
+  const [refillReminderEnabled, setRefillReminderEnabled] = useState(
+    initialValues?.refillReminderEnabled ?? false,
+  );
+  const [refillReminderDays, setRefillReminderDays] = useState(
+    initialValues?.refillReminderDays ?? 7,
+  );
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -124,6 +130,8 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
       schedule,
       startDate: format(startDate, 'yyyy-MM-dd'),
       endDate: ongoing ? undefined : endDate ? format(endDate, 'yyyy-MM-dd') : undefined,
+      refillReminderEnabled,
+      refillReminderDays,
     });
   }
 
@@ -362,6 +370,34 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
                 </TouchableOpacity>
                 {!!errors.endDate && <Text style={styles.errorText}>{errors.endDate}</Text>}
               </>
+            )}
+
+            {/* Refill reminder */}
+            <View style={styles.refillRow}>
+              <View style={styles.refillLabel}>
+                <Text style={styles.fieldLabel}>{t('medication.form.refillReminder')}</Text>
+                <Text style={styles.fieldSub}>{t('medication.form.refillReminderSub')}</Text>
+              </View>
+              <TouchableOpacity
+                style={[styles.toggle, refillReminderEnabled && styles.toggleOn]}
+                onPress={() => setRefillReminderEnabled(!refillReminderEnabled)}
+              >
+                <View style={[styles.toggleThumb, refillReminderEnabled && styles.toggleThumbOn]} />
+              </TouchableOpacity>
+            </View>
+            {refillReminderEnabled && (
+              <View style={styles.refillDaysRow}>
+                <Text style={styles.fieldLabel}>{t('medication.form.refillDaysBefore')}</Text>
+                <View style={styles.refillStepper}>
+                  <TouchableOpacity style={styles.stepBtn} onPress={() => setRefillReminderDays(Math.max(1, refillReminderDays - 1))}>
+                    <Text style={styles.stepBtnText}>−</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.stepValue}>{refillReminderDays}</Text>
+                  <TouchableOpacity style={styles.stepBtn} onPress={() => setRefillReminderDays(Math.min(30, refillReminderDays + 1))}>
+                    <Text style={styles.stepBtnText}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             )}
 
             {Platform.OS === 'android' && showStartPicker && (
@@ -652,4 +688,17 @@ const styles = StyleSheet.create({
   suggestionList: { position: 'absolute', top: '100%' as any, left: 0, right: 0, backgroundColor: Colors.surface, borderWidth: 1, borderColor: Colors.border, borderRadius: Radius.sm, elevation: 4, zIndex: 10 },
   suggestion:     { padding: Spacing.sm, borderBottomWidth: 1, borderBottomColor: Colors.border },
   suggestionText: { fontSize: FontSize.md, color: Colors.textPrimary },
+  fieldLabel:     { fontSize: FontSize.sm, color: Colors.textSecondary, marginBottom: 2 },
+  fieldSub:       { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 2 },
+  refillRow:      { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: Spacing.sm },
+  refillLabel:    { flex: 1 },
+  refillDaysRow:  { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: Spacing.sm },
+  toggle:         { width: 48, height: 28, borderRadius: 14, backgroundColor: Colors.border, justifyContent: 'center', padding: 2 },
+  toggleOn:       { backgroundColor: Colors.primary },
+  toggleThumb:    { width: 24, height: 24, borderRadius: 12, backgroundColor: Colors.surface },
+  toggleThumbOn:  { alignSelf: 'flex-end' },
+  refillStepper:  { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
+  stepBtn:        { width: 32, height: 32, borderRadius: 16, backgroundColor: Colors.surfaceSubtle, borderWidth: 1, borderColor: Colors.border, alignItems: 'center', justifyContent: 'center' },
+  stepBtnText:    { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary },
+  stepValue:      { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary, minWidth: 24, textAlign: 'center' },
 });

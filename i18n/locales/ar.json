@@ -168,7 +168,10 @@
       "next": "التالي",
       "previous": "رجوع",
       "typeLabel": "الشكل",
-      "indefinite": "مدة غير محددة"
+      "indefinite": "مدة غير محددة",
+      "refillReminder": "تذكير بإعادة التعبئة",
+      "refillReminderSub": "ينبهك عندما يحين وقت التجديد",
+      "refillDaysBefore": "أيام قبل النهاية"
     },
     "units": {
       "mg": "ملغ",

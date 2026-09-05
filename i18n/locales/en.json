@@ -168,7 +168,10 @@
       "next": "Next",
       "previous": "Back",
       "typeLabel": "Form",
-      "indefinite": "Indefinite duration"
+      "indefinite": "Indefinite duration",
+      "refillReminder": "Refill reminder",
+      "refillReminderSub": "Alerts you when it's time to refill",
+      "refillDaysBefore": "Days before end"
     },
     "units": {
       "mg": "mg",

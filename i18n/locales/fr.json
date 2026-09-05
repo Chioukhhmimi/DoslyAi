@@ -168,7 +168,10 @@
       "next": "Suivant",
       "previous": "Retour",
       "typeLabel": "Forme",
-      "indefinite": "Durée indéfinie"
+      "indefinite": "Durée indéfinie",
+      "refillReminder": "Rappel de renouvellement",
+      "refillReminderSub": "Vous avertit quand il est temps de renouveler",
+      "refillDaysBefore": "Jours avant la fin"
     },
     "units": {
       "mg": "mg",
