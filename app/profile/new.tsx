@@ -45,6 +45,11 @@ export default function NewProfileScreen() {
     if (selected) setDob(selected);
   }
 
+  function parseDecimal(s: string): number | undefined {
+    const n = Number(s.replace(',', '.').trim());
+    return Number.isFinite(n) && n > 0 ? n : undefined;
+  }
+
   function handleSave() {
     if (!name.trim()) { setError(t('profile.form.nameRequired')); return; }
     addProfile({
@@ -53,8 +58,8 @@ export default function NewProfileScreen() {
       relationship:     relationship || undefined,
       avatarUri:        avatarUri || undefined,
       bloodType:        bloodType || undefined,
-      weight:           weight ? parseFloat(weight) : undefined,
-      height:           height ? parseFloat(height) : undefined,
+      weight:           weight ? parseDecimal(weight) : undefined,
+      height:           height ? parseDecimal(height) : undefined,
       allergies:        allergies.length > 0 ? allergies : undefined,
       conditions:       conditions.length > 0 ? conditions : undefined,
       doctorName:       doctorName || undefined,
