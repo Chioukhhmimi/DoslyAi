@@ -9,6 +9,7 @@ import {
   Platform,
   StyleSheet,
 } from 'react-native';
+import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useTranslation } from 'react-i18next';
@@ -167,7 +168,7 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
 
       <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
         {step === 1 && (
-          <View>
+          <Animated.View key="step1" entering={FadeInRight.duration(200)}>
             <Text style={styles.label}>{t('medication.form.nameLabel')}</Text>
             <View style={{ zIndex: 10, position: 'relative' }}>
               <TextInput
@@ -316,18 +317,18 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
               placeholderTextColor={Colors.textDisabled}
               multiline
             />
-          </View>
+          </Animated.View>
         )}
 
         {step === 2 && (
-          <View>
+          <Animated.View key="step2" entering={FadeInRight.duration(200)}>
             <Text style={styles.sectionTitle}>{t('medication.form.schedulingLabel')}</Text>
             <SchedulePicker value={schedule} onChange={setSchedule} />
-          </View>
+          </Animated.View>
         )}
 
         {step === 3 && (
-          <View>
+          <Animated.View key="step3" entering={FadeInRight.duration(200)}>
             <Text style={styles.label}>{t('medication.schedule.start')}</Text>
             <TouchableOpacity
               style={styles.input}
@@ -459,11 +460,11 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
                 />
               </BottomSheet>
             )}
-          </View>
+          </Animated.View>
         )}
 
         {step === 4 && (
-          <View style={styles.review}>
+          <Animated.View key="step4" entering={FadeInRight.duration(200)} style={styles.review}>
             <Text style={styles.sectionTitle}>{t('medication.form.summaryLabel')}</Text>
             <View style={styles.reviewCard}>
               <ReviewRow label={t('medication.form.nameLabel').replace(' *', '')} value={name} />
@@ -500,7 +501,7 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
                 }
               />
             </View>
-          </View>
+          </Animated.View>
         )}
       </ScrollView>
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, SafeAreaView, StyleSheet } from 'react-native';
+import Animated, { FadeInRight } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
@@ -30,7 +31,7 @@ export function OnboardingSlide({
   const { t } = useTranslation();
   return (
     <SafeAreaView style={styles.safe}>
-      <View style={styles.container}>
+      <Animated.View entering={FadeInRight.duration(300)} style={styles.container}>
         <View style={[styles.illustration, { backgroundColor: illustrationColor }]} />
 
         <View style={styles.dots}>
@@ -50,23 +51,31 @@ export function OnboardingSlide({
           onPress={onNext}
           style={styles.btnNext}
         />
-        {!isLast && (
-          <Button label={t('common.skip')} variant="ghost" onPress={onSkip} />
-        )}
-      </View>
+        {!isLast && <Button label={t('common.skip')} variant="ghost" onPress={onSkip} />}
+      </Animated.View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safe:        { flex: 1, backgroundColor: Colors.background },
-  container:   { flex: 1, padding: Spacing.md },
+  safe: { flex: 1, backgroundColor: Colors.background },
+  container: { flex: 1, padding: Spacing.md },
   illustration: { flex: 1, borderRadius: Radius.xl, marginBottom: Spacing.xl },
-  dots:        { flexDirection: 'row', justifyContent: 'center', marginBottom: Spacing.lg, gap: 6 },
-  dot:         { height: 8, borderRadius: 4 },
-  dotActive:   { width: 24, backgroundColor: Colors.primary },
-  dotInactive: { width: 8,  backgroundColor: Colors.border },
-  title:       { fontSize: FontSize.xxl, fontWeight: '700', color: Colors.textPrimary, marginBottom: Spacing.sm },
-  description: { fontSize: FontSize.md, color: Colors.textSecondary, lineHeight: 24, marginBottom: Spacing.xl },
-  btnNext:     { marginBottom: Spacing.sm },
+  dots: { flexDirection: 'row', justifyContent: 'center', marginBottom: Spacing.lg, gap: 6 },
+  dot: { height: 8, borderRadius: 4 },
+  dotActive: { width: 24, backgroundColor: Colors.primary },
+  dotInactive: { width: 8, backgroundColor: Colors.border },
+  title: {
+    fontSize: FontSize.xxl,
+    fontWeight: '700',
+    color: Colors.textPrimary,
+    marginBottom: Spacing.sm,
+  },
+  description: {
+    fontSize: FontSize.md,
+    color: Colors.textSecondary,
+    lineHeight: 24,
+    marginBottom: Spacing.xl,
+  },
+  btnNext: { marginBottom: Spacing.sm },
 });
