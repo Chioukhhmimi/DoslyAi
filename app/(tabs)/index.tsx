@@ -20,17 +20,17 @@ import { Medication } from '@store/medicationStore';
 
 // ── Time-of-day bucket boundaries ────────────────────────────────────────────
 const BUCKET_KEYS = [
-  { key: 'morning',   start:  6, end: 12 },
+  { key: 'morning', start: 6, end: 12 },
   { key: 'afternoon', start: 12, end: 17 },
-  { key: 'evening',   start: 17, end: 21 },
-  { key: 'night',     start: 21, end:  6 },
+  { key: 'evening', start: 17, end: 21 },
+  { key: 'night', start: 21, end: 6 },
 ] as const;
 
 type BucketKey = (typeof BUCKET_KEYS)[number]['key'];
 
 function getBucket(hhmm: string): BucketKey {
   const [h] = hhmm.split(':').map(Number);
-  if (h >= 6  && h < 12) return 'morning';
+  if (h >= 6 && h < 12) return 'morning';
   if (h >= 12 && h < 17) return 'afternoon';
   if (h >= 17 && h < 21) return 'evening';
   return 'night';
@@ -45,7 +45,7 @@ interface DoseEntry {
 function buildBucketSections(
   medications: Medication[],
   today: Date,
-  buckets: { key: BucketKey; label: string; start: number; end: number }[]
+  buckets: { key: BucketKey; label: string; start: number; end: number }[],
 ) {
   const entries: DoseEntry[] = [];
 
@@ -54,7 +54,11 @@ function buildBucketSections(
     for (const dose of doses) {
       const hh = String(dose.getHours()).padStart(2, '0');
       const mm = String(dose.getMinutes()).padStart(2, '0');
-      entries.push({ medication: med, scheduledISO: dose.toISOString(), scheduledTime: `${hh}:${mm}` });
+      entries.push({
+        medication: med,
+        scheduledISO: dose.toISOString(),
+        scheduledTime: `${hh}:${mm}`,
+      });
     }
   }
 
@@ -62,22 +66,33 @@ function buildBucketSections(
   entries.sort((a, b) => a.scheduledTime.localeCompare(b.scheduledTime));
 
   // Group into buckets, only include non-empty ones
-  const groups: Record<BucketKey, DoseEntry[]> = { morning: [], afternoon: [], evening: [], night: [] };
+  const groups: Record<BucketKey, DoseEntry[]> = {
+    morning: [],
+    afternoon: [],
+    evening: [],
+    night: [],
+  };
   for (const entry of entries) {
     groups[getBucket(entry.scheduledTime)].push(entry);
   }
 
-  return buckets
-    .map((b) => ({ ...b, data: groups[b.key] }))
-    .filter((s) => s.data.length > 0);
+  return buckets.map((b) => ({ ...b, data: groups[b.key] })).filter((s) => s.data.length > 0);
 }
+
+const TYPE_COLOR: Record<string, string> = {
+  pill: Colors.pill, syrup: Colors.syrup, injection: Colors.injection,
+  supplement: Colors.supplement, other: Colors.other,
+};
 
 export default function HomeScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { todayMedications, intakeHistory, recordIntake, getIntakeForDose, adherenceRate } = useMedications();
+  const { todayMedications, intakeHistory, recordIntake, getIntakeForDose, adherenceRate } =
+    useMedications();
   const { profiles, activeProfile, setActiveProfile } = useProfiles();
-  const { todaySummary } = useScheduler();
+  const { todaySummary, streak, getUpcomingDoses } = useScheduler();
+  const activeMedCount = todayMedications.length;
+  const upcomingDoses = getUpcomingDoses(3);
   const hydrateMedications = useMedicationStore((s) => s.hydrate);
 
   const today = new Date();
@@ -97,7 +112,11 @@ export default function HomeScreen() {
     <ScreenContainer scrollable onRefresh={handleRefresh}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.push('/profile')} activeOpacity={0.7} style={styles.greetingBtn}>
+        <TouchableOpacity
+          onPress={() => router.push('/profile')}
+          activeOpacity={0.7}
+          style={styles.greetingBtn}
+        >
           <Text style={styles.greeting}>
             {activeProfile ? t('home.greeting', { name: activeProfile.name }) : t('home.title')}
           </Text>
@@ -122,9 +141,29 @@ export default function HomeScreen() {
       {/* Stats row */}
       <View style={styles.statsRow}>
         <StatCard label={t('home.stats.adherence')} value={`${adherenceRate}%`} />
-        <StatCard label={t('home.stats.today')} value={`${todaySummary.taken}/${todaySummary.total}`} />
-        <StatCard label={t('home.stats.missed')} value={String(todaySummary.missed)} />
+        <StatCard label={t('home.stats.streak')}    value={`${streak}🔥`} />
+        <StatCard label={t('home.stats.activeMeds')} value={String(activeMedCount)} />
       </View>
+
+      {/* Upcoming doses */}
+      {upcomingDoses.length > 0 && (
+        <View style={styles.upcomingSection}>
+          <Text style={styles.bucketHeader}>{t('home.upcoming')}</Text>
+          {upcomingDoses.map(({ medication, scheduledAt }) => {
+            const hh = String(scheduledAt.getHours()).padStart(2, '0');
+            const mm = String(scheduledAt.getMinutes()).padStart(2, '0');
+            const isToday = scheduledAt.toDateString() === today.toDateString();
+            const dayLabel = isToday ? t('home.today') : scheduledAt.toLocaleDateString();
+            return (
+              <View key={`${medication.id}_${scheduledAt.getTime()}`} style={styles.upcomingRow}>
+                <View style={[styles.upcomingDot, { backgroundColor: medication.pillColor ?? TYPE_COLOR[medication.type] }]} />
+                <Text style={styles.upcomingName}>{medication.name}</Text>
+                <Text style={styles.upcomingTime}>{dayLabel} {hh}:{mm}</Text>
+              </View>
+            );
+          })}
+        </View>
+      )}
 
       {/* Bucketed medication list */}
       {sections.length === 0 ? (
@@ -187,16 +226,42 @@ function StatCard({ label, value }: { label: string; value: string }) {
 }
 
 const statStyles = StyleSheet.create({
-  card:  { flex: 1, backgroundColor: Colors.surface, borderRadius: 12, padding: Spacing.sm, alignItems: 'center', borderWidth: 1, borderColor: Colors.border },
+  card: {
+    flex: 1,
+    backgroundColor: Colors.surface,
+    borderRadius: 12,
+    padding: Spacing.sm,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
   value: { fontSize: FontSize.xl, fontWeight: '700', color: Colors.primary },
   label: { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 2 },
 });
 
 const styles = StyleSheet.create({
-  header:        { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: Spacing.md },
-  greetingBtn:   { flex: 1 },
-  greeting:      { fontSize: FontSize.xl, fontWeight: '700', color: Colors.textPrimary },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: Spacing.md,
+  },
+  greetingBtn: { flex: 1 },
+  greeting: { fontSize: FontSize.xl, fontWeight: '700', color: Colors.textPrimary },
   profileSwitch: { fontSize: FontSize.xs, color: Colors.primary, marginTop: 2 },
-  statsRow:      { flexDirection: 'row', gap: Spacing.sm, marginBottom: Spacing.lg },
-  bucketHeader:  { fontSize: FontSize.sm, fontWeight: '700', color: Colors.textSecondary, marginTop: Spacing.md, marginBottom: Spacing.xs, textTransform: 'uppercase', letterSpacing: 0.5 },
+  statsRow: { flexDirection: 'row', gap: Spacing.sm, marginBottom: Spacing.lg },
+  upcomingSection: { backgroundColor: Colors.surface, borderRadius: Radius.md, padding: Spacing.md, borderWidth: 1, borderColor: Colors.border, marginBottom: Spacing.md },
+  upcomingRow:     { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingVertical: 4 },
+  upcomingDot:     { width: 10, height: 10, borderRadius: 5 },
+  upcomingName:    { flex: 1, fontSize: FontSize.sm, color: Colors.textPrimary, fontWeight: '600' },
+  upcomingTime:    { fontSize: FontSize.xs, color: Colors.textSecondary },
+  bucketHeader: {
+    fontSize: FontSize.sm,
+    fontWeight: '700',
+    color: Colors.textSecondary,
+    marginTop: Spacing.md,
+    marginBottom: Spacing.xs,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
 });

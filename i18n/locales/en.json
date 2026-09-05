@@ -64,10 +64,14 @@
       "pending": "Pending",
       "upcoming": "Upcoming"
     },
+    "upcoming": "Upcoming doses",
+    "today": "Today",
     "stats": {
       "adherence": "Adherence",
       "today": "Today",
-      "missed": "Missed"
+      "missed": "Missed",
+      "streak": "Streak",
+      "activeMeds": "Active"
     },
     "buckets": {
       "morning": "🌅 Morning",

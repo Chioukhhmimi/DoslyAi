@@ -12,7 +12,11 @@ export function useScheduler() {
     intakeRecord: IntakeRecord | undefined;
   }> {
     const now = new Date();
-    const all: Array<{ medication: Medication; scheduledAt: Date; intakeRecord: IntakeRecord | undefined }> = [];
+    const all: Array<{
+      medication: Medication;
+      scheduledAt: Date;
+      intakeRecord: IntakeRecord | undefined;
+    }> = [];
 
     for (const med of todayMedications) {
       const next = getNextDoses(med, now, count);
@@ -25,9 +29,7 @@ export function useScheduler() {
       }
     }
 
-    return all
-      .sort((a, b) => a.scheduledAt.getTime() - b.scheduledAt.getTime())
-      .slice(0, count);
+    return all.sort((a, b) => a.scheduledAt.getTime() - b.scheduledAt.getTime()).slice(0, count);
   }
 
   const todaySummary = (() => {
@@ -55,5 +57,33 @@ export function useScheduler() {
     return { total, taken, missed, pending };
   })();
 
-  return { getUpcomingDoses, todaySummary };
+  const streak = (() => {
+    const today = new Date();
+    let days = 0;
+    for (let i = 0; i < 365; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      d.setHours(0, 0, 0, 0);
+
+      let allTaken = true;
+      let hasDoses = false;
+
+      for (const med of todayMedications) {
+        const doses = getScheduledDosesForDay(med, d);
+        for (const dose of doses) {
+          hasDoses = true;
+          const record = getIntakeForDose(med.id, dose.toISOString());
+          if (!record?.takenAt) { allTaken = false; break; }
+        }
+        if (!allTaken) break;
+      }
+
+      if (!hasDoses) break;
+      if (!allTaken) break;
+      days++;
+    }
+    return days;
+  })();
+
+  return { getUpcomingDoses, todaySummary, streak };
 }

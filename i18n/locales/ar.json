@@ -64,10 +64,14 @@
       "pending": "في الانتظار",
       "upcoming": "قادمة"
     },
+    "upcoming": "جرعات قادمة",
+    "today": "اليوم",
     "stats": {
       "adherence": "الالتزام",
       "today": "اليوم",
-      "missed": "الفائتة"
+      "missed": "الفائتة",
+      "streak": "تسلسل",
+      "activeMeds": "نشط"
     },
     "buckets": {
       "morning": "🌅 الصباح",

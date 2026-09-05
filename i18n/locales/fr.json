@@ -64,10 +64,14 @@
       "pending": "En attente",
       "upcoming": "À venir"
     },
+    "upcoming": "Prochaines doses",
+    "today": "Aujourd'hui",
     "stats": {
       "adherence": "Observance",
       "today": "Aujourd'hui",
-      "missed": "Manqués"
+      "missed": "Manqués",
+      "streak": "Série",
+      "activeMeds": "Actifs"
     },
     "buckets": {
       "morning": "🌅 Matin",
