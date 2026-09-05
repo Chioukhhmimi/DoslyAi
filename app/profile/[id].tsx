@@ -16,7 +16,7 @@ import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import { useProfiles } from '@hooks/useProfiles';
 import { useMedications } from '@hooks/useMedications';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, isValid } from 'date-fns';
 
 const BLOOD_TYPES = ['A+', 'A−', 'B+', 'B−', 'AB+', 'AB−', 'O+', 'O−'];
 
@@ -31,7 +31,8 @@ export default function ProfileDetailScreen() {
 
   const parseDOB = (s?: string): Date | null => {
     if (!s) return null;
-    try { return parseISO(s); } catch { return null; }
+    const d = parseISO(s);
+    return isValid(d) ? d : null;
   };
 
   const [editing, setEditing]           = useState(false);
@@ -64,6 +65,12 @@ export default function ProfileDetailScreen() {
 
   const medCount = medications.filter((m) => m.profileId === id).length;
 
+  const parseMeasurement = (val: string): number | undefined => {
+    const normalized = val.replace(',', '.');
+    const parsed = parseFloat(normalized);
+    return Number.isFinite(parsed) ? parsed : undefined;
+  };
+
   function handleSave() {
     if (!name.trim()) { setNameError(t('profile.form.nameRequired')); return; }
     updateProfile(id, {
@@ -72,8 +79,8 @@ export default function ProfileDetailScreen() {
       relationship:     relationship || undefined,
       avatarUri:        avatarUri || undefined,
       bloodType:        bloodType || undefined,
-      weight:           weight ? parseFloat(weight) : undefined,
-      height:           height ? parseFloat(height) : undefined,
+      weight:           parseMeasurement(weight),
+      height:           parseMeasurement(height),
       allergies:        allergies.length > 0 ? allergies : undefined,
       conditions:       conditions.length > 0 ? conditions : undefined,
       doctorName:       doctorName || undefined,
@@ -87,20 +94,21 @@ export default function ProfileDetailScreen() {
   }
 
   function handleCancelEdit() {
-    setName(profile!.name);
-    setDob(parseDOB(profile!.dateOfBirth));
-    setRelationship(profile!.relationship ?? '');
-    setAvatarUri(profile!.avatarUri ?? '');
-    setBloodType(profile!.bloodType ?? '');
-    setWeight(profile!.weight ? String(profile!.weight) : '');
-    setHeight(profile!.height ? String(profile!.height) : '');
-    setAllergies(profile!.allergies ?? []);
-    setConditions(profile!.conditions ?? []);
-    setDoctorName(profile!.doctorName ?? '');
-    setDoctorPhone(profile!.doctorPhone ?? '');
-    setEmergencyContact(profile!.emergencyContact ?? '');
-    setEmergencyPhone(profile!.emergencyPhone ?? '');
-    setMedicalNotes(profile!.medicalNotes ?? '');
+    if (!profile) return;
+    setName(profile.name);
+    setDob(parseDOB(profile.dateOfBirth));
+    setRelationship(profile.relationship ?? '');
+    setAvatarUri(profile.avatarUri ?? '');
+    setBloodType(profile.bloodType ?? '');
+    setWeight(profile.weight ? String(profile.weight) : '');
+    setHeight(profile.height ? String(profile.height) : '');
+    setAllergies(profile.allergies ?? []);
+    setConditions(profile.conditions ?? []);
+    setDoctorName(profile.doctorName ?? '');
+    setDoctorPhone(profile.doctorPhone ?? '');
+    setEmergencyContact(profile.emergencyContact ?? '');
+    setEmergencyPhone(profile.emergencyPhone ?? '');
+    setMedicalNotes(profile.medicalNotes ?? '');
     setNameError('');
     setEditing(false);
   }
@@ -111,9 +119,10 @@ export default function ProfileDetailScreen() {
   }
 
   function handleDelete() {
+    if (!profile) return;
     Alert.alert(
       t('profile.deleteTitle'),
-      t('profile.deleteConfirm', { name: profile!.name, count: medCount }),
+      t('profile.deleteConfirm', { name: profile.name, count: medCount }),
       [
         { text: t('common.cancel'), style: 'cancel' },
         { text: t('common.delete'), style: 'destructive', onPress: () => { deleteProfile(id); router.replace('/profile'); } },
@@ -137,7 +146,11 @@ export default function ProfileDetailScreen() {
             <View style={styles.profileInfo}>
               <Text style={styles.name}>{profile.name}</Text>
               {profile.relationship ? <Text style={styles.sub}>{profile.relationship}</Text> : null}
-              {profile.dateOfBirth  ? <Text style={styles.sub}>{t('profile.bornOn')} {profile.dateOfBirth}</Text> : null}
+              {profile.dateOfBirth ? (
+                <Text style={styles.sub}>
+                  {t('profile.bornOn')} {format(parseISO(profile.dateOfBirth), 'dd/MM/yyyy')}
+                </Text>
+              ) : null}
               <Text style={styles.medCount}>{t('profile.detail.medCount', { count: medCount })}</Text>
             </View>
           </View>
