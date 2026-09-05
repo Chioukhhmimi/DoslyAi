@@ -6,6 +6,8 @@ import {
   dbDeleteMedication,
   dbGetAllIntakeRecords,
   dbInsertIntakeRecord,
+  dbDeleteAllMedications,
+  dbDeleteAllIntakeRecords,
 } from '@db/models/medicationModel';
 
 export type FrequencyType = 'daily' | 'weekly' | 'interval' | 'pattern';
@@ -14,9 +16,9 @@ export type MedicationType = 'pill' | 'syrup' | 'injection' | 'supplement' | 'ot
 export interface MedicationSchedule {
   times: string[];
   frequency: FrequencyType;
-  daysOfWeek?: number[];   // weekly: 0=Sun … 6=Sat
-  intervalDays?: number;   // interval: every N days from startDate
-  pattern?: number[];      // pattern: repeating bit array e.g. [1,1,0]
+  daysOfWeek?: number[]; // weekly: 0=Sun … 6=Sat
+  intervalDays?: number; // interval: every N days from startDate
+  pattern?: number[]; // pattern: repeating bit array e.g. [1,1,0]
 }
 
 export interface Medication {
@@ -62,6 +64,7 @@ interface MedicationState {
   deleteMedication: (id: string) => void;
   recordIntake: (record: Omit<IntakeRecord, 'id'>) => void;
   getMedicationsForProfile: (profileId: string) => Medication[];
+  reset: () => Promise<void>;
 }
 
 export const useMedicationStore = create<MedicationState>((set, get) => ({
@@ -79,7 +82,13 @@ export const useMedicationStore = create<MedicationState>((set, get) => ({
 
   addMedication: (med) => {
     const now = new Date().toISOString();
-    const newMed: Medication = { ...med, id: Date.now().toString(), paused: false, createdAt: now, updatedAt: now };
+    const newMed: Medication = {
+      ...med,
+      id: Date.now().toString(),
+      paused: false,
+      createdAt: now,
+      updatedAt: now,
+    };
     dbInsertMedication(newMed);
     set((state) => ({ medications: [...state.medications, newMed] }));
   },
@@ -105,4 +114,10 @@ export const useMedicationStore = create<MedicationState>((set, get) => ({
 
   getMedicationsForProfile: (profileId) =>
     get().medications.filter((m) => m.profileId === profileId),
+
+  reset: async () => {
+    await dbDeleteAllMedications();
+    await dbDeleteAllIntakeRecords();
+    set({ medications: [], intakeHistory: [], hydrated: false });
+  },
 }));

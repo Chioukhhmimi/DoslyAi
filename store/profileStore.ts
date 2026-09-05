@@ -4,6 +4,7 @@ import {
   dbInsertProfile,
   dbUpdateProfile,
   dbDeleteProfile,
+  dbDeleteAllProfiles,
 } from '@db/models/profileModel';
 import { dbGetSetting, dbSetSetting } from '@db/models/settingsModel';
 
@@ -36,6 +37,7 @@ interface ProfileState {
   updateProfile: (id: string, data: Partial<Profile>) => void;
   deleteProfile: (id: string) => void;
   setActiveProfile: (id: string) => void;
+  reset: () => Promise<void>;
 }
 
 export const useProfileStore = create<ProfileState>((set, get) => ({
@@ -86,5 +88,10 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
   setActiveProfile: (id) => {
     dbSetSetting('activeProfileId', id);
     set({ activeProfileId: id });
+  },
+
+  reset: async () => {
+    await dbDeleteAllProfiles();
+    set({ profiles: [], activeProfileId: null, hydrated: false });
   },
 }));

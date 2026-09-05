@@ -6,10 +6,13 @@ import { Ionicons } from '@expo/vector-icons';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { ScreenContainer } from '@components/layout/ScreenContainer';
 import { Card } from '@components/ui/Card';
+import { Button } from '@components/ui/Button';
 import { Colors } from '@constants/colors';
 import { Spacing } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import { useSettingsStore } from '@store/settingsStore';
+import { useMedicationStore } from '@store/medicationStore';
+import { useProfileStore } from '@store/profileStore';
 import { useIsRTL } from '@hooks/useIsRTL';
 import Constants from 'expo-constants';
 
@@ -21,11 +24,18 @@ interface SettingRowProps {
 
 function SettingRow({ label, route, icon }: SettingRowProps) {
   const router = useRouter();
-  const isRTL  = useIsRTL();
+  const isRTL = useIsRTL();
   const chevron = isRTL ? 'chevron-back' : 'chevron-forward';
   return (
     <TouchableOpacity style={styles.row} onPress={() => router.push(route as any)}>
-      {icon && <Ionicons name={icon as any} size={18} color={Colors.textSecondary} style={styles.rowIcon} />}
+      {icon && (
+        <Ionicons
+          name={icon as any}
+          size={18}
+          color={Colors.textSecondary}
+          style={styles.rowIcon}
+        />
+      )}
       <Text style={styles.rowLabel}>{label}</Text>
       <Ionicons name={chevron} size={18} color={Colors.textDisabled} />
     </TouchableOpacity>
@@ -34,12 +44,35 @@ function SettingRow({ label, route, icon }: SettingRowProps) {
 
 export default function SettingsScreen() {
   const { t } = useTranslation();
-  const { biometricLock, setBiometricLock } = useSettingsStore();
+  const router = useRouter();
+  const { biometricLock, setBiometricLock, reset: resetSettings } = useSettingsStore();
+  const { reset: resetMedications } = useMedicationStore();
+  const { reset: resetProfiles } = useProfileStore();
   const [biometricAvailable, setBiometricAvailable] = useState(false);
+
+  async function handleDeleteAll() {
+    Alert.alert(
+      'Supprimer toutes les données',
+      'Cette action est irréversible. Tous vos médicaments, profils et historique seront supprimés.',
+      [
+        { text: 'Annuler', style: 'cancel' },
+        {
+          text: 'Supprimer',
+          style: 'destructive',
+          onPress: async () => {
+            await resetMedications();
+            await resetProfiles();
+            await resetSettings();
+            router.replace('/(onboarding)/slide1');
+          },
+        },
+      ],
+    );
+  }
 
   useEffect(() => {
     (async () => {
-      const hw  = await LocalAuthentication.hasHardwareAsync();
+      const hw = await LocalAuthentication.hasHardwareAsync();
       const enr = await LocalAuthentication.isEnrolledAsync();
       setBiometricAvailable(hw && enr);
     })();
@@ -62,15 +95,28 @@ export default function SettingsScreen() {
       <Text style={styles.title}>{t('settings.title')}</Text>
 
       <Card>
-        <SettingRow label={t('settings.language')}      route="/settings/language"      icon="language-outline" />
+        <SettingRow
+          label={t('settings.language')}
+          route="/settings/language"
+          icon="language-outline"
+        />
         <View style={styles.divider} />
-        <SettingRow label={t('settings.notifications')} route="/settings/notifications" icon="notifications-outline" />
+        <SettingRow
+          label={t('settings.notifications')}
+          route="/settings/notifications"
+          icon="notifications-outline"
+        />
       </Card>
 
       {biometricAvailable && (
         <Card style={styles.section}>
           <View style={styles.row}>
-            <Ionicons name="finger-print-outline" size={18} color={Colors.textSecondary} style={styles.rowIcon} />
+            <Ionicons
+              name="finger-print-outline"
+              size={18}
+              color={Colors.textSecondary}
+              style={styles.rowIcon}
+            />
             <Text style={styles.rowLabel}>{t('settings.biometric.label')}</Text>
             <Switch
               value={biometricLock}
@@ -83,11 +129,31 @@ export default function SettingsScreen() {
       )}
 
       <Card style={styles.section}>
-        <SettingRow label={t('settings.privacy')} route="/settings/privacy" icon="shield-checkmark-outline" />
+        <SettingRow
+          label={t('settings.privacy')}
+          route="/settings/privacy"
+          icon="shield-checkmark-outline"
+        />
         <View style={styles.divider} />
-        <SettingRow label={t('settings.terms')}   route="/settings/terms"   icon="document-text-outline" />
+        <SettingRow
+          label={t('settings.terms')}
+          route="/settings/terms"
+          icon="document-text-outline"
+        />
         <View style={styles.divider} />
-        <SettingRow label={t('settings.about')}   route="/settings/about"   icon="information-circle-outline" />
+        <SettingRow
+          label={t('settings.about')}
+          route="/settings/about"
+          icon="information-circle-outline"
+        />
+      </Card>
+
+      <Card style={styles.dangerCard}>
+        <Button
+          label="Supprimer toutes les données"
+          onPress={handleDeleteAll}
+          variant="danger"
+        />
       </Card>
 
       <Text style={styles.version}>
@@ -98,12 +164,28 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  title:         { fontSize: FontSize.xxl, fontWeight: '700', color: Colors.textPrimary, marginBottom: Spacing.lg },
-  section:       { marginTop: Spacing.md },
-  divider:       { height: 1, backgroundColor: Colors.border },
-  row:           { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: Spacing.sm },
-  rowIcon:       { marginRight: Spacing.sm },
-  rowLabel:      { flex: 1, fontSize: FontSize.md, color: Colors.textPrimary },
-  biometricHint: { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 2, paddingBottom: Spacing.xs },
-  version:       { textAlign: 'center', color: Colors.textDisabled, marginTop: Spacing.xl },
+  title: {
+    fontSize: FontSize.xxl,
+    fontWeight: '700',
+    color: Colors.textPrimary,
+    marginBottom: Spacing.lg,
+  },
+  section: { marginTop: Spacing.md },
+  dangerCard: { marginTop: Spacing.md },
+  divider: { height: 1, backgroundColor: Colors.border },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: Spacing.sm,
+  },
+  rowIcon: { marginRight: Spacing.sm },
+  rowLabel: { flex: 1, fontSize: FontSize.md, color: Colors.textPrimary },
+  biometricHint: {
+    fontSize: FontSize.xs,
+    color: Colors.textSecondary,
+    marginTop: 2,
+    paddingBottom: Spacing.xs,
+  },
+  version: { textAlign: 'center', color: Colors.textDisabled, marginTop: Spacing.xl },
 });

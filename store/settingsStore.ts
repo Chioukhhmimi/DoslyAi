@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { dbGetSetting, dbSetSetting } from '@db/models/settingsModel';
+import { dbGetSetting, dbSetSetting, dbDeleteAllSettings } from '@db/models/settingsModel';
 import { type LanguageCode } from '../i18n';
 
 interface SettingsState {
@@ -7,8 +7,8 @@ interface SettingsState {
   onboardingComplete: boolean;
   notificationsEnabled: boolean;
   quietHoursEnabled: boolean;
-  quietHoursStart: string;  // "HH:MM"
-  quietHoursEnd: string;    // "HH:MM"
+  quietHoursStart: string; // "HH:MM"
+  quietHoursEnd: string; // "HH:MM"
   biometricLock: boolean;
   hydrated: boolean;
   layoutKey: number;
@@ -22,6 +22,7 @@ interface SettingsState {
   setQuietHoursStart: (time: string) => void;
   setQuietHoursEnd: (time: string) => void;
   setBiometricLock: (enabled: boolean) => void;
+  reset: () => Promise<void>;
 }
 
 export const useSettingsStore = create<SettingsState>((set) => ({
@@ -36,16 +37,23 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   layoutKey: 0,
 
   hydrate: async () => {
-    const [language, onboardingComplete, notificationsEnabled, quietHoursEnabled, quietHoursStart, quietHoursEnd, biometricLock] =
-      await Promise.all([
-        dbGetSetting('language'),
-        dbGetSetting('onboardingComplete'),
-        dbGetSetting('notificationsEnabled'),
-        dbGetSetting('quietHoursEnabled'),
-        dbGetSetting('quietHoursStart'),
-        dbGetSetting('quietHoursEnd'),
-        dbGetSetting('biometricLock'),
-      ]);
+    const [
+      language,
+      onboardingComplete,
+      notificationsEnabled,
+      quietHoursEnabled,
+      quietHoursStart,
+      quietHoursEnd,
+      biometricLock,
+    ] = await Promise.all([
+      dbGetSetting('language'),
+      dbGetSetting('onboardingComplete'),
+      dbGetSetting('notificationsEnabled'),
+      dbGetSetting('quietHoursEnabled'),
+      dbGetSetting('quietHoursStart'),
+      dbGetSetting('quietHoursEnd'),
+      dbGetSetting('biometricLock'),
+    ]);
     set({
       language: (language as LanguageCode) ?? 'fr',
       onboardingComplete: onboardingComplete === 'true',
@@ -58,12 +66,48 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     });
   },
 
-  setLanguage: (language) => { dbSetSetting('language', language); set({ language }); },
+  setLanguage: (language) => {
+    dbSetSetting('language', language);
+    set({ language });
+  },
   bumpLayoutKey: () => set((s) => ({ layoutKey: s.layoutKey + 1 })),
-  completeOnboarding: () => { dbSetSetting('onboardingComplete', 'true'); set({ onboardingComplete: true }); },
-  setNotificationsEnabled: (notificationsEnabled) => { dbSetSetting('notificationsEnabled', String(notificationsEnabled)); set({ notificationsEnabled }); },
-  setQuietHoursEnabled: (quietHoursEnabled) => { dbSetSetting('quietHoursEnabled', String(quietHoursEnabled)); set({ quietHoursEnabled }); },
-  setQuietHoursStart: (quietHoursStart) => { dbSetSetting('quietHoursStart', quietHoursStart); set({ quietHoursStart }); },
-  setQuietHoursEnd: (quietHoursEnd) => { dbSetSetting('quietHoursEnd', quietHoursEnd); set({ quietHoursEnd }); },
-  setBiometricLock: (biometricLock) => { dbSetSetting('biometricLock', String(biometricLock)); set({ biometricLock }); },
+  completeOnboarding: () => {
+    dbSetSetting('onboardingComplete', 'true');
+    set({ onboardingComplete: true });
+  },
+  setNotificationsEnabled: (notificationsEnabled) => {
+    dbSetSetting('notificationsEnabled', String(notificationsEnabled));
+    set({ notificationsEnabled });
+  },
+  setQuietHoursEnabled: (quietHoursEnabled) => {
+    dbSetSetting('quietHoursEnabled', String(quietHoursEnabled));
+    set({ quietHoursEnabled });
+  },
+  setQuietHoursStart: (quietHoursStart) => {
+    dbSetSetting('quietHoursStart', quietHoursStart);
+    set({ quietHoursStart });
+  },
+  setQuietHoursEnd: (quietHoursEnd) => {
+    dbSetSetting('quietHoursEnd', quietHoursEnd);
+    set({ quietHoursEnd });
+  },
+  setBiometricLock: (biometricLock) => {
+    dbSetSetting('biometricLock', String(biometricLock));
+    set({ biometricLock });
+  },
+
+  reset: async () => {
+    await dbDeleteAllSettings();
+    set({
+      language: 'fr',
+      onboardingComplete: false,
+      notificationsEnabled: true,
+      quietHoursEnabled: false,
+      quietHoursStart: '22:00',
+      quietHoursEnd: '07:00',
+      biometricLock: false,
+      hydrated: false,
+      layoutKey: 0,
+    });
+  },
 }));
