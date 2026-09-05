@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Alert, StyleSheet } from 'react-native';
+import { View, Text, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ScreenContainer } from '@components/layout/ScreenContainer';
@@ -19,11 +19,11 @@ import {
 import { getNextDoses, getScheduledDosesForDay } from '@utils/scheduleEngine';
 
 const TYPE_COLOR: Record<string, string> = {
-  pill: '#6366F1',
-  syrup: '#EC4899',
-  injection: '#F97316',
-  supplement: '#10B981',
-  other: Colors.textSecondary,
+  pill: Colors.pill,
+  syrup: Colors.syrup,
+  injection: Colors.injection,
+  supplement: Colors.supplement,
+  other: Colors.other,
 };
 
 export default function MedicationDetailScreen() {
@@ -58,7 +58,7 @@ export default function MedicationDetailScreen() {
         onPress: () => {
           cancelNotificationsForMedication(medication!.id);
           deleteMedication(id);
-          router.replace('/(tabs)');
+          router.replace('/(tabs)/medications');
         },
       },
     ]);
@@ -90,6 +90,15 @@ export default function MedicationDetailScreen() {
 
   const upcomingDoses = getNextDoses(medication, new Date(), 5);
   const adherenceData = buildLast7Days(medication, intakeHistory);
+  const dayLabels = [
+    t('scheduler.days.sun'),
+    t('scheduler.days.mon'),
+    t('scheduler.days.tue'),
+    t('scheduler.days.wed'),
+    t('scheduler.days.thu'),
+    t('scheduler.days.fri'),
+    t('scheduler.days.sat'),
+  ];
 
   const freqSummary =
     medication.schedule.frequency === 'interval'
@@ -101,9 +110,14 @@ export default function MedicationDetailScreen() {
       <ScreenHeader
         title={medication.name}
         right={
-          <Text onPress={() => setEditing(true)} style={styles.editLink}>
-            {t('common.edit')}
-          </Text>
+          <TouchableOpacity
+            onPress={() => setEditing(true)}
+            style={styles.editLink}
+            accessibilityRole="button"
+            accessibilityLabel={t('common.edit')}
+          >
+            <Text style={styles.editLinkText}>{t('common.edit')}</Text>
+          </TouchableOpacity>
         }
       />
       <View style={styles.header}>
@@ -164,8 +178,7 @@ export default function MedicationDetailScreen() {
                 ? Colors.injection
                 : Colors.danger;
             const fillHeight = day.pct !== null ? Math.round(day.pct * 60) : 0;
-            const frDayLabels = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
-            const dayLabel = frDayLabels[day.date.getDay()];
+            const dayLabel = dayLabels[day.date.getDay()];
             const pctLabel = day.pct === null ? '—' : `${Math.round(day.pct * 100)}%`;
             return (
               <View key={i} style={chartStyles.barGroup}>
@@ -270,7 +283,8 @@ const styles = StyleSheet.create({
   title: { fontSize: FontSize.xl, fontWeight: '700', color: Colors.textPrimary },
   dosage: { fontSize: FontSize.sm, color: Colors.textSecondary, marginTop: 2 },
   notFound: { fontSize: FontSize.md, color: Colors.textSecondary, textAlign: 'center' },
-  editLink: { fontSize: FontSize.sm, color: Colors.primary, fontWeight: '600', paddingVertical: 4 },
+  editLink: { paddingVertical: 10, paddingHorizontal: 4, minHeight: 44, justifyContent: 'center' },
+  editLinkText: { fontSize: FontSize.sm, color: Colors.primary, fontWeight: '600' },
   sectionTitle: {
     fontSize: FontSize.sm,
     fontWeight: '700',
