@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { MedicationSchedule, FrequencyType } from '@store/medicationStore';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import { DosePicker } from './DosePicker';
+import { SelectableChip } from '@components/ui/SelectableChip';
 
 interface SchedulePickerProps {
   value: MedicationSchedule;
@@ -61,15 +62,14 @@ export function SchedulePicker({ value, onChange }: SchedulePickerProps) {
     <View>
       <View style={styles.freqGrid}>
         {FREQ_KEYS.map((f) => (
-          <TouchableOpacity
+          <SelectableChip
             key={f}
+            label={t(`medication.freq.${f}`)}
+            selected={freq === f}
             onPress={() => setFrequency(f)}
-            style={[styles.freqBtn, freq === f && styles.freqBtnActive]}
-          >
-            <Text style={[styles.freqText, freq === f && styles.freqTextActive]}>
-              {t(`medication.freq.${f}`)}
-            </Text>
-          </TouchableOpacity>
+            shape="rect"
+            style={styles.freqChip}
+          />
         ))}
       </View>
 
@@ -81,18 +81,15 @@ export function SchedulePicker({ value, onChange }: SchedulePickerProps) {
         {freq === 'weekly' && (
           <>
             <View style={styles.days}>
-              {DAYS.map((label, i) => {
-                const active = value.daysOfWeek?.includes(i) ?? false;
-                return (
-                  <TouchableOpacity
-                    key={i}
-                    onPress={() => toggleDay(i)}
-                    style={[styles.dayChip, active && styles.dayChipActive]}
-                  >
-                    <Text style={[styles.dayText, active && styles.dayTextActive]}>{label}</Text>
-                  </TouchableOpacity>
-                );
-              })}
+              {DAYS.map((label, i) => (
+                <SelectableChip
+                  key={i}
+                  label={label}
+                  selected={value.daysOfWeek?.includes(i) ?? false}
+                  onPress={() => toggleDay(i)}
+                  shape="circle"
+                />
+              ))}
             </View>
             <DosePicker times={value.times} onChange={(t) => onChange({ ...value, times: t })} />
           </>
@@ -120,21 +117,13 @@ export function SchedulePicker({ value, onChange }: SchedulePickerProps) {
             <Text style={styles.patternLabel}>{t('scheduler.pattern.label')}</Text>
             <View style={styles.presets}>
               {PATTERN_PRESETS.map((p) => (
-                <TouchableOpacity
+                <SelectableChip
                   key={p.key}
+                  label={t(`scheduler.pattern.${p.key}`)}
+                  selected={JSON.stringify(value.pattern) === JSON.stringify(p.pattern)}
                   onPress={() => applyPreset(p.pattern)}
-                  style={[
-                    styles.presetChip,
-                    JSON.stringify(value.pattern) === JSON.stringify(p.pattern) && styles.presetChipActive,
-                  ]}
-                >
-                  <Text style={[
-                    styles.presetText,
-                    JSON.stringify(value.pattern) === JSON.stringify(p.pattern) && styles.presetTextActive,
-                  ]}>
-                    {t(`scheduler.pattern.${p.key}`)}
-                  </Text>
-                </TouchableOpacity>
+                  size="sm"
+                />
               ))}
             </View>
             <View style={styles.patternBits}>
@@ -157,29 +146,42 @@ export function SchedulePicker({ value, onChange }: SchedulePickerProps) {
 }
 
 const styles = StyleSheet.create({
-  freqGrid:        { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.xs, marginBottom: Spacing.md },
-  freqBtn:         { flex: 1, minWidth: '45%', paddingVertical: Spacing.sm, alignItems: 'center', borderRadius: Radius.sm, borderWidth: 1, borderColor: Colors.border, backgroundColor: Colors.surface },
-  freqBtnActive:   { backgroundColor: Colors.primary, borderColor: Colors.primary },
-  freqText:        { fontSize: FontSize.sm, color: Colors.textSecondary, fontWeight: '600' },
-  freqTextActive:  { color: Colors.textInverse },
-  body:            { marginTop: Spacing.xs },
-  days:            { flexDirection: 'row', gap: Spacing.xs, marginBottom: Spacing.md, flexWrap: 'wrap' },
-  dayChip:         { width: 36, height: 36, borderRadius: 18, borderWidth: 1, borderColor: Colors.border, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.surface },
-  dayChipActive:   { backgroundColor: Colors.primary, borderColor: Colors.primary },
-  dayText:         { fontSize: FontSize.sm, color: Colors.textSecondary, fontWeight: '600' },
-  dayTextActive:   { color: Colors.textInverse },
-  intervalRow:     { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, marginBottom: Spacing.md },
-  intervalLabel:   { fontSize: FontSize.md, color: Colors.textPrimary },
-  intervalInput:   { width: 64, borderWidth: 1, borderColor: Colors.border, borderRadius: Radius.sm, padding: Spacing.sm, fontSize: FontSize.md, color: Colors.textPrimary, backgroundColor: Colors.surface, textAlign: 'center' },
-  patternLabel:    { fontSize: FontSize.sm, color: Colors.textSecondary, marginBottom: Spacing.sm },
-  presets:         { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.xs, marginBottom: Spacing.sm },
-  presetChip:      { paddingVertical: 4, paddingHorizontal: Spacing.sm, borderRadius: Radius.full, borderWidth: 1, borderColor: Colors.border, backgroundColor: Colors.surface },
-  presetChipActive:{ backgroundColor: Colors.primary, borderColor: Colors.primary },
-  presetText:      { fontSize: FontSize.xs, color: Colors.textSecondary, fontWeight: '600' },
-  presetTextActive:{ color: Colors.textInverse },
-  patternBits:     { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: Spacing.md },
-  bit:             { width: 32, height: 32, borderRadius: 6, borderWidth: 1, borderColor: Colors.border, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.surface },
-  bitActive:       { backgroundColor: Colors.primary, borderColor: Colors.primary },
-  bitText:         { fontSize: FontSize.sm, color: Colors.textSecondary, fontWeight: '700' },
-  bitTextActive:   { color: Colors.textInverse },
+  freqGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.xs, marginBottom: Spacing.md },
+  freqChip: { flex: 1, minWidth: '45%' } as ViewStyle,
+  body: { marginTop: Spacing.xs },
+  days: { flexDirection: 'row', gap: Spacing.xs, marginBottom: Spacing.md, flexWrap: 'wrap' },
+  intervalRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginBottom: Spacing.md,
+  },
+  intervalLabel: { fontSize: FontSize.md, color: Colors.textPrimary },
+  intervalInput: {
+    width: 64,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: Radius.sm,
+    padding: Spacing.sm,
+    fontSize: FontSize.md,
+    color: Colors.textPrimary,
+    backgroundColor: Colors.surface,
+    textAlign: 'center',
+  },
+  patternLabel: { fontSize: FontSize.sm, color: Colors.textSecondary, marginBottom: Spacing.sm },
+  presets: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.xs, marginBottom: Spacing.sm },
+  patternBits: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: Spacing.md },
+  bit: {
+    width: 32,
+    height: 32,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.surface,
+  },
+  bitActive: { backgroundColor: Colors.primary, borderColor: Colors.primary },
+  bitText: { fontSize: FontSize.sm, color: Colors.textSecondary, fontWeight: '700' },
+  bitTextActive: { color: Colors.textInverse },
 });

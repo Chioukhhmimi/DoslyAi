@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { SelectableChip } from '@components/ui/SelectableChip';
 import { GestureDetector, Gesture, ScrollView as GHScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -40,19 +41,19 @@ export default function HistoryScreen() {
   const [selectedMed, setSelectedMed] = useState<Medication | null>(null);
 
   const FILTERS: { key: Filter; label: string }[] = [
-    { key: 'all',     label: t('history.filters.all') },
-    { key: 'taken',   label: t('history.filters.taken') },
-    { key: 'missed',  label: t('history.filters.missed') },
+    { key: 'all', label: t('history.filters.all') },
+    { key: 'taken', label: t('history.filters.taken') },
+    { key: 'missed', label: t('history.filters.missed') },
     { key: 'skipped', label: t('history.filters.skipped') },
   ];
 
   const RANGES: { value: Range; label: string }[] = [
-    { value: 7,  label: t('history.ranges.seven') },
+    { value: 7, label: t('history.ranges.seven') },
     { value: 30, label: t('history.ranges.thirty') },
     { value: 90, label: t('history.ranges.ninety') },
   ];
 
-  const rangeDays  = useMemo(() => buildRangeDays(range), [range]);
+  const rangeDays = useMemo(() => buildRangeDays(range), [range]);
   const visibleDays = useMemo(() => getVisibleDays(selectedDate), [selectedDate]);
 
   // Generate all scheduled doses for selectedDate, then join with intakeHistory
@@ -73,20 +74,24 @@ export default function HistoryScreen() {
       .map((entry) => ({
         ...entry,
         intakeRecord: intakeHistory.find(
-          (r) => r.medicationId === entry.medication.id && r.scheduledAt === entry.scheduledAt
+          (r) => r.medicationId === entry.medication.id && r.scheduledAt === entry.scheduledAt,
         ),
       }))
       .filter((entry) => {
-        if (filter === 'taken')   return !!entry.intakeRecord?.takenAt;
+        if (filter === 'taken') return !!entry.intakeRecord?.takenAt;
         if (filter === 'skipped') return !!entry.intakeRecord?.skipped;
-        if (filter === 'missed')  return !entry.intakeRecord?.takenAt && !entry.intakeRecord?.skipped;
+        if (filter === 'missed')
+          return !entry.intakeRecord?.takenAt && !entry.intakeRecord?.skipped;
         return true;
       });
   }, [dayDoseEntries, intakeHistory, filter]);
 
   // Stats: computed over full range using scheduled doses (not just recorded ones)
   const { taken, skipped, missed, adherencePct } = useMemo(() => {
-    let taken = 0, skipped = 0, missed = 0, total = 0;
+    let taken = 0,
+      skipped = 0,
+      missed = 0,
+      total = 0;
     for (const day of rangeDays) {
       for (const med of medications) {
         if (med.paused) continue;
@@ -94,15 +99,20 @@ export default function HistoryScreen() {
         for (const dose of doses) {
           total++;
           const record = intakeHistory.find(
-            (r) => r.medicationId === med.id && r.scheduledAt === dose.toISOString()
+            (r) => r.medicationId === med.id && r.scheduledAt === dose.toISOString(),
           );
-          if (record?.takenAt)  taken++;
+          if (record?.takenAt) taken++;
           else if (record?.skipped) skipped++;
           else missed++;
         }
       }
     }
-    return { taken, skipped, missed, adherencePct: total > 0 ? Math.round((taken / total) * 100) : 100 };
+    return {
+      taken,
+      skipped,
+      missed,
+      adherencePct: total > 0 ? Math.round((taken / total) * 100) : 100,
+    };
   }, [rangeDays, medications, intakeHistory]);
 
   const swipeGesture = Gesture.Pan()
@@ -110,8 +120,8 @@ export default function HistoryScreen() {
     .failOffsetY([-15, 15])
     .runOnJS(true)
     .onEnd((e) => {
-      if (e.velocityX < -200)      setSelectedDate((d) => addDays(d, 1));
-      else if (e.velocityX > 200)  setSelectedDate((d) => addDays(d, -1));
+      if (e.velocityX < -200) setSelectedDate((d) => addDays(d, 1));
+      else if (e.velocityX > 200) setSelectedDate((d) => addDays(d, -1));
     });
 
   return (
@@ -119,11 +129,13 @@ export default function HistoryScreen() {
       <GestureDetector gesture={swipeGesture}>
         <SafeAreaView style={styles.safe}>
           <GHScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-
             {/* Header */}
             <View style={styles.headerRow}>
               <Text style={styles.title}>{t('history.title')}</Text>
-              <TouchableOpacity onPress={() => router.push('/export' as any)} style={styles.exportBtn}>
+              <TouchableOpacity
+                onPress={() => router.push('/export' as any)}
+                style={styles.exportBtn}
+              >
                 <Text style={styles.exportBtnText}>{t('history.export')}</Text>
               </TouchableOpacity>
             </View>
@@ -131,13 +143,16 @@ export default function HistoryScreen() {
             {/* Range selector */}
             <View style={styles.rangeRow}>
               {RANGES.map((r) => (
-                <TouchableOpacity
+                <SelectableChip
                   key={r.value}
-                  onPress={() => { setRange(r.value); setSelectedDate(new Date()); }}
-                  style={[styles.rangeBtn, range === r.value && styles.rangeBtnActive]}
-                >
-                  <Text style={[styles.rangeBtnText, range === r.value && styles.rangeBtnTextActive]}>{r.label}</Text>
-                </TouchableOpacity>
+                  label={r.label}
+                  selected={range === r.value}
+                  onPress={() => {
+                    setRange(r.value);
+                    setSelectedDate(new Date());
+                  }}
+                  size="sm"
+                />
               ))}
             </View>
 
@@ -172,12 +187,12 @@ export default function HistoryScreen() {
             {/* Day strip — always 7 days centred on selectedDate, swipe to navigate */}
             <View style={styles.weekStrip}>
               {visibleDays.map((day, i) => {
-                const isSelected  = isSameDay(day, selectedDate);
-                const isToday     = isSameDay(day, new Date());
-                const label       = t(`scheduler.days.${DAY_KEYS[day.getDay()]}`);
-                const dayNum      = day.getDate();
+                const isSelected = isSameDay(day, selectedDate);
+                const isToday = isSameDay(day, new Date());
+                const label = t(`scheduler.days.${DAY_KEYS[day.getDay()]}`);
+                const dayNum = day.getDate();
                 const hasActivity = medications.some(
-                  (m) => !m.paused && getScheduledDosesForDay(m, day).length > 0
+                  (m) => !m.paused && getScheduledDosesForDay(m, day).length > 0,
                 );
                 return (
                   <TouchableOpacity
@@ -185,8 +200,16 @@ export default function HistoryScreen() {
                     onPress={() => setSelectedDate(day)}
                     style={[styles.dayBtn, isSelected && styles.dayBtnActive]}
                   >
-                    <Text style={[styles.dayLabel, isSelected && styles.dayLabelActive]}>{label}</Text>
-                    <Text style={[styles.dayNum, isSelected && styles.dayNumActive, isToday && !isSelected && styles.dayNumToday]}>
+                    <Text style={[styles.dayLabel, isSelected && styles.dayLabelActive]}>
+                      {label}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.dayNum,
+                        isSelected && styles.dayNumActive,
+                        isToday && !isSelected && styles.dayNumToday,
+                      ]}
+                    >
                       {dayNum}
                     </Text>
                     {hasActivity && !isSelected && <View style={styles.dot} />}
@@ -198,13 +221,13 @@ export default function HistoryScreen() {
             {/* Filter tabs */}
             <View style={styles.filterRow}>
               {FILTERS.map((f) => (
-                <TouchableOpacity
+                <SelectableChip
                   key={f.key}
+                  label={f.label}
+                  selected={filter === f.key}
                   onPress={() => setFilter(f.key)}
-                  style={[styles.filterBtn, filter === f.key && styles.filterBtnActive]}
-                >
-                  <Text style={[styles.filterText, filter === f.key && styles.filterTextActive]}>{f.label}</Text>
-                </TouchableOpacity>
+                  size="sm"
+                />
               ))}
             </View>
 
@@ -229,7 +252,6 @@ export default function HistoryScreen() {
                 )}
               />
             )}
-
           </GHScrollView>
         </SafeAreaView>
       </GestureDetector>
@@ -240,35 +262,58 @@ export default function HistoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe:              { flex: 1, backgroundColor: Colors.background },
-  content:           { padding: Spacing.md },
-  headerRow:         { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: Spacing.md },
-  title:             { fontSize: FontSize.xxl, fontWeight: '700', color: Colors.textPrimary },
-  exportBtn:         { paddingVertical: 6, paddingHorizontal: Spacing.sm, borderRadius: Radius.sm, borderWidth: 1, borderColor: Colors.primary },
-  exportBtnText:     { fontSize: FontSize.sm, color: Colors.primary, fontWeight: '600' },
-  rangeRow:          { flexDirection: 'row', gap: Spacing.xs, marginBottom: Spacing.md },
-  rangeBtn:          { flex: 1, paddingVertical: 8, alignItems: 'center', borderRadius: Radius.sm, borderWidth: 1, borderColor: Colors.border, backgroundColor: Colors.surface },
-  rangeBtnActive:    { backgroundColor: Colors.primary, borderColor: Colors.primary },
-  rangeBtnText:      { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textSecondary },
-  rangeBtnTextActive:{ color: Colors.textInverse },
-  statsCard:         { flexDirection: 'row', backgroundColor: Colors.surface, borderRadius: Radius.md, borderWidth: 1, borderColor: Colors.border, padding: Spacing.md, marginBottom: Spacing.md },
-  statItem:          { flex: 1, alignItems: 'center' },
-  statValue:         { fontSize: FontSize.lg, fontWeight: '700', color: Colors.textPrimary },
-  statLabel:         { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 2 },
-  statDivider:       { width: 1, backgroundColor: Colors.border, marginVertical: 4 },
-  monthLabel:        { fontSize: FontSize.sm, fontWeight: '700', color: Colors.textSecondary, textTransform: 'capitalize', marginBottom: Spacing.xs },
-  weekStrip:         { flexDirection: 'row', justifyContent: 'space-between', marginBottom: Spacing.md },
-  dayBtn:            { alignItems: 'center', padding: Spacing.xs, borderRadius: Radius.sm, flex: 1, minHeight: 52 },
-  dayBtnActive:      { backgroundColor: Colors.primary },
-  dayLabel:          { fontSize: FontSize.xs, color: Colors.textSecondary, fontWeight: '600' },
-  dayLabelActive:    { color: Colors.textInverse },
-  dayNum:            { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary, marginTop: 2 },
-  dayNumActive:      { color: Colors.textInverse },
-  dayNumToday:       { color: Colors.primary },
-  dot:               { width: 4, height: 4, borderRadius: 2, backgroundColor: Colors.primary, marginTop: 2 },
-  filterRow:         { flexDirection: 'row', gap: Spacing.xs, marginBottom: Spacing.md },
-  filterBtn:         { paddingVertical: 6, paddingHorizontal: Spacing.sm, borderRadius: Radius.full, borderWidth: 1, borderColor: Colors.border, backgroundColor: Colors.surface },
-  filterBtnActive:   { backgroundColor: Colors.primary, borderColor: Colors.primary },
-  filterText:        { fontSize: FontSize.sm, color: Colors.textSecondary, fontWeight: '600' },
-  filterTextActive:  { color: Colors.textInverse },
+  safe: { flex: 1, backgroundColor: Colors.background },
+  content: { padding: Spacing.md },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: Spacing.md,
+  },
+  title: { fontSize: FontSize.xxl, fontWeight: '700', color: Colors.textPrimary },
+  exportBtn: {
+    paddingVertical: 6,
+    paddingHorizontal: Spacing.sm,
+    borderRadius: Radius.sm,
+    borderWidth: 1,
+    borderColor: Colors.primary,
+  },
+  exportBtnText: { fontSize: FontSize.sm, color: Colors.primary, fontWeight: '600' },
+  rangeRow: { flexDirection: 'row', gap: Spacing.xs, marginBottom: Spacing.md },
+  statsCard: {
+    flexDirection: 'row',
+    backgroundColor: Colors.surface,
+    borderRadius: Radius.md,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    padding: Spacing.md,
+    marginBottom: Spacing.md,
+  },
+  statItem: { flex: 1, alignItems: 'center' },
+  statValue: { fontSize: FontSize.lg, fontWeight: '700', color: Colors.textPrimary },
+  statLabel: { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 2 },
+  statDivider: { width: 1, backgroundColor: Colors.border, marginVertical: 4 },
+  monthLabel: {
+    fontSize: FontSize.sm,
+    fontWeight: '700',
+    color: Colors.textSecondary,
+    textTransform: 'capitalize',
+    marginBottom: Spacing.xs,
+  },
+  weekStrip: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: Spacing.md },
+  dayBtn: {
+    alignItems: 'center',
+    padding: Spacing.xs,
+    borderRadius: Radius.sm,
+    flex: 1,
+    minHeight: 52,
+  },
+  dayBtnActive: { backgroundColor: Colors.primary },
+  dayLabel: { fontSize: FontSize.xs, color: Colors.textSecondary, fontWeight: '600' },
+  dayLabelActive: { color: Colors.textInverse },
+  dayNum: { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary, marginTop: 2 },
+  dayNumActive: { color: Colors.textInverse },
+  dayNumToday: { color: Colors.primary },
+  dot: { width: 4, height: 4, borderRadius: 2, backgroundColor: Colors.primary, marginTop: 2 },
+  filterRow: { flexDirection: 'row', gap: Spacing.xs, marginBottom: Spacing.md },
 });
