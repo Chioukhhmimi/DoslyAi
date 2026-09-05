@@ -1,8 +1,10 @@
-import * as Notifications from 'expo-notifications';
-import { SchedulableTriggerInputTypes } from 'expo-notifications';
+import Constants from 'expo-constants';
 import { Medication } from '@store/medicationStore';
 import { getNextDoses } from '@utils/scheduleEngine';
 import { useSettingsStore } from '@store/settingsStore';
+
+// expo-notifications crashes Expo Go on import (SDK 53+), so all usage is dynamic
+const isExpoGo = Constants.appOwnership === 'expo';
 
 function isInQuietHours(date: Date, start: string, end: string): boolean {
   const h = date.getHours();
@@ -17,8 +19,10 @@ function isInQuietHours(date: Date, start: string, end: string): boolean {
 }
 
 export async function requestPermission(): Promise<boolean> {
+  if (isExpoGo) return false;
   try {
-    const { status } = await Notifications.requestPermissionsAsync();
+    const N = await import('expo-notifications');
+    const { status } = await N.requestPermissionsAsync();
     return status === 'granted';
   } catch {
     return false;
@@ -26,7 +30,9 @@ export async function requestPermission(): Promise<boolean> {
 }
 
 export async function scheduleNotificationsForMedication(medication: Medication): Promise<void> {
+  if (isExpoGo) return;
   try {
+    const N = await import('expo-notifications');
     const { quietHoursEnabled, quietHoursStart, quietHoursEnd } = useSettingsStore.getState();
     const doses = getNextDoses(medication, new Date(), 30);
 
@@ -37,29 +43,49 @@ export async function scheduleNotificationsForMedication(medication: Medication)
           return !isInQuietHours(scheduledAt, quietHoursStart, quietHoursEnd);
         })
         .map((scheduledAt) =>
-          Notifications.scheduleNotificationAsync({
+          N.scheduleNotificationAsync({
             identifier: `${medication.id}_${scheduledAt.getTime()}`,
             content: {
               title: `💊 ${medication.name}`,
               body: `${medication.doseQuantity} ${medication.unit}`,
               data: { medicationId: medication.id, scheduledAt: scheduledAt.toISOString() },
             },
-            trigger: { type: SchedulableTriggerInputTypes.DATE, date: scheduledAt },
-          })
-        )
+            trigger: { type: 'date' as const, date: scheduledAt },
+          }),
+        ),
     );
+
+    // Refill reminder: one notification N days before endDate at 09:00
+    if (medication.refillReminderEnabled && medication.endDate && medication.refillReminderDays) {
+      const endDate = new Date(medication.endDate + 'T09:00:00');
+      const reminderDate = new Date(endDate);
+      reminderDate.setDate(reminderDate.getDate() - medication.refillReminderDays);
+      if (reminderDate > new Date()) {
+        await N.scheduleNotificationAsync({
+          identifier: `refill_${medication.id}`,
+          content: {
+            title: `💊 ${medication.name}`,
+            body: 'Il est temps de renouveler votre ordonnance.',
+            data: { medicationId: medication.id, scheduledAt: medication.endDate },
+          },
+          trigger: { type: 'date' as const, date: reminderDate },
+        });
+      }
+    }
   } catch {
     // Notifications not available (web, permission denied, etc.)
   }
 }
 
 export async function cancelNotificationsForMedication(medicationId: string): Promise<void> {
+  if (isExpoGo) return;
   try {
-    const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+    const N = await import('expo-notifications');
+    const scheduled = await N.getAllScheduledNotificationsAsync();
     await Promise.allSettled(
       scheduled
         .filter((n) => n.identifier.startsWith(medicationId))
-        .map((n) => Notifications.cancelScheduledNotificationAsync(n.identifier))
+        .map((n) => N.cancelScheduledNotificationAsync(n.identifier)),
     );
   } catch {
     // Notifications not available
@@ -69,23 +95,25 @@ export async function cancelNotificationsForMedication(medicationId: string): Pr
 export async function snoozeDoseNotification(
   medication: Medication,
   scheduledDate: Date,
-  minutes: number
+  minutes: number,
 ): Promise<void> {
+  if (isExpoGo) return;
   try {
+    const N = await import('expo-notifications');
     const identifier = `${medication.id}_${scheduledDate.getTime()}`;
-    const all = await Notifications.getAllScheduledNotificationsAsync();
+    const all = await N.getAllScheduledNotificationsAsync();
     if (all.find((n) => n.identifier === identifier)) {
-      await Notifications.cancelScheduledNotificationAsync(identifier);
+      await N.cancelScheduledNotificationAsync(identifier);
     }
     const newTime = new Date(Date.now() + minutes * 60 * 1000);
-    await Notifications.scheduleNotificationAsync({
+    await N.scheduleNotificationAsync({
       identifier: `${medication.id}_snooze_${newTime.getTime()}`,
       content: {
         title: `💊 ${medication.name}`,
         body: `${medication.doseQuantity} ${medication.unit} — rappel`,
         data: { medicationId: medication.id, scheduledAt: scheduledDate.toISOString() },
       },
-      trigger: { type: SchedulableTriggerInputTypes.DATE, date: newTime },
+      trigger: { type: 'date' as const, date: newTime },
     });
   } catch {
     // Notifications not available
