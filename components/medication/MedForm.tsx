@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -8,8 +8,8 @@ import {
   ScrollView,
   Platform,
   StyleSheet,
+  Animated,
 } from 'react-native';
-import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useTranslation } from 'react-i18next';
@@ -55,6 +55,14 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
   const { t } = useTranslation();
   const [step, setStep] = useState(1);
   const totalSteps = 4;
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+
+  function goToStep(next: number) {
+    Animated.timing(fadeAnim, { toValue: 0, duration: 100, useNativeDriver: true }).start(() => {
+      setStep(next);
+      Animated.timing(fadeAnim, { toValue: 1, duration: 150, useNativeDriver: true }).start();
+    });
+  }
 
   const [name, setName] = useState(initialValues?.name ?? '');
   const [doseQuantity, setDoseQuantity] = useState(
@@ -115,7 +123,7 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
     if (step === 1 && !validateStep1()) return;
     if (step === 3 && !validateStep3()) return;
     setNameSuggestions([]);
-    setStep((s) => s + 1);
+    goToStep(step + 1);
   }
 
   function handleSubmit() {
@@ -167,8 +175,9 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
       </Text>
 
       <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+        <Animated.View style={{ opacity: fadeAnim }}>
         {step === 1 && (
-          <Animated.View key="step1" entering={FadeInRight.duration(200)}>
+          <View>
             <Text style={styles.label}>{t('medication.form.nameLabel')}</Text>
             <View style={{ zIndex: 10, position: 'relative' }}>
               <TextInput
@@ -317,18 +326,18 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
               placeholderTextColor={Colors.textDisabled}
               multiline
             />
-          </Animated.View>
+          </View>
         )}
 
         {step === 2 && (
-          <Animated.View key="step2" entering={FadeInRight.duration(200)}>
+          <View>
             <Text style={styles.sectionTitle}>{t('medication.form.schedulingLabel')}</Text>
             <SchedulePicker value={schedule} onChange={setSchedule} />
-          </Animated.View>
+          </View>
         )}
 
         {step === 3 && (
-          <Animated.View key="step3" entering={FadeInRight.duration(200)}>
+          <View>
             <Text style={styles.label}>{t('medication.schedule.start')}</Text>
             <TouchableOpacity
               style={styles.input}
@@ -460,11 +469,11 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
                 />
               </BottomSheet>
             )}
-          </Animated.View>
+          </View>
         )}
 
         {step === 4 && (
-          <Animated.View key="step4" entering={FadeInRight.duration(200)} style={styles.review}>
+          <View style={styles.review}>
             <Text style={styles.sectionTitle}>{t('medication.form.summaryLabel')}</Text>
             <View style={styles.reviewCard}>
               <ReviewRow label={t('medication.form.nameLabel').replace(' *', '')} value={name} />
@@ -501,8 +510,9 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
                 }
               />
             </View>
-          </Animated.View>
+          </View>
         )}
+        </Animated.View>
       </ScrollView>
 
       <View style={styles.nav}>
@@ -517,7 +527,7 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
           <Button
             label={t('medication.form.previous')}
             variant="secondary"
-            onPress={() => setStep((s) => s - 1)}
+            onPress={() => goToStep(step - 1)}
             style={styles.navBtn}
           />
         )}

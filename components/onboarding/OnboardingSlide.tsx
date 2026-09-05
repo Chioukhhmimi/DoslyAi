@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, SafeAreaView, StyleSheet } from 'react-native';
-import Animated, { FadeInRight } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
@@ -31,7 +30,7 @@ export function OnboardingSlide({
   const { t } = useTranslation();
   return (
     <SafeAreaView style={styles.safe}>
-      <Animated.View entering={FadeInRight.duration(300)} style={styles.container}>
+      <View style={styles.container}>
         <View style={[styles.illustration, { backgroundColor: illustrationColor }]} />
 
         <View style={styles.dots}>
@@ -52,7 +51,7 @@ export function OnboardingSlide({
           style={styles.btnNext}
         />
         {!isLast && <Button label={t('common.skip')} variant="ghost" onPress={onSkip} />}
-      </Animated.View>
+      </View>
     </SafeAreaView>
   );
 }

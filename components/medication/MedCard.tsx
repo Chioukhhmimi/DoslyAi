@@ -1,10 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
-import Animated, {
-  useSharedValue, useAnimatedStyle, withSpring, withSequence,
-  runOnJS, interpolateColor,
-} from 'react-native-reanimated';
+import React, { useState, useMemo, useRef } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, PanResponder } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
@@ -39,8 +34,8 @@ export const MedCard = React.memo(function MedCard({ medication, scheduledTime, 
   const router = useRouter();
   const [showSnooze, setShowSnooze] = useState(false);
 
-  const translateX  = useSharedValue(0);
-  const checkScale  = useSharedValue(1);
+  const translateX = useRef(new Animated.Value(0)).current;
+  const checkScale = useRef(new Animated.Value(1)).current;
 
   const SNOOZE_OPTIONS = useMemo(() => [
     { label: t('medication.confirm.snooze10'), minutes: 10 },
@@ -61,10 +56,10 @@ export const MedCard = React.memo(function MedCard({ medication, scheduledTime, 
   function triggerTaken() {
     if (!isPending || medication.paused) return;
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    checkScale.value = withSequence(
-      withSpring(1.4, { damping: 4 }),
-      withSpring(1,   { damping: 10 })
-    );
+    Animated.sequence([
+      Animated.spring(checkScale, { toValue: 1.4, useNativeDriver: true, speed: 50, bounciness: 12 }),
+      Animated.spring(checkScale, { toValue: 1,   useNativeDriver: true, speed: 20, bounciness: 8 }),
+    ]).start();
     try { onMarkTaken(); } catch {}
   }
 
@@ -79,37 +74,30 @@ export const MedCard = React.memo(function MedCard({ medication, scheduledTime, 
     setShowSnooze(true);
   }
 
-  const pan = Gesture.Pan()
-    .enabled(isPending && !medication.paused)
-    .activeOffsetX([-10, 10])
-    .failOffsetY([-15, 15])
-    .onUpdate((e) => {
-      translateX.value = e.translationX;
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => false,
+      onMoveShouldSetPanResponder: (_, { dx, dy }) =>
+        isPending && !medication.paused && Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy),
+      onPanResponderMove: (_, { dx }) => {
+        translateX.setValue(dx);
+      },
+      onPanResponderRelease: (_, { dx }) => {
+        Animated.spring(translateX, { toValue: 0, useNativeDriver: true, damping: 15 }).start();
+        if (dx >= SWIPE_THRESHOLD) triggerTaken();
+        else if (dx <= -SWIPE_THRESHOLD) triggerSkip();
+      },
+      onPanResponderTerminate: () => {
+        Animated.spring(translateX, { toValue: 0, useNativeDriver: true, damping: 15 }).start();
+      },
     })
-    .onEnd((e) => {
-      translateX.value = withSpring(0, { damping: 15 });
-      if (e.translationX >= SWIPE_THRESHOLD) {
-        runOnJS(triggerTaken)();
-      } else if (e.translationX <= -SWIPE_THRESHOLD) {
-        runOnJS(triggerSkip)();
-      }
-    });
+  ).current;
 
-  const cardStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
-  }));
-
-  const revealBgStyle = useAnimatedStyle(() => ({
-    backgroundColor: interpolateColor(
-      translateX.value,
-      [-SWIPE_THRESHOLD, 0, SWIPE_THRESHOLD],
-      [Colors.skippedLight, Colors.surface, Colors.successLight]
-    ),
-  }));
-
-  const checkStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: checkScale.value }],
-  }));
+  const bgColor = translateX.interpolate({
+    inputRange: [-SWIPE_THRESHOLD, 0, SWIPE_THRESHOLD],
+    outputRange: [Colors.skippedLight, Colors.surface, Colors.successLight],
+    extrapolate: 'clamp',
+  });
 
   async function handleSnooze(minutes: number) {
     setShowSnooze(false);
@@ -119,49 +107,47 @@ export const MedCard = React.memo(function MedCard({ medication, scheduledTime, 
 
   return (
     <>
-      <Animated.View style={[styles.revealBg, revealBgStyle]}>
+      <Animated.View style={[styles.revealBg, { backgroundColor: bgColor }]}>
         <Ionicons name="checkmark-circle" size={24} color={Colors.success} />
         <Ionicons name="close-circle" size={24} color={Colors.danger} />
       </Animated.View>
 
-      <GestureDetector gesture={pan}>
-        <Animated.View style={[styles.card, medication.paused && styles.cardPaused, cardStyle]}>
-          <TouchableOpacity activeOpacity={0.9} onPress={() => router.push(`/medication/${medication.id}`)}>
-            <View style={styles.row}>
-              <View style={[styles.dot, { backgroundColor: medication.pillColor ?? TYPE_COLOR[medication.type] }]} />
-              <View style={styles.info}>
-                <View style={styles.nameRow}>
-                  <Text style={styles.name}>{medication.name}</Text>
-                  {medication.paused && <Badge label={t('medications.paused')} variant="warning" size="sm" />}
-                </View>
-                <Text style={styles.sub}>{medication.doseQuantity} {medication.unit} · {medication.schedule.times.map(formatTime).join(' · ')}</Text>
-                <Text style={[styles.time, isOverdue && styles.timeOverdue]}>⏰ {formatTime(scheduledTime)}</Text>
+      <Animated.View
+        style={[styles.card, medication.paused && styles.cardPaused, { transform: [{ translateX }] }]}
+        {...panResponder.panHandlers}
+      >
+        <TouchableOpacity activeOpacity={0.9} onPress={() => router.push(`/medication/${medication.id}`)}>
+          <View style={styles.row}>
+            <View style={[styles.dot, { backgroundColor: medication.pillColor ?? TYPE_COLOR[medication.type] }]} />
+            <View style={styles.info}>
+              <View style={styles.nameRow}>
+                <Text style={styles.name}>{medication.name}</Text>
+                {medication.paused && <Badge label={t('medications.paused')} variant="warning" size="sm" />}
               </View>
-              <Badge label={statusLabel} variant={statusVariant} size="sm" />
+              <Text style={styles.sub}>{medication.doseQuantity} {medication.unit} · {medication.schedule.times.map(formatTime).join(' · ')}</Text>
+              <Text style={[styles.time, isOverdue && styles.timeOverdue]}>⏰ {formatTime(scheduledTime)}</Text>
             </View>
-          </TouchableOpacity>
+            <Badge label={statusLabel} variant={statusVariant} size="sm" />
+          </View>
+        </TouchableOpacity>
 
-          {isPending && !medication.paused && (
-            <View style={styles.actions}>
-              <TouchableOpacity
-                onPress={triggerTaken}
-                style={styles.btnTaken}
-              >
-                <Animated.View style={checkStyle}>
-                  <Ionicons name="checkmark" size={14} color={Colors.successText} />
-                </Animated.View>
-                <Text style={styles.btnTakenText}>{t('medication.confirm.taken')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={openSnooze} style={styles.btnSnooze}>
-                <Text style={styles.btnSnoozeText}>{t('home.snoozeLater')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={triggerSkip} style={styles.btnSkip}>
-                <Text style={styles.btnSkipText}>{t('medication.confirm.skip')}</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </Animated.View>
-      </GestureDetector>
+        {isPending && !medication.paused && (
+          <View style={styles.actions}>
+            <TouchableOpacity onPress={triggerTaken} style={styles.btnTaken}>
+              <Animated.View style={{ transform: [{ scale: checkScale }] }}>
+                <Ionicons name="checkmark" size={14} color={Colors.successText} />
+              </Animated.View>
+              <Text style={styles.btnTakenText}>{t('medication.confirm.taken')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={openSnooze} style={styles.btnSnooze}>
+              <Text style={styles.btnSnoozeText}>{t('home.snoozeLater')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={triggerSkip} style={styles.btnSkip}>
+              <Text style={styles.btnSkipText}>{t('medication.confirm.skip')}</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </Animated.View>
 
       <BottomSheet visible={showSnooze} onClose={() => setShowSnooze(false)}>
         <Text style={styles.snoozeTitle}>{t('medication.confirm.snoozeTitle')}</Text>
