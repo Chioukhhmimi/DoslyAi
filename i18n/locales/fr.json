@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "MediTrack",
+    "appName": "Dosly",
     "continue": "Continuer",
     "skip": "Passer",
     "save": "Enregistrer",
@@ -24,7 +24,7 @@
   "onboarding": {
     "slide1": {
       "title": "Scannez votre ordonnance",
-      "description": "Photographiez votre ordonnance et laissez MediTrack extraire automatiquement vos médicaments."
+      "description": "Photographiez votre ordonnance et laissez Dosly extraire automatiquement vos médicaments."
     },
     "slide2": {
       "title": "Ne manquez plus vos prises",
@@ -200,7 +200,7 @@
     },
     "scan": {
       "cameraRequired": "Caméra requise",
-      "cameraDescription": "MediTrack a besoin d'accéder à votre caméra pour scanner les ordonnances.",
+      "cameraDescription": "Dosly a besoin d'accéder à votre caméra pour scanner les ordonnances.",
       "allowCamera": "Autoriser la caméra",
       "addManually": "Ajouter manuellement",
       "processing": "Analyse en cours...",
@@ -288,11 +288,11 @@
       "sharedData": "Données partagées",
       "sharedDataValue": "Aucune"
     },
-    "privacyBody": "MediTrack stocke toutes vos données localement sur votre appareil. Aucune donnée personnelle n'est transmise à des serveurs externes. Vos informations médicales restent entièrement privées et sous votre contrôle.\n\nLes données suivantes sont stockées localement :\n• Profils patients (nom, date de naissance, relation)\n• Médicaments et plannings de prise\n• Historique des prises\n\nVous pouvez supprimer toutes vos données à tout moment en désinstallant l'application.",
+    "privacyBody": "Dosly stocke toutes vos données localement sur votre appareil. Aucune donnée personnelle n'est transmise à des serveurs externes. Vos informations médicales restent entièrement privées et sous votre contrôle.\n\nLes données suivantes sont stockées localement :\n• Profils patients (nom, date de naissance, relation)\n• Médicaments et plannings de prise\n• Historique des prises\n\nVous pouvez supprimer toutes vos données à tout moment en désinstallant l'application.",
     "termsScreen": {
-      "intro": "En utilisant MediTrack, vous acceptez les conditions suivantes :",
+      "intro": "En utilisant Dosly, vous acceptez les conditions suivantes :",
       "section1Title": "1. Usage",
-      "section1Body": "MediTrack est un outil d'aide à la gestion des médicaments. Il ne remplace pas l'avis d'un professionnel de santé.",
+      "section1Body": "Dosly est un outil d'aide à la gestion des médicaments. Il ne remplace pas l'avis d'un professionnel de santé.",
       "section2Title": "2. Responsabilité",
       "section2Body": "L'utilisateur est seul responsable de la saisie correcte des informations médicales et du respect des prescriptions de son médecin.",
       "section3Title": "3. Données",

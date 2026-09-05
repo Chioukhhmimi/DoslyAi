@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "MediTrack",
+    "appName": "Dosly",
     "continue": "Continue",
     "skip": "Skip",
     "save": "Save",
@@ -24,7 +24,7 @@
   "onboarding": {
     "slide1": {
       "title": "Scan your prescription",
-      "description": "Photograph your prescription and let MediTrack automatically extract your medications."
+      "description": "Photograph your prescription and let Dosly automatically extract your medications."
     },
     "slide2": {
       "title": "Never miss a dose",
@@ -200,7 +200,7 @@
     },
     "scan": {
       "cameraRequired": "Camera required",
-      "cameraDescription": "MediTrack needs access to your camera to scan prescriptions.",
+      "cameraDescription": "Dosly needs access to your camera to scan prescriptions.",
       "allowCamera": "Allow camera",
       "addManually": "Add manually",
       "processing": "Analysing...",
@@ -288,11 +288,11 @@
       "sharedData": "Shared data",
       "sharedDataValue": "None"
     },
-    "privacyBody": "MediTrack stores all your data locally on your device. No personal data is transmitted to external servers. Your medical information remains entirely private and under your control.\n\nThe following data is stored locally:\n• Patient profiles (name, date of birth, relationship)\n• Medications and dosing schedules\n• Intake history\n\nYou can delete all your data at any time by uninstalling the app.",
+    "privacyBody": "Dosly stores all your data locally on your device. No personal data is transmitted to external servers. Your medical information remains entirely private and under your control.\n\nThe following data is stored locally:\n• Patient profiles (name, date of birth, relationship)\n• Medications and dosing schedules\n• Intake history\n\nYou can delete all your data at any time by uninstalling the app.",
     "termsScreen": {
-      "intro": "By using MediTrack, you agree to the following terms:",
+      "intro": "By using Dosly, you agree to the following terms:",
       "section1Title": "1. Use",
-      "section1Body": "MediTrack is a medication management aid. It does not replace the advice of a healthcare professional.",
+      "section1Body": "Dosly is a medication management aid. It does not replace the advice of a healthcare professional.",
       "section2Title": "2. Responsibility",
       "section2Body": "The user is solely responsible for correctly entering medical information and following their doctor's prescriptions.",
       "section3Title": "3. Data",
