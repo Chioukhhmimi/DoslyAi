@@ -61,16 +61,30 @@ export function SchedulePicker({ value, onChange }: SchedulePickerProps) {
   return (
     <View>
       <View style={styles.freqGrid}>
-        {FREQ_KEYS.map((f) => (
-          <SelectableChip
-            key={f}
-            label={t(`medication.freq.${f}`)}
-            selected={freq === f}
-            onPress={() => setFrequency(f)}
-            shape="rect"
-            style={styles.freqChip}
-          />
-        ))}
+        <View style={styles.freqRow}>
+          {FREQ_KEYS.slice(0, 2).map((f) => (
+            <SelectableChip
+              key={f}
+              label={t(`medication.freq.${f}`)}
+              selected={freq === f}
+              onPress={() => setFrequency(f)}
+              shape="rect"
+              style={styles.freqChip}
+            />
+          ))}
+        </View>
+        <View style={styles.freqRow}>
+          {FREQ_KEYS.slice(2).map((f) => (
+            <SelectableChip
+              key={f}
+              label={t(`medication.freq.${f}`)}
+              selected={freq === f}
+              onPress={() => setFrequency(f)}
+              shape="rect"
+              style={styles.freqChip}
+            />
+          ))}
+        </View>
       </View>
 
       <View style={styles.body}>
@@ -146,8 +160,9 @@ export function SchedulePicker({ value, onChange }: SchedulePickerProps) {
 }
 
 const styles = StyleSheet.create({
-  freqGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.xs, marginBottom: Spacing.md },
-  freqChip: { flex: 1, minWidth: '45%' } as ViewStyle,
+  freqGrid: { gap: Spacing.xs, marginBottom: Spacing.md },
+  freqRow: { flexDirection: 'row', gap: Spacing.xs },
+  freqChip: { flex: 1 } as ViewStyle,
   body: { marginTop: Spacing.xs },
   days: { flexDirection: 'row', gap: Spacing.xs, marginBottom: Spacing.md, flexWrap: 'wrap' },
   intervalRow: {
