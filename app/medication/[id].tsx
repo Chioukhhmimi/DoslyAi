@@ -152,7 +152,7 @@ export default function MedicationDetailScreen() {
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.sectionTitle}>Observance 7 jours</Text>
+        <Text style={styles.sectionTitle}>{t('medication.detail.adherence7')}</Text>
         <View style={chartStyles.row}>
           {adherenceData.map((day, i) => {
             const barColor =

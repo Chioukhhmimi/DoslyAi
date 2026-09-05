@@ -160,7 +160,7 @@ export default function ExportScreen() {
           disabled={!!loading}
         />
         <Button
-          label={loading === 'json' ? '…' : 'JSON'}
+          label={loading === 'json' ? '…' : t('export.json')}
           variant="secondary"
           onPress={() => handleExport('json')}
           style={styles.exportBtn}

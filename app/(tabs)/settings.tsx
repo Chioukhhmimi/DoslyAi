@@ -52,8 +52,8 @@ export default function SettingsScreen() {
 
   async function handleDeleteAll() {
     Alert.alert(
-      'Supprimer toutes les données',
-      'Cette action est irréversible. Tous vos médicaments, profils et historique seront supprimés.',
+      t('settings.deleteAllTitle'),
+      t('settings.deleteAllMessage'),
       [
         { text: 'Annuler', style: 'cancel' },
         {
@@ -150,7 +150,7 @@ export default function SettingsScreen() {
 
       <Card style={styles.dangerCard}>
         <Button
-          label="Supprimer toutes les données"
+          label={t('settings.deleteAllBtn')}
           onPress={handleDeleteAll}
           variant="danger"
         />
