@@ -491,6 +491,14 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
                       : '—'
                 }
               />
+              <ReviewRow
+                label={t('medication.form.refillReminder')}
+                value={
+                  refillReminderEnabled
+                    ? `${t('medication.form.refillDaysBefore')}: ${refillReminderDays}`
+                    : '—'
+                }
+              />
             </View>
           </View>
         )}
