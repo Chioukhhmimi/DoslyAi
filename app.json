@@ -1,22 +1,22 @@
 {
   "expo": {
-    "name": "MediTrack",
-    "slug": "meditrack",
+    "name": "Dosly",
+    "slug": "dosly",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "scheme": "meditrack",
+    "scheme": "dosly",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.meditrack.app"
+      "bundleIdentifier": "com.dosly.app"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundColor": "#E6F4FE"
       },
-      "package": "com.meditrack.app"
+      "package": "com.dosly.app"
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -28,7 +28,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "MediTrack needs camera access to scan prescriptions."
+          "cameraPermission": "Dosly needs camera access to scan prescriptions."
         }
       ],
       [
@@ -40,7 +40,15 @@
         }
       ],
       "expo-sqlite",
-      "expo-splash-screen"
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "backgroundColor": "#FFFFFF",
+          "imageWidth": 200,
+          "resizeMode": "contain"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
