@@ -10,9 +10,13 @@ import { PillIllustration } from '@components/ui/EmptyIllustrations';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
+import { SheetAction } from '@components/ui/SheetAction';
 import { useMedications } from '@hooks/useMedications';
 import { useMedicationStore, Medication } from '@store/medicationStore';
-import { cancelNotificationsForMedication, scheduleNotificationsForMedication } from '@hooks/useNotifications';
+import {
+  cancelNotificationsForMedication,
+  scheduleNotificationsForMedication,
+} from '@hooks/useNotifications';
 import { formatTime } from '@utils/dateHelpers';
 
 const TYPE_COLOR: Record<string, string> = {
@@ -28,25 +32,24 @@ function MedRow({ item }: { item: Medication }) {
   const router = useRouter();
   const { updateMedication, deleteMedication } = useMedicationStore();
   const [sheetVisible, setSheetVisible] = useState(false);
-  const freqLabel = t(`medication.freq.${item.schedule.frequency}`, { defaultValue: item.schedule.frequency });
+  const freqLabel = t(`medication.freq.${item.schedule.frequency}`, {
+    defaultValue: item.schedule.frequency,
+  });
 
   function handleDelete() {
     setSheetVisible(false);
     setTimeout(() => {
-      Alert.alert(
-        t('common.delete'),
-        `${t('common.delete')} "${item.name}" ?`,
-        [
-          { text: t('common.cancel'), style: 'cancel' },
-          {
-            text: t('common.delete'), style: 'destructive',
-            onPress: () => {
-              cancelNotificationsForMedication(item.id);
-              deleteMedication(item.id);
-            },
+      Alert.alert(t('common.delete'), `${t('common.delete')} "${item.name}" ?`, [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('common.delete'),
+          style: 'destructive',
+          onPress: () => {
+            cancelNotificationsForMedication(item.id);
+            deleteMedication(item.id);
           },
-        ],
-      );
+        },
+      ]);
     }, 300);
   }
 
@@ -75,7 +78,9 @@ function MedRow({ item }: { item: Medication }) {
         activeOpacity={0.8}
         delayLongPress={400}
       >
-        <View style={[styles.accent, { backgroundColor: TYPE_COLOR[item.type] ?? TYPE_COLOR.other }]} />
+        <View
+          style={[styles.accent, { backgroundColor: TYPE_COLOR[item.type] ?? TYPE_COLOR.other }]}
+        />
         <View style={styles.info}>
           <Text style={styles.name}>{item.name}</Text>
           <Text style={styles.sub}>
@@ -88,25 +93,14 @@ function MedRow({ item }: { item: Medication }) {
 
       <BottomSheet visible={sheetVisible} onClose={() => setSheetVisible(false)}>
         <Text style={actionStyles.medName}>{item.name}</Text>
-
-        <TouchableOpacity style={actionStyles.row} onPress={handleEdit}>
-          <Text style={actionStyles.icon}>✏️</Text>
-          <Text style={actionStyles.label}>{t('common.edit')}</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={actionStyles.row} onPress={handleTogglePause}>
-          <Text style={actionStyles.icon}>{item.paused ? '▶' : '⏸'}</Text>
-          <Text style={actionStyles.label}>
-            {item.paused ? t('medication.actions.resume') : t('medication.actions.pause')}
-          </Text>
-        </TouchableOpacity>
-
+        <SheetAction icon="pencil-outline" label={t('common.edit')} onPress={handleEdit} />
+        <SheetAction
+          icon={item.paused ? 'play-outline' : 'pause-outline'}
+          label={item.paused ? t('medication.actions.resume') : t('medication.actions.pause')}
+          onPress={handleTogglePause}
+        />
         <View style={actionStyles.divider} />
-
-        <TouchableOpacity style={actionStyles.row} onPress={handleDelete}>
-          <Text style={actionStyles.icon}>🗑️</Text>
-          <Text style={[actionStyles.label, actionStyles.danger]}>{t('medication.actions.delete')}</Text>
-        </TouchableOpacity>
+        <SheetAction icon="trash-outline" label={t('medication.actions.delete')} onPress={handleDelete} variant="danger" />
       </BottomSheet>
     </>
   );
@@ -159,21 +153,47 @@ export default function MedicationsScreen() {
 }
 
 const styles = StyleSheet.create({
-  title:         { fontSize: FontSize.xxl, fontWeight: '700', color: Colors.textPrimary, marginBottom: Spacing.lg },
-  sectionHeader: { fontSize: FontSize.sm, fontWeight: '700', color: Colors.textSecondary, marginBottom: Spacing.sm, marginTop: Spacing.md, textTransform: 'uppercase', letterSpacing: 0.5 },
-  card:          { flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.surface, borderRadius: Radius.md, marginBottom: Spacing.sm, borderWidth: 1, borderColor: Colors.border, overflow: 'hidden' },
-  accent:        { width: 4, alignSelf: 'stretch', flexShrink: 0 },
-  info:          { flex: 1, paddingVertical: Spacing.md, paddingHorizontal: Spacing.md },
-  name:          { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary },
-  sub:           { fontSize: FontSize.sm, color: Colors.textSecondary, marginTop: 2 },
-  times:         { fontSize: FontSize.xs, color: Colors.textDisabled, marginTop: 1 },
+  title: {
+    fontSize: FontSize.xxl,
+    fontWeight: '700',
+    color: Colors.textPrimary,
+    marginBottom: Spacing.lg,
+  },
+  sectionHeader: {
+    fontSize: FontSize.sm,
+    fontWeight: '700',
+    color: Colors.textSecondary,
+    marginBottom: Spacing.sm,
+    marginTop: Spacing.md,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.surface,
+    borderRadius: Radius.md,
+    marginBottom: Spacing.sm,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    overflow: 'hidden',
+  },
+  accent: { width: 4, alignSelf: 'stretch', flexShrink: 0 },
+  info: { flex: 1, paddingVertical: Spacing.md, paddingHorizontal: Spacing.md },
+  name: { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary },
+  sub: { fontSize: FontSize.sm, color: Colors.textSecondary, marginTop: 2 },
+  times: { fontSize: FontSize.xs, color: Colors.textDisabled, marginTop: 1 },
 });
 
 const actionStyles = StyleSheet.create({
-  medName:  { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary, marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.border },
-  row:      { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, paddingVertical: Spacing.md },
-  icon:     { fontSize: 20, width: 28, textAlign: 'center' },
-  label:    { fontSize: FontSize.md, color: Colors.textPrimary },
-  danger:   { color: Colors.danger },
-  divider:  { height: 1, backgroundColor: Colors.border, marginVertical: Spacing.xs },
+  medName: {
+    fontSize: FontSize.md,
+    fontWeight: '700',
+    color: Colors.textPrimary,
+    marginBottom: Spacing.md,
+    paddingBottom: Spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  divider: { height: 1, backgroundColor: Colors.border, marginVertical: Spacing.xs },
 });
