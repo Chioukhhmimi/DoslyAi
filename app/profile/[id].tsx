@@ -1,6 +1,6 @@
 // app/profile/[id].tsx
 import React, { useState } from 'react';
-import { View, Text, TextInput, Alert, Modal, Platform, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Alert, Modal, Platform, TouchableOpacity, StyleSheet } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +9,7 @@ import { ScreenContainer } from '@components/layout/ScreenContainer';
 import { ScreenHeader } from '@components/ui/ScreenHeader';
 import { Button } from '@components/ui/Button';
 import { TagInput } from '@components/ui/TagInput';
+import { SelectableChip } from '@components/ui/SelectableChip';
 import { AvatarPicker } from '@components/profile/AvatarPicker';
 import { Avatar } from '@components/ui/Avatar';
 import { Colors } from '@constants/colors';
@@ -155,16 +156,16 @@ export default function ProfileDetailScreen() {
             </View>
           </View>
           <View style={styles.card}>
-            {profile.bloodType        ? <InfoRow label="Groupe sanguin"     value={profile.bloodType} /> : null}
-            {profile.weight           ? <InfoRow label="Poids"              value={`${profile.weight} kg`} /> : null}
-            {profile.height           ? <InfoRow label="Taille"             value={`${profile.height} cm`} /> : null}
-            {profile.doctorName       ? <InfoRow label="Médecin"            value={profile.doctorName} /> : null}
-            {profile.doctorPhone      ? <InfoRow label="Tél. médecin"       value={profile.doctorPhone} /> : null}
-            {profile.emergencyContact ? <InfoRow label="Contact urgence"    value={profile.emergencyContact} /> : null}
-            {profile.emergencyPhone   ? <InfoRow label="Tél. urgence"       value={profile.emergencyPhone} /> : null}
+            {profile.bloodType        ? <InfoRow label={t('profile.medical.bloodType')}       value={profile.bloodType} /> : null}
+            {profile.weight           ? <InfoRow label={t('profile.medical.weight')}           value={`${profile.weight} kg`} /> : null}
+            {profile.height           ? <InfoRow label={t('profile.medical.height')}           value={`${profile.height} cm`} /> : null}
+            {profile.doctorName       ? <InfoRow label={t('profile.medical.doctorName')}       value={profile.doctorName} /> : null}
+            {profile.doctorPhone      ? <InfoRow label={t('profile.medical.doctorPhone')}      value={profile.doctorPhone} /> : null}
+            {profile.emergencyContact ? <InfoRow label={t('profile.medical.emergencyContact')} value={profile.emergencyContact} /> : null}
+            {profile.emergencyPhone   ? <InfoRow label={t('profile.medical.emergencyPhone')}   value={profile.emergencyPhone} /> : null}
             {profile.allergies && profile.allergies.length > 0 ? (
               <View style={styles.tagRow}>
-                <Text style={styles.rowLabel}>Allergies</Text>
+                <Text style={styles.rowLabel}>{t('profile.medical.allergies')}</Text>
                 <View style={styles.tagList}>
                   {profile.allergies.map((a, i) => <View key={i} style={styles.tag}><Text style={styles.tagText}>{a}</Text></View>)}
                 </View>
@@ -172,13 +173,13 @@ export default function ProfileDetailScreen() {
             ) : null}
             {profile.conditions && profile.conditions.length > 0 ? (
               <View style={styles.tagRow}>
-                <Text style={styles.rowLabel}>Conditions chroniques</Text>
+                <Text style={styles.rowLabel}>{t('profile.medical.conditions')}</Text>
                 <View style={styles.tagList}>
                   {profile.conditions.map((c, i) => <View key={i} style={styles.tag}><Text style={styles.tagText}>{c}</Text></View>)}
                 </View>
               </View>
             ) : null}
-            {profile.medicalNotes ? <InfoRow label="Notes" value={profile.medicalNotes} /> : null}
+            {profile.medicalNotes ? <InfoRow label={t('profile.medical.notes')} value={profile.medicalNotes} /> : null}
           </View>
         </>
       )}
@@ -218,44 +219,48 @@ export default function ProfileDetailScreen() {
           <TextInput style={styles.input} value={relationship} onChangeText={setRelationship}
             placeholder={t('profile.form.relationPlaceholder')} placeholderTextColor={Colors.textDisabled} />
 
-          <Text style={styles.sectionHeader}>Informations médicales</Text>
+          <Text style={styles.sectionHeader}>{t('profile.medical.sectionTitle')}</Text>
 
-          <Text style={styles.label}>Groupe sanguin</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.btRow}>
+          <Text style={styles.label}>{t('profile.medical.bloodType')}</Text>
+          <View style={styles.btRow}>
             {BLOOD_TYPES.map((bt) => (
-              <TouchableOpacity key={bt} style={[styles.btChip, bloodType === bt && styles.btChipActive]} onPress={() => setBloodType(bt === bloodType ? '' : bt)}>
-                <Text style={[styles.btChipText, bloodType === bt && styles.btChipTextActive]}>{bt}</Text>
-              </TouchableOpacity>
+              <SelectableChip
+                key={bt}
+                label={bt}
+                selected={bloodType === bt}
+                onPress={() => setBloodType(bt === bloodType ? '' : bt)}
+                size="sm"
+              />
             ))}
-          </ScrollView>
+          </View>
 
           <View style={styles.rowTwo}>
             <View style={styles.half}>
-              <Text style={styles.label}>Poids (kg)</Text>
+              <Text style={styles.label}>{t('profile.medical.weight')}</Text>
               <TextInput style={styles.input} value={weight} onChangeText={setWeight} keyboardType="decimal-pad" placeholder="70" placeholderTextColor={Colors.textDisabled} />
             </View>
             <View style={styles.half}>
-              <Text style={styles.label}>Taille (cm)</Text>
+              <Text style={styles.label}>{t('profile.medical.height')}</Text>
               <TextInput style={styles.input} value={height} onChangeText={setHeight} keyboardType="decimal-pad" placeholder="170" placeholderTextColor={Colors.textDisabled} />
             </View>
           </View>
 
-          <TagInput label="Allergies" values={allergies} onChange={setAllergies} placeholder="Pénicilline, lactose…" />
-          <TagInput label="Conditions chroniques" values={conditions} onChange={setConditions} placeholder="Diabète, hypertension…" />
+          <TagInput label={t('profile.medical.allergies')} values={allergies} onChange={setAllergies} placeholder={t('profile.medical.allergiesPlaceholder')} />
+          <TagInput label={t('profile.medical.conditions')} values={conditions} onChange={setConditions} placeholder={t('profile.medical.conditionsPlaceholder')} />
 
-          <Text style={styles.sectionHeader}>Médecin & urgences</Text>
-          <Text style={styles.label}>Nom du médecin</Text>
+          <Text style={styles.sectionHeader}>{t('profile.medical.doctorSection')}</Text>
+          <Text style={styles.label}>{t('profile.medical.doctorName')}</Text>
           <TextInput style={styles.input} value={doctorName} onChangeText={setDoctorName} placeholder="Dr. …" placeholderTextColor={Colors.textDisabled} />
-          <Text style={styles.label}>Téléphone médecin</Text>
+          <Text style={styles.label}>{t('profile.medical.doctorPhone')}</Text>
           <TextInput style={styles.input} value={doctorPhone} onChangeText={setDoctorPhone} keyboardType="phone-pad" placeholder="+213…" placeholderTextColor={Colors.textDisabled} />
-          <Text style={styles.label}>Contact d'urgence</Text>
+          <Text style={styles.label}>{t('profile.medical.emergencyContact')}</Text>
           <TextInput style={styles.input} value={emergencyContact} onChangeText={setEmergencyContact} placeholder="Nom…" placeholderTextColor={Colors.textDisabled} />
-          <Text style={styles.label}>Téléphone urgence</Text>
+          <Text style={styles.label}>{t('profile.medical.emergencyPhone')}</Text>
           <TextInput style={styles.input} value={emergencyPhone} onChangeText={setEmergencyPhone} keyboardType="phone-pad" placeholder="+213…" placeholderTextColor={Colors.textDisabled} />
 
-          <Text style={styles.label}>Notes médicales</Text>
+          <Text style={styles.label}>{t('profile.medical.notes')}</Text>
           <TextInput style={[styles.input, styles.textArea]} value={medicalNotes} onChangeText={setMedicalNotes}
-            placeholder="Informations supplémentaires…" placeholderTextColor={Colors.textDisabled} multiline numberOfLines={3} />
+            placeholder={t('profile.medical.notesPlaceholder')} placeholderTextColor={Colors.textDisabled} multiline numberOfLines={3} />
 
           <View style={styles.editActions}>
             <Button label={t('common.save')} onPress={handleSave} style={styles.btn} />
@@ -312,11 +317,7 @@ const styles = StyleSheet.create({
   dateRow:           { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   dateText:          { fontSize: FontSize.md, color: Colors.textPrimary },
   datePlaceholder:   { fontSize: FontSize.md, color: Colors.textDisabled },
-  btRow:             { marginBottom: Spacing.xs },
-  btChip:            { borderWidth: 1, borderColor: Colors.border, borderRadius: 20, paddingHorizontal: 12, paddingVertical: 6, marginRight: 6, backgroundColor: Colors.surface },
-  btChipActive:      { borderColor: Colors.primary, backgroundColor: Colors.primaryLight },
-  btChipText:        { fontSize: FontSize.sm, color: Colors.textSecondary },
-  btChipTextActive:  { color: Colors.primary, fontWeight: '700' },
+  btRow:             { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.xs, marginBottom: Spacing.xs },
   rowTwo:            { flexDirection: 'row', gap: Spacing.sm },
   half:              { flex: 1 },
   editActions:       { gap: Spacing.sm, marginTop: Spacing.lg },
@@ -324,7 +325,7 @@ const styles = StyleSheet.create({
   dangerZone:        { marginTop: Spacing.xl, paddingTop: Spacing.md, borderTopWidth: 1, borderTopColor: Colors.border, gap: Spacing.sm },
   dangerTitle:       { fontSize: FontSize.sm, fontWeight: '700', color: Colors.danger },
   modalOverlay:      { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' },
-  modalSheet:        { backgroundColor: Colors.surface, borderTopLeftRadius: 16, borderTopRightRadius: 16, paddingBottom: Spacing.xl },
+  modalSheet:        { backgroundColor: Colors.surface, borderTopLeftRadius: Radius.xl, borderTopRightRadius: Radius.xl, paddingBottom: Spacing.xl },
   modalHeader:       { flexDirection: 'row', justifyContent: 'flex-end', padding: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.border },
   modalDone:         { fontSize: FontSize.md, color: Colors.primary, fontWeight: '600' },
 });
