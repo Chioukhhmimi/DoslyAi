@@ -111,6 +111,7 @@ export function DosePicker({ times, onChange, maxTimes = 6 }: DosePickerProps) {
             onPress={() => removeTime(i)}
             style={styles.deleteBtn}
             disabled={times.length === 1}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
             <Text style={[styles.deleteText, times.length === 1 && styles.deleteTextDisabled]}>
               ✕

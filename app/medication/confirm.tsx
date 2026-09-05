@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
   },
   btnSkipText: { fontSize: FontSize.md, fontWeight: '600', color: Colors.textSecondary },
-  btnCancel: { padding: Spacing.sm, alignItems: 'center' },
+  btnCancel: { padding: Spacing.sm, alignItems: 'center', minHeight: 44, justifyContent: 'center' },
   btnCancelText: { fontSize: FontSize.sm, color: Colors.textDisabled },
   fallback: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: Spacing.md },
   fallbackText: { fontSize: FontSize.md, color: Colors.textSecondary },

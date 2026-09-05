@@ -154,7 +154,7 @@ export default function HomeScreen() {
             {profiles.length > 1 ? t('home.changeProfile') : t('home.manageProfiles')}
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setShowNotifCenter(true)} style={styles.bellBtn} activeOpacity={0.7}>
+        <TouchableOpacity onPress={() => setShowNotifCenter(true)} style={styles.bellBtn} activeOpacity={0.7} accessibilityRole="button" accessibilityLabel={todaySummary.pending > 0 ? `Notifications, ${todaySummary.pending} pending` : 'Notifications'}>
           <Ionicons name="notifications-outline" size={24} color={Colors.textPrimary} />
           {todaySummary.pending > 0 && (
             <View style={styles.bellBadge}>
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
-  bellBtn:       { position: 'relative', padding: 4 },
+  bellBtn:       { position: 'relative', padding: 10 },
   bellBadge:     { position: 'absolute', top: 0, right: 0, backgroundColor: Colors.danger, borderRadius: 8, minWidth: 16, height: 16, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 2 },
   bellBadgeText: { fontSize: 10, fontWeight: '700', color: Colors.textInverse },
 });

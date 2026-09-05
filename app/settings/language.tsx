@@ -30,6 +30,8 @@ export default function LanguageScreen() {
             key={lang.code}
             style={styles.row}
             onPress={() => changeLanguage(lang.code)}
+            accessibilityRole="radio"
+            accessibilityState={{ selected: i18n.language === lang.code }}
           >
             <View style={styles.langInfo}>
               <Text style={styles.native}>{lang.nativeLabel}</Text>
@@ -46,8 +48,15 @@ export default function LanguageScreen() {
 }
 
 const styles = StyleSheet.create({
-  row:      { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: Spacing.sm, borderBottomWidth: 1, borderBottomColor: Colors.border },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: Spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
   langInfo: { flex: 1 },
-  native:   { fontSize: FontSize.md, fontWeight: '600', color: Colors.textPrimary },
-  label:    { fontSize: FontSize.sm, color: Colors.textSecondary, marginTop: 2 },
+  native: { fontSize: FontSize.md, fontWeight: '600', color: Colors.textPrimary },
+  label: { fontSize: FontSize.sm, color: Colors.textSecondary, marginTop: 2 },
 });

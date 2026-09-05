@@ -27,7 +27,7 @@ function SettingRow({ label, route, icon }: SettingRowProps) {
   const isRTL = useIsRTL();
   const chevron = isRTL ? 'chevron-back' : 'chevron-forward';
   return (
-    <TouchableOpacity style={styles.row} onPress={() => router.push(route as any)}>
+    <TouchableOpacity style={styles.row} onPress={() => router.push(route as any)} accessibilityRole="button">
       {icon && (
         <Ionicons
           name={icon as any}
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: Spacing.sm,
+    paddingVertical: Spacing.md,
   },
   rowIcon: { marginRight: Spacing.sm },
   rowLabel: { flex: 1, fontSize: FontSize.md, color: Colors.textPrimary },

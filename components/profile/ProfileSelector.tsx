@@ -27,6 +27,8 @@ export function ProfileSelector({ profiles, activeProfileId, onSelect }: Profile
             onPress={() => onSelect(p.id)}
             activeOpacity={0.8}
             style={[styles.pill, isActive ? styles.pillActive : styles.pillInactive]}
+            accessibilityRole="button"
+            accessibilityState={{ selected: p.id === activeProfileId }}
           >
             <Avatar name={p.name} uri={p.avatarUri} size={28} />
             <Text style={[styles.name, isActive ? styles.nameActive : styles.nameInactive]}>
@@ -40,11 +42,21 @@ export function ProfileSelector({ profiles, activeProfileId, onSelect }: Profile
 }
 
 const styles = StyleSheet.create({
-  scroll:       { gap: Spacing.sm, paddingHorizontal: Spacing.md, paddingVertical: Spacing.xs },
-  pill:         { flexDirection: 'row', alignItems: 'center', gap: Spacing.xs, paddingVertical: 6, paddingHorizontal: Spacing.sm, borderRadius: Radius.full, borderWidth: 1 },
-  pillActive:   { backgroundColor: Colors.primaryLight, borderColor: Colors.primary },
+  scroll: { gap: Spacing.sm, paddingHorizontal: Spacing.md, paddingVertical: Spacing.xs },
+  pill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    paddingVertical: 6,
+    paddingHorizontal: Spacing.sm,
+    borderRadius: Radius.full,
+    borderWidth: 1,
+    minHeight: 44,
+    justifyContent: 'center',
+  },
+  pillActive: { backgroundColor: Colors.primaryLight, borderColor: Colors.primary },
   pillInactive: { backgroundColor: 'transparent', borderColor: Colors.border },
-  name:         { fontSize: FontSize.sm, fontWeight: '600' },
-  nameActive:   { color: Colors.primaryDark },
+  name: { fontSize: FontSize.sm, fontWeight: '600' },
+  nameActive: { color: Colors.primaryDark },
   nameInactive: { color: Colors.textSecondary },
 });
