@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Platform, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useTranslation } from 'react-i18next';
 import { Colors } from '@constants/colors';
@@ -92,18 +93,28 @@ export function DosePicker({ times, onChange, maxTimes = 6 }: DosePickerProps) {
   return (
     <View>
       <View style={styles.header}>
-        <Text style={styles.headerIcon}>🔔</Text>
+        <Ionicons name="notifications-outline" size={16} color={Colors.textSecondary} />
         <Text style={styles.headerLabel}>{t('medication.schedule.alarmTimes')}</Text>
       </View>
 
       {times.map((time, i) => (
         <View key={`${time}-${i}`} style={styles.row}>
-          <TouchableOpacity style={styles.timeBtn} onPress={() => openPicker(i)} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={styles.timeBtn}
+            onPress={() => openPicker(i)}
+            activeOpacity={0.7}
+          >
             <Text style={styles.timeText}>{time}</Text>
-            <Text style={styles.clockIcon}>🕐</Text>
+            <Ionicons name="time-outline" size={16} color={Colors.textSecondary} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => removeTime(i)} style={styles.deleteBtn} disabled={times.length === 1}>
-            <Text style={[styles.deleteText, times.length === 1 && styles.deleteTextDisabled]}>✕</Text>
+          <TouchableOpacity
+            onPress={() => removeTime(i)}
+            style={styles.deleteBtn}
+            disabled={times.length === 1}
+          >
+            <Text style={[styles.deleteText, times.length === 1 && styles.deleteTextDisabled]}>
+              ✕
+            </Text>
           </TouchableOpacity>
         </View>
       ))}
@@ -129,12 +140,26 @@ export function DosePicker({ times, onChange, maxTimes = 6 }: DosePickerProps) {
       )}
 
       {Platform.OS === 'ios' && (
-        <BottomSheet visible={activeIndex !== null} onClose={() => { setActiveIndex(null); setDuplicateError(false); }} showHandle={false}>
+        <BottomSheet
+          visible={activeIndex !== null}
+          onClose={() => {
+            setActiveIndex(null);
+            setDuplicateError(false);
+          }}
+          showHandle={false}
+        >
           <View style={styles.sheetHeader}>
-            <TouchableOpacity onPress={() => { setActiveIndex(null); setDuplicateError(false); }}>
+            <TouchableOpacity
+              onPress={() => {
+                setActiveIndex(null);
+                setDuplicateError(false);
+              }}
+            >
               <Text style={styles.sheetCancel}>{t('common.cancel')}</Text>
             </TouchableOpacity>
-            {duplicateError && <Text style={styles.sheetError}>{t('medication.schedule.duplicateTime')}</Text>}
+            {duplicateError && (
+              <Text style={styles.sheetError}>{t('medication.schedule.duplicateTime')}</Text>
+            )}
             <TouchableOpacity onPress={confirmIOS}>
               <Text style={styles.sheetDone}>{t('common.done')}</Text>
             </TouchableOpacity>
@@ -154,22 +179,43 @@ export function DosePicker({ times, onChange, maxTimes = 6 }: DosePickerProps) {
 }
 
 const styles = StyleSheet.create({
-  header:              { flexDirection: 'row', alignItems: 'center', gap: Spacing.xs, marginBottom: Spacing.sm },
-  headerIcon:          { fontSize: 16 },
-  headerLabel:         { fontSize: FontSize.sm, fontWeight: '700', color: Colors.textSecondary, textTransform: 'uppercase', letterSpacing: 0.5 },
-  row:                 { flexDirection: 'row', alignItems: 'center', marginBottom: Spacing.sm, gap: Spacing.sm },
-  timeBtn:             { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, borderColor: Colors.border, borderRadius: Radius.sm, padding: Spacing.sm, backgroundColor: Colors.surface },
-  timeText:            { fontSize: FontSize.md, color: Colors.textPrimary, fontWeight: '600' },
-  clockIcon:           { fontSize: 16 },
-  deleteBtn:           { padding: Spacing.sm },
-  deleteText:          { fontSize: FontSize.md, color: Colors.danger },
-  deleteTextDisabled:  { color: Colors.textDisabled },
-  addBtn:              { paddingVertical: Spacing.sm },
-  addText:             { fontSize: FontSize.sm, color: Colors.primary, fontWeight: '600' },
-  errorText:           { fontSize: FontSize.xs, color: Colors.danger, marginBottom: Spacing.sm },
-  sheetHeader:         { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.border },
-  sheetCancel:         { fontSize: FontSize.md, color: Colors.textSecondary },
-  sheetDone:           { fontSize: FontSize.md, color: Colors.primary, fontWeight: '600' },
-  sheetError:          { fontSize: FontSize.xs, color: Colors.danger, flex: 1, textAlign: 'center' },
-  picker:              { width: '100%' },
+  header: { flexDirection: 'row', alignItems: 'center', gap: Spacing.xs, marginBottom: Spacing.sm },
+  headerLabel: {
+    fontSize: FontSize.sm,
+    fontWeight: '700',
+    color: Colors.textSecondary,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  row: { flexDirection: 'row', alignItems: 'center', marginBottom: Spacing.sm, gap: Spacing.sm },
+  timeBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: Radius.sm,
+    padding: Spacing.sm,
+    backgroundColor: Colors.surface,
+  },
+  timeText: { fontSize: FontSize.md, color: Colors.textPrimary, fontWeight: '600' },
+  deleteBtn: { padding: Spacing.sm },
+  deleteText: { fontSize: FontSize.md, color: Colors.danger },
+  deleteTextDisabled: { color: Colors.textDisabled },
+  addBtn: { paddingVertical: Spacing.sm },
+  addText: { fontSize: FontSize.sm, color: Colors.primary, fontWeight: '600' },
+  errorText: { fontSize: FontSize.xs, color: Colors.danger, marginBottom: Spacing.sm },
+  sheetHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: Spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  sheetCancel: { fontSize: FontSize.md, color: Colors.textSecondary },
+  sheetDone: { fontSize: FontSize.md, color: Colors.primary, fontWeight: '600' },
+  sheetError: { fontSize: FontSize.xs, color: Colors.danger, flex: 1, textAlign: 'center' },
+  picker: { width: '100%' },
 });
