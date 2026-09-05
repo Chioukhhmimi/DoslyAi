@@ -54,9 +54,9 @@
     "todayMeds": "Médicaments du jour",
     "noMeds": "Aucun médicament prévu aujourd'hui",
     "noMedsDescription": "Ajoutez un médicament pour commencer le suivi.",
-    "changeProfile": "Changer de profil ▾",
+    "changeProfile": "Changer de profil",
     "manageProfiles": "Gérer les profils",
-    "snoozeLater": "⏱ Plus tard",
+    "snoozeLater": "Plus tard",
     "status": {
       "taken": "Pris",
       "skipped": "Passé",
@@ -74,10 +74,10 @@
       "activeMeds": "Actifs"
     },
     "buckets": {
-      "morning": "🌅 Matin",
-      "afternoon": "☀️ Après-midi",
-      "evening": "🌆 Soir",
-      "night": "🌙 Nuit"
+      "morning": "Matin",
+      "afternoon": "Après-midi",
+      "evening": "Soir",
+      "night": "Nuit"
     }
   },
   "medications": {
@@ -93,7 +93,7 @@
     "title": "Historique",
     "empty": "Aucun historique",
     "emptyDescription": "Votre historique de prises apparaîtra ici.",
-    "export": "⬆ Export",
+    "export": "Export",
     "filters": {
       "all": "Tous",
       "taken": "Pris",
@@ -127,7 +127,8 @@
       "custom": "Schéma",
       "everyN": "Toutes les",
       "days": "j",
-      "customLabel": "Schéma personnalisé"
+      "customLabel": "Schéma personnalisé",
+      "pattern": "Schéma"
     },
     "schedule": {
       "start": "Début",
@@ -135,13 +136,13 @@
       "indefinite": "Indéfinie",
       "times": "Horaires",
       "upcoming": "Prochaines prises",
-      "addTime": "＋ Ajouter une heure",
+      "addTime": "Ajouter une heure",
       "alarmTimes": "Heures de rappel",
       "duplicateTime": "Cette heure est déjà utilisée"
     },
     "actions": {
-      "pause": "⏸ Mettre en pause",
-      "resume": "▶ Reprendre",
+      "pause": "Mettre en pause",
+      "resume": "Reprendre",
       "delete": "Supprimer"
     },
     "detail": {
@@ -190,9 +191,9 @@
     },
     "confirm": {
       "noteLabel": "Note (optionnel)",
-      "taken": "✓ Pris",
-      "snooze": "⏱ Reporter",
-      "skip": "→ Passer",
+      "taken": "Pris",
+      "snooze": "Reporter",
+      "skip": "Passer",
       "notFound": "Médicament introuvable",
       "snooze10": "10 min",
       "snooze30": "30 min",
@@ -254,6 +255,24 @@
       "medCount_other": "{{count}} médicaments",
       "saved_one": "enregistré",
       "saved_other": "enregistrés"
+    },
+    "medical": {
+      "sectionTitle": "Informations médicales",
+      "bloodType": "Groupe sanguin",
+      "weight": "Poids (kg)",
+      "height": "Taille (cm)",
+      "allergies": "Allergies",
+      "allergiesPlaceholder": "Pénicilline, lactose…",
+      "conditions": "Conditions chroniques",
+      "conditionsPlaceholder": "Diabète, hypertension…",
+      "doctorSection": "Médecin & urgences",
+      "doctorName": "Nom du médecin",
+      "doctorPhone": "Téléphone médecin",
+      "emergencyContact": "Contact d'urgence",
+      "emergencyPhone": "Téléphone urgence",
+      "notes": "Notes médicales",
+      "notesPlaceholder": "Informations supplémentaires…",
+      "edit": "Modifier"
     }
   },
   "settings": {
@@ -315,9 +334,9 @@
     "from": "Du",
     "to": "Au",
     "summary": "Du {{from}} au {{to}} · {{count}} enregistrements",
-    "csv": "⬇ Export CSV",
-    "pdf": "⬇ Export PDF",
-    "json": "⬇ Export JSON",
+    "csv": "Export CSV",
+    "pdf": "Export PDF",
+    "json": "Export JSON",
     "generating": "Génération en cours…"
   },
   "lock": {
@@ -328,9 +347,9 @@
     "days": {
       "sun": "D",
       "mon": "L",
-      "tue": "M",
+      "tue": "Ma",
       "wed": "M",
-      "thu": "J",
+      "thu": "Je",
       "fri": "V",
       "sat": "S"
     },
@@ -343,5 +362,23 @@
     },
     "everyN": "Toutes les",
     "days_label": "jour(s)"
+  },
+  "notificationCenter": {
+    "title": "Notifications du jour",
+    "empty": "Aucune notification aujourd'hui",
+    "markTaken": "Marquer comme pris",
+    "status": {
+      "pending": "En attente",
+      "taken": "Pris",
+      "skipped": "Passé",
+      "missed": "Manqué"
+    }
+  },
+  "avatarPicker": {
+    "title": "Photo de profil",
+    "camera": "Appareil photo",
+    "gallery": "Galerie",
+    "cancel": "Annuler",
+    "permissionDenied": "Permission refusée"
   }
 }

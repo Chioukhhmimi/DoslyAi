@@ -54,9 +54,9 @@
     "todayMeds": "أدوية اليوم",
     "noMeds": "لا توجد أدوية مجدولة اليوم",
     "noMedsDescription": "أضف دواءً لبدء التتبع.",
-    "changeProfile": "تغيير الملف ▾",
+    "changeProfile": "تغيير الملف",
     "manageProfiles": "إدارة الملفات",
-    "snoozeLater": "⏱ لاحقًا",
+    "snoozeLater": "لاحقًا",
     "status": {
       "taken": "مأخوذ",
       "skipped": "متخطى",
@@ -74,10 +74,10 @@
       "activeMeds": "نشط"
     },
     "buckets": {
-      "morning": "🌅 الصباح",
-      "afternoon": "☀️ الظهر",
-      "evening": "🌆 المساء",
-      "night": "🌙 الليل"
+      "morning": "الصباح",
+      "afternoon": "الظهر",
+      "evening": "المساء",
+      "night": "الليل"
     }
   },
   "medications": {
@@ -93,7 +93,7 @@
     "title": "السجل",
     "empty": "لا يوجد سجل",
     "emptyDescription": "سيظهر سجل تناولك هنا.",
-    "export": "⬆ تصدير",
+    "export": "تصدير",
     "filters": {
       "all": "الكل",
       "taken": "مأخوذة",
@@ -127,7 +127,8 @@
       "custom": "مخصص",
       "everyN": "كل",
       "days": "ي",
-      "customLabel": "جدول مخصص"
+      "customLabel": "جدول مخصص",
+      "pattern": "نمط مخصص"
     },
     "schedule": {
       "start": "البداية",
@@ -135,13 +136,13 @@
       "indefinite": "غير محدد",
       "times": "المواعيد",
       "upcoming": "الجرعات القادمة",
-      "addTime": "＋ إضافة موعد",
+      "addTime": "إضافة وقت",
       "alarmTimes": "مواعيد التذكير",
       "duplicateTime": "هذا الوقت مستخدم بالفعل"
     },
     "actions": {
-      "pause": "⏸ إيقاف مؤقت",
-      "resume": "▶ استئناف",
+      "pause": "إيقاف مؤقت",
+      "resume": "استئناف",
       "delete": "حذف"
     },
     "detail": {
@@ -190,9 +191,9 @@
     },
     "confirm": {
       "noteLabel": "ملاحظة (اختيارية)",
-      "taken": "✓ تم الأخذ",
-      "snooze": "⏱ تأجيل",
-      "skip": "→ تخطي",
+      "taken": "تم الأخذ",
+      "snooze": "تأجيل",
+      "skip": "تخطي",
       "notFound": "الدواء غير موجود",
       "snooze10": "10 دقائق",
       "snooze30": "30 دقيقة",
@@ -254,6 +255,24 @@
       "medCount_other": "{{count}} أدوية",
       "saved_one": "مسجّل",
       "saved_other": "مسجّلة"
+    },
+    "medical": {
+      "sectionTitle": "المعلومات الطبية",
+      "bloodType": "فصيلة الدم",
+      "weight": "الوزن (كغ)",
+      "height": "الطول (سم)",
+      "allergies": "الحساسية",
+      "allergiesPlaceholder": "بنسلين، لاكتوز…",
+      "conditions": "الأمراض المزمنة",
+      "conditionsPlaceholder": "السكري، ضغط الدم…",
+      "doctorSection": "الطبيب والطوارئ",
+      "doctorName": "اسم الطبيب",
+      "doctorPhone": "هاتف الطبيب",
+      "emergencyContact": "جهة الاتصال الطارئة",
+      "emergencyPhone": "هاتف الطوارئ",
+      "notes": "ملاحظات طبية",
+      "notesPlaceholder": "معلومات إضافية…",
+      "edit": "تعديل"
     }
   },
   "settings": {
@@ -315,9 +334,9 @@
     "from": "من",
     "to": "إلى",
     "summary": "من {{from}} إلى {{to}} · {{count}} سجل",
-    "csv": "⬇ تصدير CSV",
-    "pdf": "⬇ تصدير PDF",
-    "json": "⬇ تصدير JSON",
+    "csv": "تصدير CSV",
+    "pdf": "تصدير PDF",
+    "json": "تصدير JSON",
     "generating": "جارٍ الإنشاء…"
   },
   "lock": {
@@ -343,5 +362,23 @@
     },
     "everyN": "كل",
     "days_label": "يوم/أيام"
+  },
+  "notificationCenter": {
+    "title": "إشعارات اليوم",
+    "empty": "لا إشعارات اليوم",
+    "markTaken": "تحديد كمأخوذ",
+    "status": {
+      "pending": "في الانتظار",
+      "taken": "مأخوذ",
+      "skipped": "متخطى",
+      "missed": "فائت"
+    }
+  },
+  "avatarPicker": {
+    "title": "صورة الملف",
+    "camera": "الكاميرا",
+    "gallery": "المعرض",
+    "cancel": "إلغاء",
+    "permissionDenied": "تم رفض الإذن"
   }
 }

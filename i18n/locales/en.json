@@ -54,9 +54,9 @@
     "todayMeds": "Today's medications",
     "noMeds": "No medications scheduled today",
     "noMedsDescription": "Add a medication to start tracking.",
-    "changeProfile": "Switch profile ▾",
+    "changeProfile": "Switch profile",
     "manageProfiles": "Manage profiles",
-    "snoozeLater": "⏱ Later",
+    "snoozeLater": "Later",
     "status": {
       "taken": "Taken",
       "skipped": "Skipped",
@@ -74,10 +74,10 @@
       "activeMeds": "Active"
     },
     "buckets": {
-      "morning": "🌅 Morning",
-      "afternoon": "☀️ Afternoon",
-      "evening": "🌆 Evening",
-      "night": "🌙 Night"
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "night": "Night"
     }
   },
   "medications": {
@@ -93,7 +93,7 @@
     "title": "History",
     "empty": "No history",
     "emptyDescription": "Your intake history will appear here.",
-    "export": "⬆ Export",
+    "export": "Export",
     "filters": {
       "all": "All",
       "taken": "Taken",
@@ -127,7 +127,8 @@
       "custom": "Custom",
       "everyN": "Every",
       "days": "d",
-      "customLabel": "Custom schedule"
+      "customLabel": "Custom schedule",
+      "pattern": "Custom"
     },
     "schedule": {
       "start": "Start",
@@ -135,13 +136,13 @@
       "indefinite": "Indefinite",
       "times": "Times",
       "upcoming": "Upcoming doses",
-      "addTime": "＋ Add a time",
+      "addTime": "Add a time",
       "alarmTimes": "Reminder times",
       "duplicateTime": "This time is already set"
     },
     "actions": {
-      "pause": "⏸ Pause",
-      "resume": "▶ Resume",
+      "pause": "Pause",
+      "resume": "Resume",
       "delete": "Delete"
     },
     "detail": {
@@ -190,9 +191,9 @@
     },
     "confirm": {
       "noteLabel": "Note (optional)",
-      "taken": "✓ Taken",
-      "snooze": "⏱ Snooze",
-      "skip": "→ Skip",
+      "taken": "Taken",
+      "snooze": "Snooze",
+      "skip": "Skip",
       "notFound": "Medication not found",
       "snooze10": "10 min",
       "snooze30": "30 min",
@@ -254,6 +255,24 @@
       "medCount_other": "{{count}} medications",
       "saved_one": "saved",
       "saved_other": "saved"
+    },
+    "medical": {
+      "sectionTitle": "Medical information",
+      "bloodType": "Blood type",
+      "weight": "Weight (kg)",
+      "height": "Height (cm)",
+      "allergies": "Allergies",
+      "allergiesPlaceholder": "Penicillin, lactose…",
+      "conditions": "Chronic conditions",
+      "conditionsPlaceholder": "Diabetes, hypertension…",
+      "doctorSection": "Doctor & emergency",
+      "doctorName": "Doctor name",
+      "doctorPhone": "Doctor phone",
+      "emergencyContact": "Emergency contact",
+      "emergencyPhone": "Emergency phone",
+      "notes": "Medical notes",
+      "notesPlaceholder": "Additional information…",
+      "edit": "Edit"
     }
   },
   "settings": {
@@ -315,9 +334,9 @@
     "from": "From",
     "to": "To",
     "summary": "From {{from}} to {{to}} · {{count}} records",
-    "csv": "⬇ Export CSV",
-    "pdf": "⬇ Export PDF",
-    "json": "⬇ Export JSON",
+    "csv": "Export CSV",
+    "pdf": "Export PDF",
+    "json": "Export JSON",
     "generating": "Generating…"
   },
   "lock": {
@@ -328,9 +347,9 @@
     "days": {
       "sun": "S",
       "mon": "M",
-      "tue": "T",
+      "tue": "Tu",
       "wed": "W",
-      "thu": "T",
+      "thu": "Th",
       "fri": "F",
       "sat": "S"
     },
@@ -343,5 +362,23 @@
     },
     "everyN": "Every",
     "days_label": "day(s)"
+  },
+  "notificationCenter": {
+    "title": "Today's notifications",
+    "empty": "No notifications today",
+    "markTaken": "Mark taken",
+    "status": {
+      "pending": "Pending",
+      "taken": "Taken",
+      "skipped": "Skipped",
+      "missed": "Missed"
+    }
+  },
+  "avatarPicker": {
+    "title": "Profile photo",
+    "camera": "Camera",
+    "gallery": "Gallery",
+    "cancel": "Cancel",
+    "permissionDenied": "Permission denied"
   }
 }
