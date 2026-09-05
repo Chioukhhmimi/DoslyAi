@@ -2,16 +2,13 @@ import React from 'react';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { OnboardingSlide } from '@components/onboarding/OnboardingSlide';
-import { useSettingsStore } from '@store/settingsStore';
 
 export default function Slide3() {
   const router = useRouter();
   const { t } = useTranslation();
-  const completeOnboarding = useSettingsStore((s) => s.completeOnboarding);
 
   function handleSkip() {
-    completeOnboarding();
-    router.replace('/profile/new');
+    router.push('/(onboarding)/slide4');
   }
 
   return (

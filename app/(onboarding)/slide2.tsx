@@ -12,7 +12,7 @@ export default function Slide2() {
       description={t('onboarding.slide2.description')}
       illustrationColor="#FEF9C3"
       onNext={() => router.push('/(onboarding)/slide3')}
-      onSkip={() => router.push('/(onboarding)/slide3')}
+      onSkip={() => router.push('/(onboarding)/slide4')}
       currentSlide={2}
       totalSlides={4}
     />
