@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator, Platform, Modal, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  Platform,
+  Modal,
+  StyleSheet,
+} from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
@@ -13,7 +21,7 @@ import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import { useMedicationStore } from '@store/medicationStore';
 import { useProfileStore } from '@store/profileStore';
-import { exportCSV, exportPDF } from '@utils/exportService';
+import { exportCSV, exportPDF, exportJSON } from '@utils/exportService';
 import { format } from 'date-fns';
 
 type Preset = '7d' | '30d' | '90d' | 'custom';
@@ -25,9 +33,9 @@ export default function ExportScreen() {
   const activeProfileId = useProfileStore((s) => s.activeProfileId);
 
   const PRESETS: { key: Preset; label: string; days?: number }[] = [
-    { key: '7d',     label: t('export.last7'),   days: 7 },
-    { key: '30d',    label: t('export.last30'),  days: 30 },
-    { key: '90d',    label: t('export.last90'),  days: 90 },
+    { key: '7d', label: t('export.last7'), days: 7 },
+    { key: '30d', label: t('export.last30'), days: 30 },
+    { key: '90d', label: t('export.last90'), days: 90 },
     { key: 'custom', label: t('export.custom') },
   ];
 
@@ -35,10 +43,14 @@ export default function ExportScreen() {
   const profileIntakeHistory = intakeHistory.filter((r) => r.profileId === activeProfileId);
 
   const [preset, setPreset] = useState<Preset>('30d');
-  const [customFrom, setCustomFrom] = useState(() => { const d = new Date(); d.setDate(d.getDate() - 30); return d; });
+  const [customFrom, setCustomFrom] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 30);
+    return d;
+  });
   const [customTo, setCustomTo] = useState(new Date());
   const [pickerTarget, setPickerTarget] = useState<'from' | 'to' | null>(null);
-  const [loading, setLoading] = useState<'csv' | 'pdf' | null>(null);
+  const [loading, setLoading] = useState<'csv' | 'pdf' | 'json' | null>(null);
 
   function getDateRange(): { from: Date; to: Date } {
     if (preset === 'custom') return { from: customFrom, to: customTo };
@@ -58,12 +70,13 @@ export default function ExportScreen() {
     else setCustomTo(selected);
   }
 
-  async function handleExport(type: 'csv' | 'pdf') {
+  async function handleExport(type: 'csv' | 'pdf' | 'json') {
     setLoading(type);
     try {
       const { from, to } = getDateRange();
       if (type === 'csv') await exportCSV(profileMedications, profileIntakeHistory, from, to);
-      else await exportPDF(profileMedications, profileIntakeHistory, from, to);
+      else if (type === 'pdf') await exportPDF(profileMedications, profileIntakeHistory, from, to);
+      else await exportJSON(profileMedications, profileIntakeHistory, from, to);
     } catch (e) {
       console.error('Export failed', e);
     } finally {
@@ -89,7 +102,9 @@ export default function ExportScreen() {
             style={[styles.presetRow, preset === p.key && styles.presetRowActive]}
             onPress={() => setPreset(p.key)}
           >
-            <Text style={[styles.presetLabel, preset === p.key && styles.presetLabelActive]}>{p.label}</Text>
+            <Text style={[styles.presetLabel, preset === p.key && styles.presetLabelActive]}>
+              {p.label}
+            </Text>
             {preset === p.key && <Ionicons name="checkmark" size={18} color={Colors.primary} />}
           </TouchableOpacity>
         ))}
@@ -105,7 +120,12 @@ export default function ExportScreen() {
                 <Ionicons name="calendar-outline" size={16} color={Colors.primary} />
               </TouchableOpacity>
             </View>
-            <Ionicons name="arrow-forward" size={18} color={Colors.textSecondary} style={styles.arrow} />
+            <Ionicons
+              name="arrow-forward"
+              size={18}
+              color={Colors.textSecondary}
+              style={styles.arrow}
+            />
             <View style={styles.dateItem}>
               <Text style={styles.dateLabel}>{t('export.to')}</Text>
               <TouchableOpacity style={styles.dateBtn} onPress={() => setPickerTarget('to')}>
@@ -118,7 +138,11 @@ export default function ExportScreen() {
       )}
 
       <Text style={styles.rangeSummary}>
-        {t('export.summary', { from: format(from, 'dd/MM/yyyy'), to: format(to, 'dd/MM/yyyy'), count: recordCount })}
+        {t('export.summary', {
+          from: format(from, 'dd/MM/yyyy'),
+          to: format(to, 'dd/MM/yyyy'),
+          count: recordCount,
+        })}
       </Text>
 
       <View style={styles.exportBtns}>
@@ -132,6 +156,13 @@ export default function ExportScreen() {
         <Button
           label={loading === 'pdf' ? '…' : t('export.pdf')}
           onPress={() => handleExport('pdf')}
+          style={styles.exportBtn}
+          disabled={!!loading}
+        />
+        <Button
+          label={loading === 'json' ? '…' : 'JSON'}
+          variant="secondary"
+          onPress={() => handleExport('json')}
           style={styles.exportBtn}
           disabled={!!loading}
         />
@@ -180,27 +211,70 @@ export default function ExportScreen() {
 }
 
 const styles = StyleSheet.create({
-  sectionLabel:    { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textSecondary, marginBottom: Spacing.xs },
-  presetCard:      { padding: 0, marginBottom: Spacing.md },
-  presetRow:       { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.border },
+  sectionLabel: {
+    fontSize: FontSize.sm,
+    fontWeight: '600',
+    color: Colors.textSecondary,
+    marginBottom: Spacing.xs,
+  },
+  presetCard: { padding: 0, marginBottom: Spacing.md },
+  presetRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: Spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
   presetRowActive: { backgroundColor: Colors.primaryLight },
-  presetLabel:     { fontSize: FontSize.md, color: Colors.textPrimary },
+  presetLabel: { fontSize: FontSize.md, color: Colors.textPrimary },
   presetLabelActive: { color: Colors.primary, fontWeight: '600' },
-  dateCard:        { marginBottom: Spacing.md },
-  dateRow:         { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
-  dateItem:        { flex: 1 },
-  dateLabel:       { fontSize: FontSize.xs, color: Colors.textSecondary, marginBottom: 4 },
-  dateBtn:         { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderWidth: 1, borderColor: Colors.border, borderRadius: Radius.sm, padding: Spacing.sm, backgroundColor: Colors.background },
-  dateBtnText:     { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textPrimary },
-  arrow:           { marginTop: 18 },
-  rangeSummary:    { fontSize: FontSize.sm, color: Colors.textSecondary, marginBottom: Spacing.lg, textAlign: 'center' },
-  exportBtns:      { flexDirection: 'row', gap: Spacing.sm, marginBottom: Spacing.md },
-  exportBtn:       { flex: 1 },
-  loadingRow:      { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: Spacing.sm, marginTop: Spacing.sm },
-  loadingText:     { fontSize: FontSize.sm, color: Colors.textSecondary },
-  pickerOverlay:   { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' },
-  pickerSheet:     { backgroundColor: Colors.surface, borderTopLeftRadius: 16, borderTopRightRadius: 16, paddingBottom: 32 },
-  pickerHeader:    { flexDirection: 'row', justifyContent: 'flex-end', padding: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.border },
-  pickerDone:      { fontSize: FontSize.md, color: Colors.primary, fontWeight: '600' },
-  picker:          { width: '100%' },
+  dateCard: { marginBottom: Spacing.md },
+  dateRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
+  dateItem: { flex: 1 },
+  dateLabel: { fontSize: FontSize.xs, color: Colors.textSecondary, marginBottom: 4 },
+  dateBtn: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: Radius.sm,
+    padding: Spacing.sm,
+    backgroundColor: Colors.background,
+  },
+  dateBtnText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textPrimary },
+  arrow: { marginTop: 18 },
+  rangeSummary: {
+    fontSize: FontSize.sm,
+    color: Colors.textSecondary,
+    marginBottom: Spacing.lg,
+    textAlign: 'center',
+  },
+  exportBtns: { flexDirection: 'row', gap: Spacing.sm, marginBottom: Spacing.md },
+  exportBtn: { flex: 1 },
+  loadingRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginTop: Spacing.sm,
+  },
+  loadingText: { fontSize: FontSize.sm, color: Colors.textSecondary },
+  pickerOverlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' },
+  pickerSheet: {
+    backgroundColor: Colors.surface,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    paddingBottom: 32,
+  },
+  pickerHeader: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    padding: Spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  pickerDone: { fontSize: FontSize.md, color: Colors.primary, fontWeight: '600' },
+  picker: { width: '100%' },
 });

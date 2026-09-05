@@ -17,7 +17,7 @@ export async function exportCSV(
   medications: Medication[],
   records: IntakeRecord[],
   fromDate: Date,
-  toDate: Date
+  toDate: Date,
 ): Promise<void> {
   const filtered = records.filter((r) => {
     const d = new Date(r.scheduledAt);
@@ -29,8 +29,8 @@ export async function exportCSV(
   const rows = filtered.map((r) => {
     const med = medications.find((m) => m.id === r.medicationId);
     const d = new Date(r.scheduledAt);
-    const date = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
-    const time = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    const date = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+    const time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
     const status = r.takenAt ? 'Pris' : r.skipped ? 'Passé' : 'Manqué';
     return [
       escapeCSV(date),
@@ -53,26 +53,32 @@ export async function exportPDF(
   medications: Medication[],
   records: IntakeRecord[],
   fromDate: Date,
-  toDate: Date
+  toDate: Date,
 ): Promise<void> {
   const filtered = records.filter((r) => {
     const d = new Date(r.scheduledAt);
     return d >= fromDate && d <= toDate;
   });
 
-  const taken   = filtered.filter((r) => !!r.takenAt).length;
+  const taken = filtered.filter((r) => !!r.takenAt).length;
   const skipped = filtered.filter((r) => !!r.skipped).length;
-  const missed  = filtered.filter((r) => !r.takenAt && !r.skipped).length;
-  const pct     = filtered.length > 0 ? Math.round((taken / filtered.length) * 100) : 100;
+  const missed = filtered.filter((r) => !r.takenAt && !r.skipped).length;
+  const pct = filtered.length > 0 ? Math.round((taken / filtered.length) * 100) : 100;
 
-  const rows = filtered.map((r) => {
-    const med = medications.find((m) => m.id === r.medicationId);
-    const d = new Date(r.scheduledAt);
-    const date = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
-    const time = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-    const status = r.takenAt ? '<span style="color:#15803D">Pris</span>' : r.skipped ? '<span style="color:#92400E">Passé</span>' : '<span style="color:#DC2626">Manqué</span>';
-    return `<tr><td>${date}</td><td>${time}</td><td>${med?.name ?? ''}</td><td>${med?.doseQuantity ?? ''} ${med?.unit ?? ''}</td><td>${status}</td><td>${r.notes ?? ''}</td></tr>`;
-  }).join('');
+  const rows = filtered
+    .map((r) => {
+      const med = medications.find((m) => m.id === r.medicationId);
+      const d = new Date(r.scheduledAt);
+      const date = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+      const time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+      const status = r.takenAt
+        ? '<span style="color:#15803D">Pris</span>'
+        : r.skipped
+          ? '<span style="color:#92400E">Passé</span>'
+          : '<span style="color:#DC2626">Manqué</span>';
+      return `<tr><td>${date}</td><td>${time}</td><td>${med?.name ?? ''}</td><td>${med?.doseQuantity ?? ''} ${med?.unit ?? ''}</td><td>${status}</td><td>${r.notes ?? ''}</td></tr>`;
+    })
+    .join('');
 
   const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
 <style>
@@ -101,4 +107,31 @@ export async function exportPDF(
 
   const { uri } = await Print.printToFileAsync({ html });
   await Sharing.shareAsync(uri, { mimeType: 'application/pdf', dialogTitle: 'Exporter PDF' });
+}
+
+export async function exportJSON(
+  medications: Medication[],
+  records: IntakeRecord[],
+  fromDate: Date,
+  toDate: Date,
+): Promise<void> {
+  const filtered = records.filter((r) => {
+    const d = new Date(r.scheduledAt);
+    return d >= fromDate && d <= toDate;
+  });
+
+  const medIds = new Set(filtered.map((r) => r.medicationId));
+  const referencedMeds = medications.filter((m) => medIds.has(m.id));
+
+  const payload = {
+    exportedAt: new Date().toISOString(),
+    medications: referencedMeds,
+    records: filtered,
+  };
+
+  const path = `${FileSystem.cacheDirectory}meditrack_export.json`;
+  await FileSystem.writeAsStringAsync(path, JSON.stringify(payload, null, 2), {
+    encoding: FileSystem.EncodingType.UTF8,
+  });
+  await Sharing.shareAsync(path, { mimeType: 'application/json', dialogTitle: 'Exporter JSON' });
 }
