@@ -45,9 +45,11 @@ function SettingRow({ label, route, icon }: SettingRowProps) {
 export default function SettingsScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const isRTL = useIsRTL();
   const { biometricLock, setBiometricLock, reset: resetSettings } = useSettingsStore();
   const { reset: resetMedications } = useMedicationStore();
-  const { reset: resetProfiles } = useProfileStore();
+  const { profiles, activeProfileId, reset: resetProfiles } = useProfileStore();
+  const activeProfile = profiles.find(p => p.id === activeProfileId);
   const [biometricAvailable, setBiometricAvailable] = useState(false);
 
   async function handleDeleteAll() {
@@ -95,6 +97,19 @@ export default function SettingsScreen() {
       <Text style={styles.title}>{t('settings.title')}</Text>
 
       <Card>
+        <TouchableOpacity style={styles.row} onPress={() => router.push('/profile')}>
+          <Ionicons name="person-circle-outline" size={18} color={Colors.textSecondary} style={styles.rowIcon} />
+          <View style={styles.profileInfo}>
+            <Text style={styles.rowLabel}>{t('profile.title')}</Text>
+            <Text style={styles.profileSubtitle} numberOfLines={1}>
+              {activeProfile ? activeProfile.name : t('profile.noProfiles')}
+            </Text>
+          </View>
+          <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={18} color={Colors.textDisabled} />
+        </TouchableOpacity>
+      </Card>
+
+      <Card style={styles.section}>
         <SettingRow
           label={t('settings.language')}
           route="/settings/language"
@@ -181,6 +196,8 @@ const styles = StyleSheet.create({
   },
   rowIcon: { marginRight: Spacing.sm },
   rowLabel: { flex: 1, fontSize: FontSize.md, color: Colors.textPrimary },
+  profileInfo: { flex: 1 },
+  profileSubtitle: { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 1 },
   biometricHint: {
     fontSize: FontSize.xs,
     color: Colors.textSecondary,
