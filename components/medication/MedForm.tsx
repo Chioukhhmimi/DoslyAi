@@ -27,6 +27,9 @@ import { Button } from '@components/ui/Button';
 import { BottomSheet } from '@components/ui/BottomSheet';
 import { SchedulePicker } from './SchedulePicker';
 import { COMMON_DRUG_NAMES } from '@constants/drugNames';
+import { Ionicons } from '@expo/vector-icons';
+import { SelectableChip } from '@components/ui/SelectableChip';
+import { Stepper } from '@components/ui/Stepper';
 
 interface MedFormProps {
   initialValues?: Partial<Medication>;
@@ -219,40 +222,17 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
 
             <Text style={styles.label}>{t('medication.form.doseLabel')}</Text>
             <View style={styles.doseRow}>
-              <View style={[styles.stepper, !!errors.doseQuantity && styles.inputError]}>
-                <TouchableOpacity
-                  style={styles.stepperBtn}
-                  onPress={() => {
-                    const v = Math.max(0.5, (parseFloat(doseQuantity) || 1) - 0.5);
-                    setDoseQuantity(v % 1 === 0 ? String(v) : String(v));
-                    setErrors((e) => ({ ...e, doseQuantity: '' }));
-                  }}
-                >
-                  <Text style={styles.stepperBtnText}>−</Text>
-                </TouchableOpacity>
-                <TextInput
-                  style={styles.stepperInput}
-                  value={doseQuantity}
-                  onChangeText={(v) => {
-                    setDoseQuantity(v);
-                    setErrors((e) => ({ ...e, doseQuantity: '' }));
-                  }}
-                  placeholder="1"
-                  placeholderTextColor={Colors.textDisabled}
-                  keyboardType="decimal-pad"
-                  textAlign="center"
-                />
-                <TouchableOpacity
-                  style={styles.stepperBtn}
-                  onPress={() => {
-                    const v = Math.min(999, (parseFloat(doseQuantity) || 0) + 0.5);
-                    setDoseQuantity(v % 1 === 0 ? String(v) : String(v));
-                    setErrors((e) => ({ ...e, doseQuantity: '' }));
-                  }}
-                >
-                  <Text style={styles.stepperBtnText}>+</Text>
-                </TouchableOpacity>
-              </View>
+              <Stepper
+                value={parseFloat(doseQuantity) || 1}
+                onChange={(v) => {
+                  setDoseQuantity(String(v));
+                  setErrors((e) => ({ ...e, doseQuantity: '' }));
+                }}
+                min={0.5}
+                max={999}
+                step={0.5}
+                editable
+              />
               <TextInput
                 style={[styles.input, styles.doseUnitInput, !!errors.unit && styles.inputError]}
                 value={unit}
@@ -268,37 +248,29 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
               <Text style={styles.errorText}>{errors.doseQuantity || errors.unit}</Text>
             )}
             <View style={styles.unitPresets}>
-              {UNIT_PRESET_KEYS.map((key) => {
-                const label = t(`medication.units.${key}`);
-                return (
-                  <TouchableOpacity
-                    key={key}
-                    onPress={() => {
-                      setUnit(key);
-                      setErrors((e) => ({ ...e, unit: '' }));
-                    }}
-                    style={[styles.unitChip, unit === key && styles.unitChipActive]}
-                  >
-                    <Text style={[styles.unitChipText, unit === key && styles.unitChipTextActive]}>
-                      {label}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
+              {UNIT_PRESET_KEYS.map((key) => (
+                <SelectableChip
+                  key={key}
+                  label={t(`medication.units.${key}`)}
+                  selected={unit === key}
+                  onPress={() => {
+                    setUnit(key);
+                    setErrors((e) => ({ ...e, unit: '' }));
+                  }}
+                  size="sm"
+                />
+              ))}
             </View>
 
             <Text style={styles.label}>{t('medication.form.typeLabel')}</Text>
             <View style={styles.chips}>
               {TYPES.map((tp) => (
-                <TouchableOpacity
+                <SelectableChip
                   key={tp}
+                  label={t(`medication.types.${tp}`)}
+                  selected={type === tp}
                   onPress={() => setType(tp)}
-                  style={[styles.chip, type === tp && styles.chipActive]}
-                >
-                  <Text style={[styles.chipText, type === tp && styles.chipTextActive]}>
-                    {t(`medication.types.${tp}`)}
-                  </Text>
-                </TouchableOpacity>
+                />
               ))}
             </View>
 
@@ -346,7 +318,7 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
             >
               <View style={styles.dateRow}>
                 <Text style={styles.dateText}>{format(startDate, 'dd/MM/yyyy')}</Text>
-                <Text>📅</Text>
+                <Ionicons name="calendar-outline" size={18} color={Colors.textSecondary} />
               </View>
             </TouchableOpacity>
 
@@ -375,7 +347,7 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
                     <Text style={endDate ? styles.dateText : styles.datePlaceholder}>
                       {endDate ? format(endDate, 'dd/MM/yyyy') : t('profile.form.dobPlaceholder')}
                     </Text>
-                    <Text>📅</Text>
+                    <Ionicons name="calendar-outline" size={18} color={Colors.textSecondary} />
                   </View>
                 </TouchableOpacity>
                 {!!errors.endDate && <Text style={styles.errorText}>{errors.endDate}</Text>}
@@ -398,15 +370,12 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
             {refillReminderEnabled && (
               <View style={styles.refillDaysRow}>
                 <Text style={styles.fieldLabel}>{t('medication.form.refillDaysBefore')}</Text>
-                <View style={styles.refillStepper}>
-                  <TouchableOpacity style={styles.stepBtn} onPress={() => setRefillReminderDays(Math.max(1, refillReminderDays - 1))}>
-                    <Text style={styles.stepBtnText}>−</Text>
-                  </TouchableOpacity>
-                  <Text style={styles.stepValue}>{refillReminderDays}</Text>
-                  <TouchableOpacity style={styles.stepBtn} onPress={() => setRefillReminderDays(Math.min(30, refillReminderDays + 1))}>
-                    <Text style={styles.stepBtnText}>+</Text>
-                  </TouchableOpacity>
-                </View>
+                <Stepper
+                  value={refillReminderDays}
+                  onChange={setRefillReminderDays}
+                  min={1}
+                  max={30}
+                />
               </View>
             )}
 
@@ -605,31 +574,6 @@ const styles = StyleSheet.create({
   multiline: { minHeight: 80, textAlignVertical: 'top' },
   errorText: { fontSize: FontSize.xs, color: Colors.danger, marginTop: 2 },
   doseRow: { flexDirection: 'row', gap: Spacing.sm },
-  stepper: {
-    flex: 0.45,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: Colors.border,
-    borderRadius: Radius.sm,
-    backgroundColor: Colors.surface,
-    overflow: 'hidden',
-  },
-  stepperBtn: {
-    width: 40,
-    height: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.surfaceSubtle,
-  },
-  stepperBtnText: { fontSize: FontSize.lg, fontWeight: '600', color: Colors.primary },
-  stepperInput: {
-    flex: 1,
-    height: 48,
-    fontSize: FontSize.md,
-    color: Colors.textPrimary,
-    textAlign: 'center',
-  },
   doseUnitInput: { flex: 0.55 },
   unitPresets: {
     flexDirection: 'row',
@@ -638,17 +582,6 @@ const styles = StyleSheet.create({
     marginTop: Spacing.xs,
     marginBottom: Spacing.sm,
   },
-  unitChip: {
-    paddingVertical: 4,
-    paddingHorizontal: Spacing.sm,
-    borderRadius: Radius.full,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    backgroundColor: Colors.surface,
-  },
-  unitChipActive: { backgroundColor: Colors.primaryLight, borderColor: Colors.primary },
-  unitChipText: { fontSize: FontSize.xs, color: Colors.textSecondary },
-  unitChipTextActive: { color: Colors.primary, fontWeight: '600' },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.xs, marginBottom: Spacing.sm },
   colorRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: Spacing.sm },
   colorSwatch: {
@@ -659,17 +592,6 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   colorSwatchActive: { borderColor: Colors.textPrimary, transform: [{ scale: 1.15 }] },
-  chip: {
-    paddingVertical: 6,
-    paddingHorizontal: Spacing.sm,
-    borderRadius: Radius.full,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    backgroundColor: Colors.surface,
-  },
-  chipActive: { backgroundColor: Colors.primary, borderColor: Colors.primary },
-  chipText: { fontSize: FontSize.sm, color: Colors.textSecondary, fontWeight: '600' },
-  chipTextActive: { color: Colors.textInverse },
   dateRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   dateText: { fontSize: FontSize.md, color: Colors.textPrimary },
   datePlaceholder: { fontSize: FontSize.md, color: Colors.textDisabled },
@@ -716,8 +638,4 @@ const styles = StyleSheet.create({
   toggleOn:       { backgroundColor: Colors.primary },
   toggleThumb:    { width: 24, height: 24, borderRadius: 12, backgroundColor: Colors.surface },
   toggleThumbOn:  { alignSelf: 'flex-end' },
-  refillStepper:  { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
-  stepBtn:        { width: 32, height: 32, borderRadius: 16, backgroundColor: Colors.surfaceSubtle, borderWidth: 1, borderColor: Colors.border, alignItems: 'center', justifyContent: 'center' },
-  stepBtnText:    { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary },
-  stepValue:      { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary, minWidth: 24, textAlign: 'center' },
 });
