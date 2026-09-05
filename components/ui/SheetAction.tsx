@@ -15,7 +15,7 @@ interface SheetActionProps {
 export function SheetAction({ label, icon, onPress, variant = 'default' }: SheetActionProps) {
   const isDanger = variant === 'danger';
   return (
-    <TouchableOpacity style={styles.row} onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity style={styles.row} onPress={onPress} activeOpacity={0.7} accessibilityRole="button" accessibilityLabel={label}>
       <Ionicons
         name={icon}
         size={20}

@@ -31,7 +31,7 @@ export function Stepper({
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.btn} onPress={decrement} disabled={value <= min} activeOpacity={0.7}>
+      <TouchableOpacity style={styles.btn} onPress={decrement} disabled={value <= min} activeOpacity={0.7} accessibilityLabel="Decrease" accessibilityRole="button" accessibilityState={{ disabled: value <= min }}>
         <Text style={[styles.btnText, value <= min && styles.btnDisabled]}>−</Text>
       </TouchableOpacity>
       {editable ? (
@@ -44,11 +44,12 @@ export function Stepper({
           }}
           keyboardType="decimal-pad"
           textAlign="center"
+          accessibilityLabel="Value"
         />
       ) : (
         <Text style={styles.valueText}>{value}</Text>
       )}
-      <TouchableOpacity style={styles.btn} onPress={increment} disabled={value >= max} activeOpacity={0.7}>
+      <TouchableOpacity style={styles.btn} onPress={increment} disabled={value >= max} activeOpacity={0.7} accessibilityLabel="Increase" accessibilityRole="button" accessibilityState={{ disabled: value >= max }}>
         <Text style={[styles.btnText, value >= max && styles.btnDisabled]}>+</Text>
       </TouchableOpacity>
     </View>

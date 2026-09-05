@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Modal, TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 
@@ -11,11 +12,23 @@ interface BottomSheetProps {
   contentStyle?: ViewStyle;
 }
 
-export function BottomSheet({ visible, onClose, children, showHandle = true, contentStyle }: BottomSheetProps) {
+export function BottomSheet({
+  visible,
+  onClose,
+  children,
+  showHandle = true,
+  contentStyle,
+}: BottomSheetProps) {
+  const insets = useSafeAreaInsets();
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <TouchableOpacity style={styles.overlay} onPress={onClose} activeOpacity={1}>
-        <TouchableOpacity style={[styles.sheet, contentStyle]} activeOpacity={1} onPress={() => {}}>
+        <TouchableOpacity
+          style={[styles.sheet, contentStyle, { paddingBottom: Math.max(36, insets.bottom + 16) }]}
+          activeOpacity={1}
+          onPress={() => {}}
+          accessibilityViewIsModal={true}
+        >
           {showHandle && <View style={styles.handle} />}
           {children}
         </TouchableOpacity>
@@ -35,7 +48,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: Radius.xl,
     borderTopRightRadius: Radius.xl,
     paddingHorizontal: Spacing.lg,
-    paddingBottom: 36,
     maxHeight: '90%',
   },
   handle: {

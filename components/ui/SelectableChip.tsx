@@ -26,6 +26,9 @@ export function SelectableChip({
     <TouchableOpacity
       activeOpacity={0.7}
       onPress={onPress}
+      accessibilityRole="button"
+      accessibilityState={{ selected }}
+      accessibilityLabel={label}
       style={[
         styles.base,
         selected && styles.selected,
@@ -64,11 +67,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.sm,
     paddingVertical: 3,
     borderRadius: Radius.full,
+    minHeight: 44,
   },
   circle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
   },
   rect: {
     paddingHorizontal: Spacing.md,

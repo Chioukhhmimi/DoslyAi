@@ -31,11 +31,16 @@ export function Button({
       disabled={isDisabled}
       style={[styles.base, styles[variant], isDisabled && styles.disabled, style]}
       activeOpacity={0.8}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: isDisabled }}
+      accessibilityLabel={loading ? undefined : label}
     >
       {loading ? (
         <ActivityIndicator color={variant === 'primary' ? Colors.textInverse : Colors.primary} />
       ) : (
-        <Text style={[styles.label, styles[`${variant}Label` as keyof typeof styles]]}>{label}</Text>
+        <Text style={[styles.label, styles[`${variant}Label` as keyof typeof styles]]}>
+          {label}
+        </Text>
       )}
     </TouchableOpacity>
   );
@@ -49,14 +54,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: Spacing.lg,
   },
-  primary:        { backgroundColor: Colors.primary },
-  secondary:      { backgroundColor: Colors.primaryLight, borderWidth: 1, borderColor: Colors.primary },
-  ghost:          { backgroundColor: 'transparent' },
-  danger:         { backgroundColor: Colors.danger },
-  disabled:       { opacity: 0.5 },
-  label:          { fontSize: FontSize.md, fontWeight: '600' },
-  primaryLabel:   { color: Colors.textInverse },
+  primary: { backgroundColor: Colors.primary },
+  secondary: { backgroundColor: Colors.primaryLight, borderWidth: 1, borderColor: Colors.primary },
+  ghost: { backgroundColor: 'transparent' },
+  danger: { backgroundColor: Colors.danger },
+  disabled: { opacity: 0.5 },
+  label: { fontSize: FontSize.md, fontWeight: '600' },
+  primaryLabel: { color: Colors.textInverse },
   secondaryLabel: { color: Colors.primary },
-  ghostLabel:     { color: Colors.primary },
-  dangerLabel:    { color: Colors.textInverse },
+  ghostLabel: { color: Colors.primary },
+  dangerLabel: { color: Colors.textInverse },
 });
