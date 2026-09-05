@@ -51,6 +51,7 @@ export default function ExportScreen() {
   const [customTo, setCustomTo] = useState(new Date());
   const [pickerTarget, setPickerTarget] = useState<'from' | 'to' | null>(null);
   const [loading, setLoading] = useState<'csv' | 'pdf' | 'json' | null>(null);
+  const [dateRangeError, setDateRangeError] = useState(false);
 
   function getDateRange(): { from: Date; to: Date } {
     if (preset === 'custom') return { from: customFrom, to: customTo };
@@ -66,8 +67,21 @@ export default function ExportScreen() {
   function onDateChange(_: DateTimePickerEvent, selected?: Date) {
     if (Platform.OS === 'android') setPickerTarget(null);
     if (!selected) return;
-    if (pickerTarget === 'from') setCustomFrom(selected);
-    else setCustomTo(selected);
+    if (pickerTarget === 'from') {
+      setCustomFrom(selected);
+      if (selected > customTo) {
+        setDateRangeError(true);
+      } else {
+        setDateRangeError(false);
+      }
+    } else {
+      if (selected < customFrom) {
+        setDateRangeError(true);
+      } else {
+        setDateRangeError(false);
+        setCustomTo(selected);
+      }
+    }
   }
 
   async function handleExport(type: 'csv' | 'pdf' | 'json') {
@@ -137,6 +151,10 @@ export default function ExportScreen() {
         </Card>
       )}
 
+      {dateRangeError && (
+        <Text style={styles.dateError}>End date must be after start date</Text>
+      )}
+
       <Text style={styles.rangeSummary}>
         {t('export.summary', {
           from: format(from, 'dd/MM/yyyy'),
@@ -151,20 +169,20 @@ export default function ExportScreen() {
           variant="secondary"
           onPress={() => handleExport('csv')}
           style={styles.exportBtn}
-          disabled={!!loading}
+          disabled={!!loading || (preset === 'custom' && dateRangeError)}
         />
         <Button
           label={loading === 'pdf' ? '…' : t('export.pdf')}
           onPress={() => handleExport('pdf')}
           style={styles.exportBtn}
-          disabled={!!loading}
+          disabled={!!loading || (preset === 'custom' && dateRangeError)}
         />
         <Button
           label={loading === 'json' ? '…' : t('export.json')}
           variant="secondary"
           onPress={() => handleExport('json')}
           style={styles.exportBtn}
-          disabled={!!loading}
+          disabled={!!loading || (preset === 'custom' && dateRangeError)}
         />
       </View>
 
@@ -261,6 +279,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.sm,
   },
   loadingText: { fontSize: FontSize.sm, color: Colors.textSecondary },
+  dateError: { fontSize: FontSize.xs, color: Colors.danger, marginTop: 4 },
   pickerOverlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' },
   pickerSheet: {
     backgroundColor: Colors.surface,

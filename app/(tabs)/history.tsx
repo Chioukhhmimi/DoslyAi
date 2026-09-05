@@ -149,6 +149,7 @@ export default function HistoryScreen() {
                   selected={range === r.value}
                   onPress={() => {
                     setRange(r.value);
+                    setFilter('all');
                     setSelectedDate(new Date());
                   }}
                   size="sm"

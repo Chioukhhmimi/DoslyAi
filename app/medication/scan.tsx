@@ -195,7 +195,12 @@ export default function ScanScreen() {
                       <Text style={styles.hint}>{item.frequency}</Text>
                     </View>
                   ) : null}
-                  {item.duration ? <Text style={styles.hint}>📅 {item.duration}</Text> : null}
+                  {item.duration ? (
+                    <View style={styles.hintRow}>
+                      <Ionicons name="calendar-outline" size={12} color={Colors.textSecondary} />
+                      <Text style={styles.hint}>{item.duration}</Text>
+                    </View>
+                  ) : null}
                 </View>
               </View>
             )}
