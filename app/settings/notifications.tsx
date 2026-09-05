@@ -21,10 +21,14 @@ function parseHHMM(hhmm: string): Date {
 export default function NotificationsSettingsScreen() {
   const { t } = useTranslation();
   const {
-    notificationsEnabled, setNotificationsEnabled,
-    quietHoursEnabled, setQuietHoursEnabled,
-    quietHoursStart, setQuietHoursStart,
-    quietHoursEnd, setQuietHoursEnd,
+    notificationsEnabled,
+    setNotificationsEnabled,
+    quietHoursEnabled,
+    setQuietHoursEnabled,
+    quietHoursStart,
+    setQuietHoursStart,
+    quietHoursEnd,
+    setQuietHoursEnd,
   } = useSettingsStore();
 
   const [pickerTarget, setPickerTarget] = useState<'start' | 'end' | null>(null);
@@ -69,7 +73,9 @@ export default function NotificationsSettingsScreen() {
 
         {quietHoursEnabled && notificationsEnabled && (
           <View style={styles.quietHoursBlock}>
-            <Text style={styles.quietHoursHint}>{t('settings.notificationsScreen.quietDescription')}</Text>
+            <Text style={styles.quietHoursHint}>
+              {t('settings.notificationsScreen.quietDescription')}
+            </Text>
             <View style={styles.timeRow}>
               <View style={styles.timeItem}>
                 <Text style={styles.timeLabel}>{t('settings.notificationsScreen.start')}</Text>
@@ -78,7 +84,12 @@ export default function NotificationsSettingsScreen() {
                   <Ionicons name="time-outline" size={16} color={Colors.primary} />
                 </TouchableOpacity>
               </View>
-              <Ionicons name="arrow-forward" size={18} color={Colors.textSecondary} style={styles.arrow} />
+              <Ionicons
+                name="arrow-forward"
+                size={18}
+                color={Colors.textSecondary}
+                style={styles.arrow}
+              />
               <View style={styles.timeItem}>
                 <Text style={styles.timeLabel}>{t('settings.notificationsScreen.end')}</Text>
                 <TouchableOpacity style={styles.timeBtn} onPress={() => setPickerTarget('end')}>
@@ -125,21 +136,46 @@ export default function NotificationsSettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  card:             { padding: 0 },
-  row:              { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: Spacing.md },
-  rowLabel:         { fontSize: FontSize.md, color: Colors.textPrimary },
-  divider:          { height: 1, backgroundColor: Colors.border, marginHorizontal: Spacing.md },
-  quietHoursBlock:  { paddingHorizontal: Spacing.md, paddingBottom: Spacing.md },
-  quietHoursHint:   { fontSize: FontSize.sm, color: Colors.textSecondary, marginBottom: Spacing.sm },
-  timeRow:          { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
-  timeItem:         { flex: 1 },
-  timeLabel:        { fontSize: FontSize.xs, color: Colors.textSecondary, marginBottom: 4 },
-  timeBtn:          { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderWidth: 1, borderColor: Colors.border, borderRadius: Radius.sm, padding: Spacing.sm, backgroundColor: Colors.background },
-  timeBtnText:      { fontSize: FontSize.md, fontWeight: '600', color: Colors.textPrimary },
-  arrow:            { marginTop: 18 },
-  pickerOverlay:    { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' },
-  pickerSheet:      { backgroundColor: Colors.surface, borderTopLeftRadius: 16, borderTopRightRadius: 16, paddingBottom: 32 },
-  pickerHeader:     { flexDirection: 'row', justifyContent: 'flex-end', padding: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.border },
-  pickerDone:       { fontSize: FontSize.md, color: Colors.primary, fontWeight: '600' },
-  picker:           { width: '100%' },
+  card: { padding: 0 },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: Spacing.md,
+  },
+  rowLabel: { fontSize: FontSize.md, color: Colors.textPrimary },
+  divider: { height: 1, backgroundColor: Colors.border, marginHorizontal: Spacing.md },
+  quietHoursBlock: { paddingHorizontal: Spacing.md, paddingBottom: Spacing.md },
+  quietHoursHint: { fontSize: FontSize.sm, color: Colors.textSecondary, marginBottom: Spacing.sm },
+  timeRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
+  timeItem: { flex: 1 },
+  timeLabel: { fontSize: FontSize.xs, color: Colors.textSecondary, marginBottom: 4 },
+  timeBtn: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: Radius.sm,
+    padding: Spacing.sm,
+    backgroundColor: Colors.background,
+  },
+  timeBtnText: { fontSize: FontSize.md, fontWeight: '600', color: Colors.textPrimary },
+  arrow: { marginTop: 18 },
+  pickerOverlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' },
+  pickerSheet: {
+    backgroundColor: Colors.surface,
+    borderTopLeftRadius: Radius.xl,
+    borderTopRightRadius: Radius.xl,
+    paddingBottom: Spacing.xl,
+  },
+  pickerHeader: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    padding: Spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  pickerDone: { fontSize: FontSize.md, color: Colors.primary, fontWeight: '600' },
+  picker: { width: '100%' },
 });

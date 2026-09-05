@@ -20,11 +20,11 @@ import {
 import { formatTime } from '@utils/dateHelpers';
 
 const TYPE_COLOR: Record<string, string> = {
-  pill: Colors.pill ?? '#6366F1',
-  syrup: Colors.syrup ?? '#EC4899',
-  injection: Colors.injection ?? '#F97316',
-  supplement: Colors.supplement ?? '#059669',
-  other: Colors.other ?? Colors.textSecondary,
+  pill: Colors.pill,
+  syrup: Colors.syrup,
+  injection: Colors.injection,
+  supplement: Colors.supplement,
+  other: Colors.other,
 };
 
 function MedRow({ item }: { item: Medication }) {

@@ -16,21 +16,27 @@ interface MedListItemProps {
 }
 
 const TYPE_COLOR: Record<string, string> = {
-  pill:       Colors.pill,
-  syrup:      Colors.syrup,
-  injection:  Colors.injection,
+  pill: Colors.pill,
+  syrup: Colors.syrup,
+  injection: Colors.injection,
   supplement: Colors.supplement,
-  other:      Colors.other,
+  other: Colors.other,
 };
 
 export function MedListItem({ medication, intakeRecord, scheduledAt, onPress }: MedListItemProps) {
   const { t } = useTranslation();
-  const isTaken   = !!intakeRecord?.takenAt;
+  const isTaken = !!intakeRecord?.takenAt;
   const isSkipped = !!intakeRecord?.skipped;
-  const isFuture  = new Date(scheduledAt) > new Date();
+  const isFuture = new Date(scheduledAt) > new Date();
 
   const statusVariant = isTaken ? 'success' : isSkipped ? 'warning' : isFuture ? 'info' : 'danger';
-  const statusLabel   = isTaken ? t('home.status.taken') : isSkipped ? t('home.status.skipped') : isFuture ? t('home.status.upcoming') : t('home.status.overdue');
+  const statusLabel = isTaken
+    ? t('home.status.taken')
+    : isSkipped
+      ? t('home.status.skipped')
+      : isFuture
+        ? t('home.status.upcoming')
+        : t('home.status.overdue');
 
   const time = new Date(scheduledAt);
   const hhmm = `${String(time.getHours()).padStart(2, '0')}:${String(time.getMinutes()).padStart(2, '0')}`;
@@ -44,7 +50,9 @@ export function MedListItem({ medication, intakeRecord, scheduledAt, onPress }: 
         <View style={styles.row}>
           <View style={styles.info}>
             <Text style={styles.name}>{medication.name}</Text>
-            <Text style={styles.dosage}>{medication.doseQuantity} {medication.unit}</Text>
+            <Text style={styles.dosage}>
+              {medication.doseQuantity} {medication.unit}
+            </Text>
           </View>
           <View style={styles.right}>
             <Text style={styles.time}>{formatTime(hhmm)}</Text>
@@ -59,10 +67,10 @@ export function MedListItem({ medication, intakeRecord, scheduledAt, onPress }: 
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.surface,
     borderRadius: Radius.md,
     marginBottom: Spacing.sm,
-    shadowColor: '#000',
+    shadowColor: Colors.textPrimary,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.07,
     shadowRadius: 4,
@@ -73,10 +81,10 @@ const styles = StyleSheet.create({
   },
   leftBar: { width: 4 },
   content: { flex: 1, padding: Spacing.md },
-  row:     { flexDirection: 'row', alignItems: 'center' },
-  info:    { flex: 1 },
-  name:    { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary },
-  dosage:  { fontSize: FontSize.sm, color: Colors.textSecondary, marginTop: 2 },
-  right:   { alignItems: 'flex-end', gap: 4 },
-  time:    { fontSize: FontSize.xs, color: Colors.textSecondary },
+  row: { flexDirection: 'row', alignItems: 'center' },
+  info: { flex: 1 },
+  name: { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary },
+  dosage: { fontSize: FontSize.sm, color: Colors.textSecondary, marginTop: 2 },
+  right: { alignItems: 'flex-end', gap: 4 },
+  time: { fontSize: FontSize.xs, color: Colors.textSecondary },
 });

@@ -31,7 +31,7 @@ export default function ProfileListScreen() {
     router.replace('/(tabs)');
   }
 
-  const isRTL  = useIsRTL();
+  const isRTL = useIsRTL();
   const chevron = isRTL ? 'chevron-back' : 'chevron-forward';
 
   return (
@@ -102,18 +102,42 @@ export default function ProfileListScreen() {
 }
 
 const styles = StyleSheet.create({
-  addBtn:          { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 6, paddingHorizontal: Spacing.sm, borderRadius: Radius.full, borderWidth: 1, borderColor: Colors.primary },
-  addBtnText:      { fontSize: FontSize.sm, color: Colors.primary, fontWeight: '600' },
-  hint:            { fontSize: FontSize.sm, color: Colors.textSecondary, marginBottom: Spacing.md },
-  card:            { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, backgroundColor: Colors.surface, borderRadius: Radius.md, padding: Spacing.md, borderWidth: 1, borderColor: Colors.border, marginBottom: Spacing.sm },
-  cardActive:      { borderColor: Colors.primary, backgroundColor: '#EFF6FF' },
-  info:            { flex: 1 },
-  nameRow:         { flexDirection: 'row', alignItems: 'center', gap: Spacing.xs, flexWrap: 'wrap' },
-  name:            { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary },
-  nameActive:      { color: Colors.primary },
-  activeBadge:     { backgroundColor: Colors.primary, borderRadius: Radius.full, paddingHorizontal: 8, paddingVertical: 2 },
-  activeBadgeText: { fontSize: FontSize.xs, color: '#fff', fontWeight: '700' },
-  rel:             { fontSize: FontSize.sm, color: Colors.textSecondary, marginTop: 2 },
-  medCount:        { fontSize: FontSize.sm, color: Colors.textSecondary, marginTop: 4 },
-  detailBtn:       { padding: 4 },
+  addBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingVertical: 6,
+    paddingHorizontal: Spacing.sm,
+    borderRadius: Radius.full,
+    borderWidth: 1,
+    borderColor: Colors.primary,
+  },
+  addBtnText: { fontSize: FontSize.sm, color: Colors.primary, fontWeight: '600' },
+  hint: { fontSize: FontSize.sm, color: Colors.textSecondary, marginBottom: Spacing.md },
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    backgroundColor: Colors.surface,
+    borderRadius: Radius.md,
+    padding: Spacing.md,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    marginBottom: Spacing.sm,
+  },
+  cardActive: { borderColor: Colors.primary, backgroundColor: Colors.primaryXLight },
+  info: { flex: 1 },
+  nameRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.xs, flexWrap: 'wrap' },
+  name: { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary },
+  nameActive: { color: Colors.primary },
+  activeBadge: {
+    backgroundColor: Colors.primary,
+    borderRadius: Radius.full,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  activeBadgeText: { fontSize: FontSize.xs, color: Colors.textInverse, fontWeight: '700' },
+  rel: { fontSize: FontSize.sm, color: Colors.textSecondary, marginTop: 2 },
+  medCount: { fontSize: FontSize.sm, color: Colors.textSecondary, marginTop: 4 },
+  detailBtn: { padding: 4 },
 });
