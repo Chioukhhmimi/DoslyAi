@@ -150,7 +150,8 @@
       "frequency": "Frequency",
       "notes": "Notes",
       "dose": "Dose",
-      "type": "Form"
+      "type": "Form",
+      "adherence7": "7-day adherence"
     },
     "form": {
       "step": "Step",
@@ -289,6 +290,9 @@
       "sharedDataValue": "None"
     },
     "privacyBody": "Dosly stores all your data locally on your device. No personal data is transmitted to external servers. Your medical information remains entirely private and under your control.\n\nThe following data is stored locally:\n• Patient profiles (name, date of birth, relationship)\n• Medications and dosing schedules\n• Intake history\n\nYou can delete all your data at any time by uninstalling the app.",
+    "deleteAllBtn": "Delete all data",
+    "deleteAllTitle": "Delete all data",
+    "deleteAllMessage": "This action is irreversible. All your medications, profiles and history will be deleted.",
     "termsScreen": {
       "intro": "By using Dosly, you agree to the following terms:",
       "section1Title": "1. Use",
@@ -313,6 +317,7 @@
     "summary": "From {{from}} to {{to}} · {{count}} records",
     "csv": "⬇ Export CSV",
     "pdf": "⬇ Export PDF",
+    "json": "⬇ Export JSON",
     "generating": "Generating…"
   },
   "lock": {
