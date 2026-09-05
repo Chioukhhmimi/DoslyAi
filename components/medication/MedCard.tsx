@@ -125,7 +125,10 @@ export const MedCard = React.memo(function MedCard({ medication, scheduledTime, 
                 {medication.paused && <Badge label={t('medications.paused')} variant="warning" size="sm" />}
               </View>
               <Text style={styles.sub}>{medication.doseQuantity} {medication.unit} · {medication.schedule.times.map(formatTime).join(' · ')}</Text>
-              <Text style={[styles.time, isOverdue && styles.timeOverdue]}>⏰ {formatTime(scheduledTime)}</Text>
+              <View style={styles.timeRow}>
+                <Ionicons name="time-outline" size={12} color={isOverdue ? Colors.danger : Colors.textSecondary} />
+                <Text style={[styles.time, isOverdue && styles.timeOverdue]}>{formatTime(scheduledTime)}</Text>
+              </View>
             </View>
             <Badge label={statusLabel} variant={statusVariant} size="sm" />
           </View>
@@ -174,7 +177,8 @@ const styles = StyleSheet.create({
   nameRow:          { flexDirection: 'row', alignItems: 'center', gap: Spacing.xs },
   name:             { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary },
   sub:              { fontSize: FontSize.sm, color: Colors.textSecondary, marginTop: 2 },
-  time:             { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 2 },
+  timeRow:          { flexDirection: 'row', alignItems: 'center', gap: 3, marginTop: 2 },
+  time:             { fontSize: FontSize.xs, color: Colors.textSecondary },
   timeOverdue:      { color: Colors.danger, fontWeight: '600' },
   actions:          { flexDirection: 'row', gap: Spacing.xs, marginTop: Spacing.sm, paddingTop: Spacing.sm, borderTopWidth: 1, borderTopColor: Colors.border },
   btnTaken:         { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, backgroundColor: Colors.successLight, borderRadius: Radius.sm, padding: Spacing.sm },

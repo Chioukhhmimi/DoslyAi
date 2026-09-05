@@ -1,7 +1,13 @@
 import React, { useRef, useState } from 'react';
 import {
-  View, Text, TouchableOpacity, FlatList, TextInput,
-  ActivityIndicator, StyleSheet, Dimensions,
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  TextInput,
+  ActivityIndicator,
+  StyleSheet,
+  Dimensions,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { CameraView, useCameraPermissions, FlashMode } from 'expo-camera';
@@ -35,8 +41,8 @@ export default function ScanScreen() {
   const { runOCR, pickFromGallery, isProcessing, medications, error, reset } = useOCR();
   const cameraRef = useRef<CameraView>(null);
 
-  const [screen, setScreen]       = useState<Screen>('camera');
-  const [flash, setFlash]         = useState<FlashMode>('off');
+  const [screen, setScreen] = useState<Screen>('camera');
+  const [flash, setFlash] = useState<FlashMode>('off');
   const [editableMeds, setEditableMeds] = useState<EditableMed[]>([]);
 
   // ── Permission not yet determined ──────────────────────────────────────────
@@ -59,7 +65,12 @@ export default function ScanScreen() {
           actionLabel={t('medication.scan.allowCamera')}
           onAction={requestPermission}
         />
-        <Button label={t('medication.scan.addManually')} variant="ghost" onPress={() => router.back()} style={styles.mt} />
+        <Button
+          label={t('medication.scan.addManually')}
+          variant="ghost"
+          onPress={() => router.back()}
+          style={styles.mt}
+        />
       </ScreenContainer>
     );
   }
@@ -91,12 +102,15 @@ export default function ScanScreen() {
   }, [medications, isProcessing]);
 
   function updateMed(index: number, patch: Partial<EditableMed>) {
-    setEditableMeds((prev) => prev.map((m, i) => i === index ? { ...m, ...patch } : m));
+    setEditableMeds((prev) => prev.map((m, i) => (i === index ? { ...m, ...patch } : m)));
   }
 
   function handleConfirm() {
     const selected = editableMeds.filter((m) => m.included);
-    if (selected.length === 0) { router.back(); return; }
+    if (selected.length === 0) {
+      router.back();
+      return;
+    }
 
     const first = selected[0];
     router.push({
@@ -155,7 +169,9 @@ export default function ScanScreen() {
                   style={[styles.checkbox, item.included && styles.checkboxActive]}
                   onPress={() => updateMed(index, { included: !item.included })}
                 >
-                  {item.included && <Ionicons name="checkmark" size={14} color={Colors.textInverse} />}
+                  {item.included && (
+                    <Ionicons name="checkmark" size={14} color={Colors.textInverse} />
+                  )}
                 </TouchableOpacity>
 
                 <View style={styles.resultFields}>
@@ -174,11 +190,12 @@ export default function ScanScreen() {
                     editable={item.included}
                   />
                   {item.frequency ? (
-                    <Text style={styles.hint}>⏰ {item.frequency}</Text>
+                    <View style={styles.hintRow}>
+                      <Ionicons name="time-outline" size={12} color={Colors.textSecondary} />
+                      <Text style={styles.hint}>{item.frequency}</Text>
+                    </View>
                   ) : null}
-                  {item.duration ? (
-                    <Text style={styles.hint}>📅 {item.duration}</Text>
-                  ) : null}
+                  {item.duration ? <Text style={styles.hint}>📅 {item.duration}</Text> : null}
                 </View>
               </View>
             )}
@@ -192,8 +209,17 @@ export default function ScanScreen() {
             style={styles.btn}
             disabled={includedCount === 0}
           />
-          <Button label={t('common.retry')} variant="secondary" onPress={handleRetry} style={styles.btn} />
-          <Button label={t('medication.scan.addManually')} variant="ghost" onPress={() => router.back()} />
+          <Button
+            label={t('common.retry')}
+            variant="secondary"
+            onPress={handleRetry}
+            style={styles.btn}
+          />
+          <Button
+            label={t('medication.scan.addManually')}
+            variant="ghost"
+            onPress={() => router.back()}
+          />
         </View>
       </ScreenContainer>
     );
@@ -202,12 +228,7 @@ export default function ScanScreen() {
   // ── Camera viewfinder ──────────────────────────────────────────────────────
   return (
     <View style={styles.cameraContainer}>
-      <CameraView
-        ref={cameraRef}
-        style={StyleSheet.absoluteFill}
-        facing="back"
-        flash={flash}
-      />
+      <CameraView ref={cameraRef} style={StyleSheet.absoluteFill} facing="back" flash={flash} />
 
       {/* Dark overlay with transparent frame cutout */}
       <View style={styles.overlay}>
@@ -239,18 +260,17 @@ export default function ScanScreen() {
           onPress={() => setFlash(flash === 'off' ? 'on' : 'off')}
           style={styles.iconBtn}
         >
-          <Ionicons
-            name={flash === 'on' ? 'flash' : 'flash-off'}
-            size={24}
-            color="#fff"
-          />
+          <Ionicons name={flash === 'on' ? 'flash' : 'flash-off'} size={24} color="#fff" />
         </TouchableOpacity>
       </View>
 
       {/* Bottom controls */}
       <View style={styles.bottomControls}>
         <TouchableOpacity
-          onPress={async () => { setScreen('processing'); await pickFromGallery(); }}
+          onPress={async () => {
+            setScreen('processing');
+            await pickFromGallery();
+          }}
           style={styles.iconBtn}
         >
           <Ionicons name="images-outline" size={28} color="#fff" />
@@ -272,48 +292,145 @@ const CORNER_SIZE = 24;
 const CORNER_THICKNESS = 3;
 
 const styles = StyleSheet.create({
-  center:          { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.background },
-  processingText:  { marginTop: Spacing.md, fontSize: FontSize.md, color: Colors.textSecondary },
-  mt:              { marginTop: Spacing.md },
+  center: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.background,
+  },
+  processingText: { marginTop: Spacing.md, fontSize: FontSize.md, color: Colors.textSecondary },
+  mt: { marginTop: Spacing.md },
 
   // Camera
   cameraContainer: { flex: 1, backgroundColor: '#000' },
-  overlay:         { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 },
-  overlayTop:      { flex: 1, backgroundColor: OVERLAY_COLOR },
-  overlayMiddle:   { flexDirection: 'row', height: FRAME_SIZE },
-  overlaySide:     { flex: 1, backgroundColor: OVERLAY_COLOR },
-  overlayBottom:   { flex: 1, backgroundColor: OVERLAY_COLOR },
-  frame:           { width: FRAME_SIZE, height: FRAME_SIZE },
+  overlay: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 },
+  overlayTop: { flex: 1, backgroundColor: OVERLAY_COLOR },
+  overlayMiddle: { flexDirection: 'row', height: FRAME_SIZE },
+  overlaySide: { flex: 1, backgroundColor: OVERLAY_COLOR },
+  overlayBottom: { flex: 1, backgroundColor: OVERLAY_COLOR },
+  frame: { width: FRAME_SIZE, height: FRAME_SIZE },
 
   // Frame corners
-  corner:          { position: 'absolute', width: CORNER_SIZE, height: CORNER_SIZE, borderColor: '#fff' },
-  cornerTL:        { top: 0, left: 0,  borderTopWidth: CORNER_THICKNESS, borderLeftWidth: CORNER_THICKNESS },
-  cornerTR:        { top: 0, right: 0, borderTopWidth: CORNER_THICKNESS, borderRightWidth: CORNER_THICKNESS },
-  cornerBL:        { bottom: 0, left: 0,  borderBottomWidth: CORNER_THICKNESS, borderLeftWidth: CORNER_THICKNESS },
-  cornerBR:        { bottom: 0, right: 0, borderBottomWidth: CORNER_THICKNESS, borderRightWidth: CORNER_THICKNESS },
+  corner: { position: 'absolute', width: CORNER_SIZE, height: CORNER_SIZE, borderColor: '#fff' },
+  cornerTL: {
+    top: 0,
+    left: 0,
+    borderTopWidth: CORNER_THICKNESS,
+    borderLeftWidth: CORNER_THICKNESS,
+  },
+  cornerTR: {
+    top: 0,
+    right: 0,
+    borderTopWidth: CORNER_THICKNESS,
+    borderRightWidth: CORNER_THICKNESS,
+  },
+  cornerBL: {
+    bottom: 0,
+    left: 0,
+    borderBottomWidth: CORNER_THICKNESS,
+    borderLeftWidth: CORNER_THICKNESS,
+  },
+  cornerBR: {
+    bottom: 0,
+    right: 0,
+    borderBottomWidth: CORNER_THICKNESS,
+    borderRightWidth: CORNER_THICKNESS,
+  },
 
-  guideContainer:  { position: 'absolute', top: '55%', left: 0, right: 0, alignItems: 'center' },
-  guideText:       { color: '#fff', fontSize: FontSize.sm, backgroundColor: 'rgba(0,0,0,0.4)', paddingHorizontal: Spacing.sm, paddingVertical: 4, borderRadius: Radius.full },
+  guideContainer: { position: 'absolute', top: '55%', left: 0, right: 0, alignItems: 'center' },
+  guideText: {
+    color: '#fff',
+    fontSize: FontSize.sm,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 4,
+    borderRadius: Radius.full,
+  },
 
-  topControls:     { position: 'absolute', top: 48, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: Spacing.lg },
-  bottomControls:  { position: 'absolute', bottom: 48, left: 0, right: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', paddingHorizontal: Spacing.xl },
+  topControls: {
+    position: 'absolute',
+    top: 48,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.lg,
+  },
+  bottomControls: {
+    position: 'absolute',
+    bottom: 48,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    paddingHorizontal: Spacing.xl,
+  },
 
-  iconBtn:         { alignItems: 'center', justifyContent: 'center', width: 56, height: 56 },
-  iconLabel:       { color: '#fff', fontSize: FontSize.xs, marginTop: 2 },
+  iconBtn: { alignItems: 'center', justifyContent: 'center', width: 56, height: 56 },
+  iconLabel: { color: '#fff', fontSize: FontSize.xs, marginTop: 2 },
 
-  captureBtn:      { width: 72, height: 72, borderRadius: 36, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', borderWidth: 4, borderColor: 'rgba(255,255,255,0.4)' },
-  captureInner:    { width: 56, height: 56, borderRadius: 28, backgroundColor: '#fff', borderWidth: 2, borderColor: Colors.primary },
+  captureBtn: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 4,
+    borderColor: 'rgba(255,255,255,0.4)',
+  },
+  captureInner: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#fff',
+    borderWidth: 2,
+    borderColor: Colors.primary,
+  },
 
   // Results
-  title:           { fontSize: FontSize.xl, fontWeight: '700', color: Colors.textPrimary, marginBottom: Spacing.md },
-  resultCard:      { flexDirection: 'row', gap: Spacing.sm, backgroundColor: Colors.surface, borderRadius: Radius.md, padding: Spacing.md, marginBottom: Spacing.sm, borderWidth: 1, borderColor: Colors.border },
-  resultCardDim:   { opacity: 0.4 },
-  checkbox:        { width: 24, height: 24, borderRadius: 6, borderWidth: 2, borderColor: Colors.border, alignItems: 'center', justifyContent: 'center', marginTop: 2 },
-  checkboxActive:  { backgroundColor: Colors.primary, borderColor: Colors.primary },
-  resultFields:    { flex: 1 },
-  fieldLabel:      { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: Spacing.xs },
-  fieldInput:      { borderWidth: 1, borderColor: Colors.border, borderRadius: Radius.sm, padding: Spacing.xs, fontSize: FontSize.md, color: Colors.textPrimary, backgroundColor: Colors.background },
-  hint:            { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 4 },
-  resultActions:   { gap: Spacing.sm, marginTop: Spacing.lg },
-  btn:             { marginBottom: Spacing.xs },
+  title: {
+    fontSize: FontSize.xl,
+    fontWeight: '700',
+    color: Colors.textPrimary,
+    marginBottom: Spacing.md,
+  },
+  resultCard: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+    backgroundColor: Colors.surface,
+    borderRadius: Radius.md,
+    padding: Spacing.md,
+    marginBottom: Spacing.sm,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  resultCardDim: { opacity: 0.4 },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: Colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 2,
+  },
+  checkboxActive: { backgroundColor: Colors.primary, borderColor: Colors.primary },
+  resultFields: { flex: 1 },
+  fieldLabel: { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: Spacing.xs },
+  fieldInput: {
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: Radius.sm,
+    padding: Spacing.xs,
+    fontSize: FontSize.md,
+    color: Colors.textPrimary,
+    backgroundColor: Colors.background,
+  },
+  hintRow: { flexDirection: 'row', alignItems: 'center', gap: 3, marginTop: 2 },
+  hint: { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 4 },
+  resultActions: { gap: Spacing.sm, marginTop: Spacing.lg },
+  btn: { marginBottom: Spacing.xs },
 });

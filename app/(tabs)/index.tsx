@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, SectionList, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { ScreenContainer } from '@components/layout/ScreenContainer';
 import { EmptyState } from '@components/ui/EmptyState';
 import { PillIllustration } from '@components/ui/EmptyIllustrations';
 import { ProfileSelector } from '@components/profile/ProfileSelector';
 import { MedCard } from '@components/medication/MedCard';
 import { Badge } from '@components/ui/Badge';
+import { NotificationCenter, NotificationItem } from '@components/ui/NotificationCenter';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
@@ -94,8 +96,36 @@ export default function HomeScreen() {
   const activeMedCount = todayMedications.length;
   const upcomingDoses = getUpcomingDoses(3);
   const hydrateMedications = useMedicationStore((s) => s.hydrate);
+  const [showNotifCenter, setShowNotifCenter] = useState(false);
 
   const today = new Date();
+
+  const notifItems: NotificationItem[] = [];
+  for (const med of todayMedications) {
+    const doses = getScheduledDosesForDay(med, today);
+    for (const dose of doses) {
+      const hh = String(dose.getHours()).padStart(2, '0');
+      const mm = String(dose.getMinutes()).padStart(2, '0');
+      const record = getIntakeForDose(med.id, dose.toISOString());
+      const isPending = !record?.takenAt && !record?.skipped;
+      const isMissedDose = !record?.takenAt && dose < new Date();
+      const status: NotificationItem['status'] = record?.takenAt ? 'taken'
+        : record?.skipped ? 'skipped'
+        : isMissedDose ? 'missed'
+        : 'pending';
+      notifItems.push({
+        id: `${med.id}_${dose.getTime()}`,
+        medicationName: med.name,
+        dose: `${med.doseQuantity} ${med.unit}`,
+        scheduledTime: `${hh}:${mm}`,
+        status,
+        onMarkTaken: isPending ? () => recordIntake({
+          medicationId: med.id, profileId: med.profileId,
+          scheduledAt: dose.toISOString(), takenAt: new Date().toISOString(),
+        }) : undefined,
+      });
+    }
+  }
 
   const BUCKETS = BUCKET_KEYS.map((b) => ({
     ...b,
@@ -124,9 +154,14 @@ export default function HomeScreen() {
             {profiles.length > 1 ? t('home.changeProfile') : t('home.manageProfiles')}
           </Text>
         </TouchableOpacity>
-        {todaySummary.pending > 0 && (
-          <Badge label={String(todaySummary.pending)} variant="warning" />
-        )}
+        <TouchableOpacity onPress={() => setShowNotifCenter(true)} style={styles.bellBtn} activeOpacity={0.7}>
+          <Ionicons name="notifications-outline" size={24} color={Colors.textPrimary} />
+          {todaySummary.pending > 0 && (
+            <View style={styles.bellBadge}>
+              <Text style={styles.bellBadgeText}>{todaySummary.pending}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
       </View>
 
       {/* Profile selector (multi-profile) */}
@@ -141,7 +176,7 @@ export default function HomeScreen() {
       {/* Stats row */}
       <View style={styles.statsRow}>
         <StatCard label={t('home.stats.adherence')} value={`${adherenceRate}%`} />
-        <StatCard label={t('home.stats.streak')}    value={`${streak}🔥`} />
+        <StatCard label={t('home.stats.streak')} value={String(streak)} />
         <StatCard label={t('home.stats.activeMeds')} value={String(activeMedCount)} />
       </View>
 
@@ -212,6 +247,11 @@ export default function HomeScreen() {
           }}
         />
       )}
+      <NotificationCenter
+        visible={showNotifCenter}
+        onClose={() => setShowNotifCenter(false)}
+        items={notifItems}
+      />
     </ScreenContainer>
   );
 }
@@ -264,4 +304,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
+  bellBtn:       { position: 'relative', padding: 4 },
+  bellBadge:     { position: 'absolute', top: 0, right: 0, backgroundColor: Colors.danger, borderRadius: 8, minWidth: 16, height: 16, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 2 },
+  bellBadgeText: { fontSize: 10, fontWeight: '700', color: Colors.textInverse },
 });

@@ -13,7 +13,10 @@ import { formatTime } from '@utils/dateHelpers';
 
 export default function ConfirmScreen() {
   const { t } = useTranslation();
-  const { medicationId, scheduledAt } = useLocalSearchParams<{ medicationId: string; scheduledAt: string }>();
+  const { medicationId, scheduledAt } = useLocalSearchParams<{
+    medicationId: string;
+    scheduledAt: string;
+  }>();
   const router = useRouter();
   const { medications, recordIntake } = useMedicationStore();
   const [note, setNote] = useState('');
@@ -39,7 +42,9 @@ export default function ConfirmScreen() {
   }
 
   const scheduledDate = scheduledAt ? new Date(scheduledAt) : new Date();
-  const timeLabel = formatTime(`${String(scheduledDate.getHours()).padStart(2,'0')}:${String(scheduledDate.getMinutes()).padStart(2,'0')}`);
+  const timeLabel = formatTime(
+    `${String(scheduledDate.getHours()).padStart(2, '0')}:${String(scheduledDate.getMinutes()).padStart(2, '0')}`,
+  );
 
   function handleTaken() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -74,7 +79,7 @@ export default function ConfirmScreen() {
   return (
     <View style={styles.overlay}>
       <View style={styles.sheet}>
-        <Text style={styles.title}>💊 {medication.name}</Text>
+        <Text style={styles.title}>{medication.name}</Text>
         <Text style={styles.subtitle}>
           {medication.doseQuantity} {medication.unit} · {timeLabel}
         </Text>
@@ -108,7 +113,11 @@ export default function ConfirmScreen() {
       <BottomSheet visible={showSnooze} onClose={() => setShowSnooze(false)}>
         <Text style={styles.snoozeTitle}>{t('medication.confirm.snoozeTitle')}</Text>
         {SNOOZE_OPTIONS.map((opt) => (
-          <TouchableOpacity key={opt.minutes} style={styles.snoozeOption} onPress={() => handleSnooze(opt.minutes)}>
+          <TouchableOpacity
+            key={opt.minutes}
+            style={styles.snoozeOption}
+            onPress={() => handleSnooze(opt.minutes)}
+          >
             <Text style={styles.snoozeOptionText}>{opt.label}</Text>
           </TouchableOpacity>
         ))}
@@ -121,26 +130,73 @@ export default function ConfirmScreen() {
 }
 
 const styles = StyleSheet.create({
-  overlay:          { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
-  sheet:            { backgroundColor: Colors.surface, borderTopLeftRadius: Radius.xl, borderTopRightRadius: Radius.xl, padding: Spacing.xl, paddingBottom: 40 },
-  title:            { fontSize: FontSize.xl, fontWeight: '700', color: Colors.textPrimary, marginBottom: 4 },
-  subtitle:         { fontSize: FontSize.md, color: Colors.textSecondary, marginBottom: Spacing.lg },
-  noteInput:        { borderWidth: 1, borderColor: Colors.border, borderRadius: Radius.sm, padding: Spacing.sm, fontSize: FontSize.md, color: Colors.textPrimary, backgroundColor: Colors.background, minHeight: 60, textAlignVertical: 'top', marginBottom: Spacing.md },
-  btnTaken:         { backgroundColor: Colors.successLight, borderRadius: Radius.md, padding: Spacing.md, alignItems: 'center', marginBottom: Spacing.sm },
-  btnTakenText:     { fontSize: FontSize.md, fontWeight: '700', color: Colors.successText },
-  btnSnooze:        { backgroundColor: Colors.warningLight, borderRadius: Radius.md, padding: Spacing.md, alignItems: 'center', marginBottom: Spacing.sm },
-  btnSnoozeText:    { fontSize: FontSize.md, fontWeight: '700', color: Colors.skippedText },
-  btnSkip:          { borderRadius: Radius.md, padding: Spacing.md, alignItems: 'center', marginBottom: Spacing.sm, borderWidth: 1, borderColor: Colors.border },
-  btnSkipText:      { fontSize: FontSize.md, fontWeight: '600', color: Colors.textSecondary },
-  btnCancel:        { padding: Spacing.sm, alignItems: 'center' },
-  btnCancelText:    { fontSize: FontSize.sm, color: Colors.textDisabled },
-  fallback:         { flex: 1, justifyContent: 'center', alignItems: 'center', gap: Spacing.md },
-  fallbackText:     { fontSize: FontSize.md, color: Colors.textSecondary },
-  fallbackBtn:      { padding: Spacing.md, backgroundColor: Colors.primary, borderRadius: Radius.md },
-  fallbackBtnText:  { color: Colors.textInverse, fontWeight: '600' },
-  snoozeTitle:      { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary, marginBottom: Spacing.sm },
-  snoozeOption:     { padding: Spacing.md, backgroundColor: Colors.background, borderRadius: Radius.sm, alignItems: 'center', marginBottom: Spacing.xs },
+  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  sheet: {
+    backgroundColor: Colors.surface,
+    borderTopLeftRadius: Radius.xl,
+    borderTopRightRadius: Radius.xl,
+    padding: Spacing.xl,
+    paddingBottom: 40,
+  },
+  title: { fontSize: FontSize.xl, fontWeight: '700', color: Colors.textPrimary, marginBottom: 4 },
+  subtitle: { fontSize: FontSize.md, color: Colors.textSecondary, marginBottom: Spacing.lg },
+  noteInput: {
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: Radius.sm,
+    padding: Spacing.sm,
+    fontSize: FontSize.md,
+    color: Colors.textPrimary,
+    backgroundColor: Colors.background,
+    minHeight: 60,
+    textAlignVertical: 'top',
+    marginBottom: Spacing.md,
+  },
+  btnTaken: {
+    backgroundColor: Colors.successLight,
+    borderRadius: Radius.md,
+    padding: Spacing.md,
+    alignItems: 'center',
+    marginBottom: Spacing.sm,
+  },
+  btnTakenText: { fontSize: FontSize.md, fontWeight: '700', color: Colors.successText },
+  btnSnooze: {
+    backgroundColor: Colors.warningLight,
+    borderRadius: Radius.md,
+    padding: Spacing.md,
+    alignItems: 'center',
+    marginBottom: Spacing.sm,
+  },
+  btnSnoozeText: { fontSize: FontSize.md, fontWeight: '700', color: Colors.skippedText },
+  btnSkip: {
+    borderRadius: Radius.md,
+    padding: Spacing.md,
+    alignItems: 'center',
+    marginBottom: Spacing.sm,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  btnSkipText: { fontSize: FontSize.md, fontWeight: '600', color: Colors.textSecondary },
+  btnCancel: { padding: Spacing.sm, alignItems: 'center' },
+  btnCancelText: { fontSize: FontSize.sm, color: Colors.textDisabled },
+  fallback: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: Spacing.md },
+  fallbackText: { fontSize: FontSize.md, color: Colors.textSecondary },
+  fallbackBtn: { padding: Spacing.md, backgroundColor: Colors.primary, borderRadius: Radius.md },
+  fallbackBtnText: { color: Colors.textInverse, fontWeight: '600' },
+  snoozeTitle: {
+    fontSize: FontSize.md,
+    fontWeight: '700',
+    color: Colors.textPrimary,
+    marginBottom: Spacing.sm,
+  },
+  snoozeOption: {
+    padding: Spacing.md,
+    backgroundColor: Colors.background,
+    borderRadius: Radius.sm,
+    alignItems: 'center',
+    marginBottom: Spacing.xs,
+  },
   snoozeOptionText: { fontSize: FontSize.md, color: Colors.primary, fontWeight: '600' },
-  snoozeCancel:     { padding: Spacing.sm, alignItems: 'center', marginTop: Spacing.xs },
+  snoozeCancel: { padding: Spacing.sm, alignItems: 'center', marginTop: Spacing.xs },
   snoozeCancelText: { fontSize: FontSize.sm, color: Colors.textSecondary },
 });
