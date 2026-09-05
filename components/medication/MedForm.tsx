@@ -9,6 +9,7 @@ import {
   Platform,
   StyleSheet,
   Animated,
+  I18nManager,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
@@ -282,10 +283,13 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
                   onPress={() => setPillColor(pillColor === c ? undefined : c)}
                   style={[
                     styles.colorSwatch,
-                    { backgroundColor: c },
                     pillColor === c && styles.colorSwatchActive,
                   ]}
-                />
+                  accessibilityRole="button"
+                  accessibilityLabel={c}
+                >
+                  <View style={[styles.colorSwatchInner, { backgroundColor: c }]} />
+                </TouchableOpacity>
               ))}
             </View>
 
@@ -364,7 +368,7 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
                 style={[styles.toggle, refillReminderEnabled && styles.toggleOn]}
                 onPress={() => setRefillReminderEnabled(!refillReminderEnabled)}
               >
-                <View style={[styles.toggleThumb, refillReminderEnabled && styles.toggleThumbOn]} />
+                <View style={[styles.toggleThumb, refillReminderEnabled && { alignSelf: I18nManager.isRTL ? 'flex-start' : 'flex-end' }]} />
               </TouchableOpacity>
             </View>
             {refillReminderEnabled && (
@@ -585,11 +589,18 @@ const styles = StyleSheet.create({
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.xs, marginBottom: Spacing.sm },
   colorRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: Spacing.sm },
   colorSwatch: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 2,
+    borderColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  colorSwatchInner: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    borderWidth: 2,
-    borderColor: 'transparent',
   },
   colorSwatchActive: { borderColor: Colors.textPrimary, transform: [{ scale: 1.15 }] },
   dateRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
@@ -637,5 +648,4 @@ const styles = StyleSheet.create({
   toggle:         { width: 48, height: 28, borderRadius: 14, backgroundColor: Colors.border, justifyContent: 'center', padding: 2 },
   toggleOn:       { backgroundColor: Colors.primary },
   toggleThumb:    { width: 24, height: 24, borderRadius: 12, backgroundColor: Colors.surface },
-  toggleThumbOn:  { alignSelf: 'flex-end' },
 });
