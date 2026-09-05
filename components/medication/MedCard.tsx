@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import Animated, {
+  useSharedValue, useAnimatedStyle, withSpring, withSequence,
+  runOnJS, interpolateColor,
+} from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 import { Medication, IntakeRecord } from '@store/medicationStore';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
@@ -22,17 +28,19 @@ interface MedCardProps {
 }
 
 const TYPE_COLOR: Record<string, string> = {
-  pill:       Colors.pill,
-  syrup:      Colors.syrup,
-  injection:  Colors.injection,
-  supplement: Colors.supplement,
-  other:      Colors.other,
+  pill: Colors.pill, syrup: Colors.syrup, injection: Colors.injection,
+  supplement: Colors.supplement, other: Colors.other,
 };
+
+const SWIPE_THRESHOLD = 80;
 
 export function MedCard({ medication, scheduledTime, scheduledISO, intakeRecord, onMarkTaken, onSkip }: MedCardProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const [showSnooze, setShowSnooze] = useState(false);
+
+  const translateX  = useSharedValue(0);
+  const checkScale  = useSharedValue(1);
 
   const SNOOZE_OPTIONS = [
     { label: t('medication.confirm.snooze10'), minutes: 10 },
@@ -50,6 +58,55 @@ export function MedCard({ medication, scheduledTime, scheduledISO, intakeRecord,
   const statusVariant = isTaken ? 'success' : isSkipped ? 'warning' : isOverdue ? 'danger' : 'info';
   const statusLabel   = isTaken ? t('home.status.taken') : isSkipped ? t('home.status.skipped') : isOverdue ? t('home.status.overdue') : t('home.status.pending');
 
+  function triggerTaken() {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    checkScale.value = withSequence(
+      withSpring(1.4, { damping: 4 }),
+      withSpring(1,   { damping: 10 })
+    );
+    onMarkTaken();
+  }
+
+  function triggerSkip() {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onSkip();
+  }
+
+  const pan = Gesture.Pan()
+    .enabled(isPending && !medication.paused)
+    .activeOffsetX([-10, 10])
+    .failOffsetY([-15, 15])
+    .onUpdate((e) => {
+      translateX.value = e.translationX;
+    })
+    .onEnd((e) => {
+      if (e.translationX >= SWIPE_THRESHOLD) {
+        translateX.value = withSpring(0, { damping: 15 });
+        runOnJS(triggerTaken)();
+      } else if (e.translationX <= -SWIPE_THRESHOLD) {
+        translateX.value = withSpring(0, { damping: 15 });
+        runOnJS(triggerSkip)();
+      } else {
+        translateX.value = withSpring(0, { damping: 15 });
+      }
+    });
+
+  const cardStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
+
+  const revealBgStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(
+      translateX.value,
+      [-SWIPE_THRESHOLD, 0, SWIPE_THRESHOLD],
+      [Colors.skippedLight, Colors.surface, Colors.successLight]
+    ),
+  }));
+
+  const checkStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: checkScale.value }],
+  }));
+
   async function handleSnooze(minutes: number) {
     setShowSnooze(false);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -58,47 +115,49 @@ export function MedCard({ medication, scheduledTime, scheduledISO, intakeRecord,
 
   return (
     <>
-      <TouchableOpacity
-        style={[styles.card, medication.paused && styles.cardPaused]}
-        onPress={() => router.push(`/medication/${medication.id}`)}
-        activeOpacity={0.85}
-      >
-        <View style={styles.row}>
-          <View style={[styles.dot, { backgroundColor: medication.pillColor ?? TYPE_COLOR[medication.type] ?? Colors.other }]} />
-          <View style={styles.info}>
-            <View style={styles.nameRow}>
-              <Text style={styles.name}>{medication.name}</Text>
-              {medication.paused && <Badge label={t('medications.paused')} variant="warning" size="sm" />}
-            </View>
-            <Text style={styles.sub}>{medication.doseQuantity} {medication.unit} · {medication.schedule.times.map(formatTime).join(' · ')}</Text>
-            <Text style={[styles.time, isOverdue && styles.timeOverdue]}>⏰ {formatTime(scheduledTime)}</Text>
-          </View>
-          <Badge label={statusLabel} variant={statusVariant} size="sm" />
-        </View>
+      <Animated.View style={[styles.revealBg, revealBgStyle]}>
+        <Ionicons name="checkmark-circle" size={24} color={Colors.success} style={styles.revealIconLeft} />
+        <Ionicons name="close-circle" size={24} color={Colors.danger} style={styles.revealIconRight} />
+      </Animated.View>
 
-        {isPending && !medication.paused && (
-          <View style={styles.actions}>
-            <TouchableOpacity
-              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); onMarkTaken(); }}
-              style={styles.btnTaken}
-            >
-              <Text style={styles.btnTakenText}>{t('medication.confirm.taken')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setShowSnooze(true); }}
-              style={styles.btnSnooze}
-            >
-              <Text style={styles.btnSnoozeText}>{t('home.snoozeLater')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onSkip(); }}
-              style={styles.btnSkip}
-            >
-              <Text style={styles.btnSkipText}>{t('medication.confirm.skip')}</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </TouchableOpacity>
+      <GestureDetector gesture={pan}>
+        <Animated.View style={[styles.card, medication.paused && styles.cardPaused, cardStyle]}>
+          <TouchableOpacity activeOpacity={0.9} onPress={() => router.push(`/medication/${medication.id}`)}>
+            <View style={styles.row}>
+              <View style={[styles.dot, { backgroundColor: medication.pillColor ?? TYPE_COLOR[medication.type] ?? Colors.other }]} />
+              <View style={styles.info}>
+                <View style={styles.nameRow}>
+                  <Text style={styles.name}>{medication.name}</Text>
+                  {medication.paused && <Badge label={t('medications.paused')} variant="warning" size="sm" />}
+                </View>
+                <Text style={styles.sub}>{medication.doseQuantity} {medication.unit} · {medication.schedule.times.map(formatTime).join(' · ')}</Text>
+                <Text style={[styles.time, isOverdue && styles.timeOverdue]}>⏰ {formatTime(scheduledTime)}</Text>
+              </View>
+              <Badge label={statusLabel} variant={statusVariant} size="sm" />
+            </View>
+          </TouchableOpacity>
+
+          {isPending && !medication.paused && (
+            <View style={styles.actions}>
+              <TouchableOpacity
+                onPress={triggerTaken}
+                style={styles.btnTaken}
+              >
+                <Animated.View style={checkStyle}>
+                  <Ionicons name="checkmark" size={14} color={Colors.successText} />
+                </Animated.View>
+                <Text style={styles.btnTakenText}>{t('medication.confirm.taken')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setShowSnooze(true); }} style={styles.btnSnooze}>
+                <Text style={styles.btnSnoozeText}>{t('home.snoozeLater')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onSkip(); }} style={styles.btnSkip}>
+                <Text style={styles.btnSkipText}>{t('medication.confirm.skip')}</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </Animated.View>
+      </GestureDetector>
 
       <BottomSheet visible={showSnooze} onClose={() => setShowSnooze(false)}>
         <Text style={styles.snoozeTitle}>{t('medication.confirm.snoozeTitle')}</Text>
@@ -116,6 +175,9 @@ export function MedCard({ medication, scheduledTime, scheduledISO, intakeRecord,
 }
 
 const styles = StyleSheet.create({
+  revealBg:         { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, borderRadius: Radius.md, marginBottom: Spacing.sm, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: Spacing.md },
+  revealIconLeft:   {},
+  revealIconRight:  {},
   card:             { backgroundColor: Colors.surface, borderRadius: Radius.md, padding: Spacing.md, marginBottom: Spacing.sm, borderWidth: 1, borderColor: Colors.border },
   cardPaused:       { opacity: 0.6 },
   row:              { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
@@ -127,7 +189,7 @@ const styles = StyleSheet.create({
   time:             { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 2 },
   timeOverdue:      { color: Colors.danger, fontWeight: '600' },
   actions:          { flexDirection: 'row', gap: Spacing.xs, marginTop: Spacing.sm, paddingTop: Spacing.sm, borderTopWidth: 1, borderTopColor: Colors.border },
-  btnTaken:         { flex: 1, backgroundColor: Colors.successLight, borderRadius: Radius.sm, padding: Spacing.sm, alignItems: 'center' },
+  btnTaken:         { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, backgroundColor: Colors.successLight, borderRadius: Radius.sm, padding: Spacing.sm },
   btnTakenText:     { fontSize: FontSize.xs, fontWeight: '700', color: Colors.successText },
   btnSnooze:        { flex: 1, backgroundColor: Colors.warningLight, borderRadius: Radius.sm, padding: Spacing.sm, alignItems: 'center' },
   btnSnoozeText:    { fontSize: FontSize.xs, fontWeight: '700', color: Colors.skippedText },
