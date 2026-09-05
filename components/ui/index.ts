@@ -5,3 +5,4 @@ export { EmptyState } from './EmptyState';
 export { Badge } from './Badge';
 export { Avatar } from './Avatar';
 export { Toast } from './Toast';
+export { TagInput } from './TagInput';
