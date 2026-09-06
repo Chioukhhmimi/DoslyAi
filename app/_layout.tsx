@@ -3,6 +3,19 @@ import 'react-native-gesture-handler';
 import { useEffect, useState } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import { useFonts } from 'expo-font';
+import {
+  PlusJakartaSans_400Regular,
+  PlusJakartaSans_500Medium,
+  PlusJakartaSans_600SemiBold,
+  PlusJakartaSans_700Bold,
+  PlusJakartaSans_800ExtraBold,
+} from '@expo-google-fonts/plus-jakarta-sans';
+import {
+  Tajawal_400Regular,
+  Tajawal_500Medium,
+  Tajawal_700Bold,
+} from '@expo-google-fonts/tajawal';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -45,7 +58,7 @@ function NavigationGate({ ready }: { ready: boolean }) {
     if (!ready || !settingsHydrated || !profilesHydrated) return;
 
     const inOnboarding = segments[0] === '(onboarding)';
-    const inProfile    = segments[0] === 'profile';
+    const inProfile = segments[0] === 'profile';
 
     if (!onboardingComplete && !inOnboarding) {
       router.replace('/(onboarding)/slide1');
@@ -63,22 +76,39 @@ function NavigationGate({ ready }: { ready: boolean }) {
 export default function RootLayout() {
   const { i18n } = useTranslation();
   const [ready, setReady] = useState(false);
+  const [fontsLoaded] = useFonts({
+    PlusJakartaSans_400Regular,
+    PlusJakartaSans_500Medium,
+    PlusJakartaSans_600SemiBold,
+    PlusJakartaSans_700Bold,
+    PlusJakartaSans_800ExtraBold,
+    Tajawal_400Regular,
+    Tajawal_500Medium,
+    Tajawal_700Bold,
+  });
   const { locked, unlock } = useBiometric();
-  const [pendingNotif, setPendingNotif] = useState<{ medicationId: string; scheduledAt: string } | null>(null);
+  const [pendingNotif, setPendingNotif] = useState<{
+    medicationId: string;
+    scheduledAt: string;
+  } | null>(null);
   const router = useRouter();
 
-  const hydrateSettings    = useSettingsStore((s) => s.hydrate);
-  const hydrateProfiles    = useProfileStore((s) => s.hydrate);
+  const hydrateSettings = useSettingsStore((s) => s.hydrate);
+  const hydrateProfiles = useProfileStore((s) => s.hydrate);
   const hydrateMedications = useMedicationStore((s) => s.hydrate);
-  const language           = useSettingsStore((s) => s.language);
-  const layoutKey          = useSettingsStore((s) => s.layoutKey);
-  const isRTL              = RTL_LANGUAGES.includes(language);
+  const language = useSettingsStore((s) => s.language);
+  const layoutKey = useSettingsStore((s) => s.layoutKey);
+  const isRTL = RTL_LANGUAGES.includes(language);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function extractNotifData(response: any) {
-    const data: Record<string, unknown> | undefined = response?.notification?.request?.content?.data;
+    const data: Record<string, unknown> | undefined =
+      response?.notification?.request?.content?.data;
     if (data?.medicationId) {
-      setPendingNotif({ medicationId: String(data.medicationId), scheduledAt: data.scheduledAt ? String(data.scheduledAt) : '' });
+      setPendingNotif({
+        medicationId: String(data.medicationId),
+        scheduledAt: data.scheduledAt ? String(data.scheduledAt) : '',
+      });
     }
   }
 
@@ -91,7 +121,6 @@ export default function RootLayout() {
         console.error('DB init failed', e);
       } finally {
         setReady(true);
-        await SplashScreen.hideAsync();
       }
 
       if (!isExpoGo) {
@@ -120,6 +149,10 @@ export default function RootLayout() {
   }, [ready, pendingNotif]);
 
   useEffect(() => {
+    if (ready && fontsLoaded) SplashScreen.hideAsync();
+  }, [ready, fontsLoaded]);
+
+  useEffect(() => {
     if (language && i18n.language !== language) {
       i18n.changeLanguage(language);
     }
@@ -133,7 +166,10 @@ export default function RootLayout() {
         <NavigationGate ready={ready} />
         <Stack key={layoutKey} screenOptions={{ headerShown: false }}>
           <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="medication/confirm" options={{ presentation: 'transparentModal', animation: 'fade' }} />
+          <Stack.Screen
+            name="medication/confirm"
+            options={{ presentation: 'transparentModal', animation: 'fade' }}
+          />
           <Stack.Screen name="profile" />
           <Stack.Screen name="settings" />
           <Stack.Screen name="export" />
