@@ -3,7 +3,7 @@ import { Medication } from '@store/medicationStore';
 export async function snoozeDoseNotification(
   medication: Medication,
   scheduledDate: Date,
-  minutes: number
+  minutes: number,
 ): Promise<void> {
   let Notifications: typeof import('expo-notifications');
   try {

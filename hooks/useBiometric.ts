@@ -14,7 +14,7 @@ export function useBiometric() {
     authenticating.current = true;
 
     const compatible = await LocalAuthentication.hasHardwareAsync();
-    const enrolled   = await LocalAuthentication.isEnrolledAsync();
+    const enrolled = await LocalAuthentication.isEnrolledAsync();
 
     if (!compatible || !enrolled) {
       // Device has no biometric — unlock silently
@@ -25,8 +25,8 @@ export function useBiometric() {
 
     const result = await LocalAuthentication.authenticateAsync({
       promptMessage: 'Déverrouillez MediTrack',
-      fallbackLabel:  'Utiliser le code',
-      cancelLabel:    'Annuler',
+      fallbackLabel: 'Utiliser le code',
+      cancelLabel: 'Annuler',
       disableDeviceFallback: false,
     });
 

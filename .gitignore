@@ -20,7 +20,8 @@ expo-env.d.ts
 
 # Metro
 .metro-health-check*
-
+#Ai agent
+*.md
 # debug
 npm-debug.*
 yarn-debug.*

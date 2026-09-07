@@ -577,8 +577,8 @@ const styles = StyleSheet.create({
   inputError: { borderColor: Colors.danger },
   multiline: { minHeight: 80, textAlignVertical: 'top' },
   errorText: { fontSize: FontSize.xs, color: Colors.danger, marginTop: 2 },
-  doseRow: { flexDirection: 'row', gap: Spacing.sm },
-  doseUnitInput: { flex: 0.55 },
+  doseRow: { flexDirection: 'row', gap: Spacing.sm, alignItems: 'center' },
+  doseUnitInput: { flex: 1 },
   unitPresets: {
     flexDirection: 'row',
     flexWrap: 'wrap',

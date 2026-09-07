@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     gap: 4,
     paddingVertical: 6,
     paddingHorizontal: Spacing.sm,
-    borderRadius: Radius.full,
+    borderRadius: Radius.sm,
     borderWidth: 1,
     borderColor: Colors.primary,
   },
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   nameActive: { color: Colors.primary },
   activeBadge: {
     backgroundColor: Colors.primary,
-    borderRadius: Radius.full,
+    borderRadius: Radius.sm,
     paddingHorizontal: 8,
     paddingVertical: 2,
   },

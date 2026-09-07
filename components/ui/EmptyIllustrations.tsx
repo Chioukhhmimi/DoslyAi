@@ -122,14 +122,15 @@ export function LockIllustration() {
   );
 }
 
-const P  = Colors.primary;
+const P = Colors.primary;
 const PL = Colors.primaryLight;
 const PX = Colors.primaryXLight;
-const B  = Colors.border;
+const B = Colors.border;
 
 const s = StyleSheet.create({
   wrap: {
-    width: 96, height: 96,
+    width: 96,
+    height: 96,
     borderRadius: 48,
     backgroundColor: PX,
     alignItems: 'center',
@@ -139,24 +140,28 @@ const s = StyleSheet.create({
 
   // Pill
   capsule: {
-    width: 54, height: 24,
+    width: 54,
+    height: 24,
     borderRadius: 12,
-    borderWidth: 2.5, borderColor: P,
+    borderWidth: 2.5,
+    borderColor: P,
     flexDirection: 'row',
     overflow: 'hidden',
   },
-  capsuleLeft:    { flex: 1, backgroundColor: P },
+  capsuleLeft: { flex: 1, backgroundColor: P },
   capsuleDivider: { width: 2, backgroundColor: P },
-  capsuleRight:   { flex: 1, backgroundColor: PL },
-  dotsRow:        { flexDirection: 'row', gap: 6, marginTop: 8 },
-  dot:            { width: 6, height: 6, borderRadius: 3, backgroundColor: B },
-  dotActive:      { backgroundColor: P },
+  capsuleRight: { flex: 1, backgroundColor: PL },
+  dotsRow: { flexDirection: 'row', gap: 6, marginTop: 8 },
+  dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: B },
+  dotActive: { backgroundColor: P },
 
   // Calendar
   calendar: {
-    width: 52, height: 56,
+    width: 52,
+    height: 56,
     borderRadius: 8,
-    borderWidth: 2.5, borderColor: P,
+    borderWidth: 2.5,
+    borderColor: P,
     overflow: 'hidden',
   },
   calendarHeader: {
@@ -168,7 +173,8 @@ const s = StyleSheet.create({
     paddingTop: 0,
   },
   calendarPin: {
-    width: 4, height: 8,
+    width: 4,
+    height: 8,
     borderRadius: 2,
     backgroundColor: PL,
     marginTop: -4,
@@ -179,7 +185,8 @@ const s = StyleSheet.create({
     paddingVertical: 3,
   },
   calendarDot: {
-    width: 7, height: 7,
+    width: 7,
+    height: 7,
     borderRadius: 3.5,
     backgroundColor: B,
   },
@@ -187,13 +194,15 @@ const s = StyleSheet.create({
 
   // Person
   personHead: {
-    width: 26, height: 26,
+    width: 26,
+    height: 26,
     borderRadius: 13,
     backgroundColor: P,
     marginBottom: 5,
   },
   personShoulders: {
-    width: 50, height: 22,
+    width: 50,
+    height: 22,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     backgroundColor: P,
@@ -201,7 +210,8 @@ const s = StyleSheet.create({
 
   // Camera
   cameraBump: {
-    width: 18, height: 8,
+    width: 18,
+    height: 8,
     borderTopLeftRadius: 4,
     borderTopRightRadius: 4,
     backgroundColor: P,
@@ -211,7 +221,8 @@ const s = StyleSheet.create({
     zIndex: 1,
   },
   cameraBody: {
-    width: 60, height: 40,
+    width: 60,
+    height: 40,
     borderRadius: 8,
     backgroundColor: P,
     alignItems: 'center',
@@ -220,31 +231,38 @@ const s = StyleSheet.create({
     gap: 8,
   },
   cameraLens: {
-    width: 22, height: 22,
+    width: 22,
+    height: 22,
     borderRadius: 11,
-    borderWidth: 2.5, borderColor: PX,
+    borderWidth: 2.5,
+    borderColor: PX,
     alignItems: 'center',
     justifyContent: 'center',
   },
   cameraLensInner: {
-    width: 10, height: 10,
+    width: 10,
+    height: 10,
     borderRadius: 5,
     backgroundColor: PX,
     opacity: 0.6,
   },
   cameraFlash: {
-    width: 6, height: 6,
+    width: 6,
+    height: 6,
     borderRadius: 3,
     backgroundColor: PL,
     position: 'absolute',
-    top: 8, right: 10,
+    top: 8,
+    right: 10,
   },
 
   // Scan / document
   scanDoc: {
-    width: 46, height: 58,
+    width: 46,
+    height: 58,
     borderRadius: 6,
-    borderWidth: 2.5, borderColor: P,
+    borderWidth: 2.5,
+    borderColor: P,
     paddingTop: 10,
     paddingHorizontal: 9,
     gap: 6,
@@ -256,17 +274,22 @@ const s = StyleSheet.create({
     opacity: 0.6,
   },
   magnifier: {
-    width: 20, height: 20,
+    width: 20,
+    height: 20,
     borderRadius: 10,
-    borderWidth: 2.5, borderColor: P,
+    borderWidth: 2.5,
+    borderColor: P,
     position: 'absolute',
-    bottom: -10, right: -10,
+    bottom: -10,
+    right: -10,
     backgroundColor: PX,
   },
   magnifierHandle: {
     position: 'absolute',
-    bottom: -7, right: -7,
-    width: 2.5, height: 9,
+    bottom: -7,
+    right: -7,
+    width: 2.5,
+    height: 9,
     borderRadius: 2,
     backgroundColor: P,
     transform: [{ rotate: '45deg' }],
@@ -274,22 +297,26 @@ const s = StyleSheet.create({
 
   // Lock
   lockArc: {
-    width: 28, height: 18,
+    width: 28,
+    height: 18,
     borderTopLeftRadius: 14,
     borderTopRightRadius: 14,
-    borderWidth: 3, borderColor: P,
+    borderWidth: 3,
+    borderColor: P,
     borderBottomWidth: 0,
     marginBottom: -2,
   },
   lockBody: {
-    width: 42, height: 32,
+    width: 42,
+    height: 32,
     borderRadius: 6,
     backgroundColor: P,
     alignItems: 'center',
     justifyContent: 'center',
   },
   lockKeyhole: {
-    width: 10, height: 14,
+    width: 10,
+    height: 14,
     borderRadius: 5,
     backgroundColor: PX,
     marginTop: 2,

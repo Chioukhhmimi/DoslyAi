@@ -12,7 +12,10 @@ interface OCRState {
 //   npx expo install expo-text-extractor
 // It is lazily required so the app does not crash if the native module
 // is not yet linked (e.g. running in plain Expo Go without a dev build).
-function getExtractor(): { extractTextFromImage: (uri: string) => Promise<string[]>; isSupported: boolean } | null {
+function getExtractor(): {
+  extractTextFromImage: (uri: string) => Promise<string[]>;
+  isSupported: boolean;
+} | null {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     return require('expo-text-extractor');
@@ -33,12 +36,20 @@ export function useOCR() {
 
     const extractor = getExtractor();
     if (!extractor) {
-      setState({ isProcessing: false, medications: null, error: 'OCR module not available. Please use a development build.' });
+      setState({
+        isProcessing: false,
+        medications: null,
+        error: 'OCR module not available. Please use a development build.',
+      });
       return;
     }
 
     if (!extractor.isSupported) {
-      setState({ isProcessing: false, medications: null, error: 'OCR not supported on this device.' });
+      setState({
+        isProcessing: false,
+        medications: null,
+        error: 'OCR not supported on this device.',
+      });
       return;
     }
 

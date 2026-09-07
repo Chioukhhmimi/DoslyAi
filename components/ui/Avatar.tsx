@@ -27,10 +27,7 @@ export function Avatar({ name, uri, size = 40, onPress }: AvatarProps) {
       style={[styles.container, { width: size, height: size, borderRadius: size / 2 }]}
     >
       {uri ? (
-        <Image
-          source={{ uri }}
-          style={{ width: size, height: size, borderRadius: size / 2 }}
-        />
+        <Image source={{ uri }} style={{ width: size, height: size, borderRadius: size / 2 }} />
       ) : (
         <Text style={[styles.initials, { fontSize: size * 0.38 }]}>{getInitials(name)}</Text>
       )}

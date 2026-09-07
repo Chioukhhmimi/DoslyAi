@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latin Font Choice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/superpowers-brainstorm-helper@latest/helper.js" onerror="console.warn('helper not found')"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #FAFAF9; padding: 24px; font-family: Inter, sans-serif; }
+  h2 { font-size: 20px; font-weight: 700; color: #1C1917; margin-bottom: 6px; }
+  .subtitle { font-size: 13px; color: #78716C; margin-bottom: 24px; }
+
+  .options { display: flex; flex-direction: column; gap: 16px; }
+
+  .option {
+    background: #fff;
+    border: 2px solid #E7E5E4;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .option:hover { border-color: #0D9488; }
+  .option.selected { border-color: #0D9488; box-shadow: 0 0 0 3px rgba(13,148,136,0.15); }
+
+  .option-header { display: flex; justify-content: space-between; align-items: center; }
+  .font-name { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #0D9488; }
+  .font-used-by { font-size: 11px; color: #78716C; }
+
+  .mock-screen {
+    background: #FAFAF9;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Inter samples */
+  .inter .h1 { font-family: 'Inter', sans-serif; font-size: 26px; font-weight: 700; color: #1C1917; }
+  .inter .h2 { font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 700; color: #1C1917; }
+  .inter .h3 { font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 600; color: #1C1917; }
+  .inter .body { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 400; color: #44403C; line-height: 1.5; }
+  .inter .label { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: #78716C; }
+  .inter .caption { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 400; color: #78716C; }
+  .inter .badge { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; background: #CCFBF1; color: #0F766E; padding: 2px 8px; border-radius: 6px; display: inline-block; }
+
+  /* Plus Jakarta Sans samples */
+  .jakarta .h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 26px; font-weight: 700; color: #1C1917; }
+  .jakarta .h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 20px; font-weight: 700; color: #1C1917; }
+  .jakarta .h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 600; color: #1C1917; }
+  .jakarta .body { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 400; color: #44403C; line-height: 1.5; }
+  .jakarta .label { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; font-weight: 500; color: #78716C; }
+  .jakarta .caption { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; font-weight: 400; color: #78716C; }
+  .jakarta .badge { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; font-weight: 600; background: #CCFBF1; color: #0F766E; padding: 2px 8px; border-radius: 6px; display: inline-block; }
+
+  /* DM Sans samples */
+  .dmsans .h1 { font-family: 'DM Sans', sans-serif; font-size: 26px; font-weight: 700; color: #1C1917; }
+  .dmsans .h2 { font-family: 'DM Sans', sans-serif; font-size: 20px; font-weight: 700; color: #1C1917; }
+  .dmsans .h3 { font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; color: #1C1917; }
+  .dmsans .body { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 400; color: #44403C; line-height: 1.5; }
+  .dmsans .label { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; color: #78716C; }
+  .dmsans .caption { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 400; color: #78716C; }
+  .dmsans .badge { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; background: #CCFBF1; color: #0F766E; padding: 2px 8px; border-radius: 6px; display: inline-block; }
+
+  .med-card { background: #fff; border: 1px solid #E7E5E4; border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
+  .med-row { display: flex; justify-content: space-between; align-items: center; }
+  .scale-row { display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; margin-top: 4px; }
+  .scale-item { display: flex; flex-direction: column; gap: 2px; align-items: center; }
+  .scale-label-ui { font-size: 10px; color: #A8A29E; text-align: center; font-family: monospace; }
+
+  .indicator {
+    position: fixed; bottom: 16px; right: 16px;
+    background: #0D9488; color: #fff;
+    padding: 8px 16px; border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    display: none;
+    font-family: Inter, sans-serif;
+  }
+  .indicator.visible { display: block; }
+</style>
+</head>
+<body>
+<h2>Which font for English & French?</h2>
+<p class="subtitle">Same medical app content — three different personalities. Click to select.</p>
+
+<div class="options">
+
+  <!-- INTER -->
+  <div class="option inter" data-choice="inter" onclick="toggleSelect(this)">
+    <div class="option-header">
+      <span class="font-name">A — Inter</span>
+      <span class="font-used-by">Used by: Linear, Stripe, Vercel, Notion</span>
+    </div>
+    <div class="mock-screen">
+      <div class="med-row">
+        <span class="h2">Good morning 👋</span>
+        <span class="badge">2 due</span>
+      </div>
+      <div class="med-card">
+        <div class="med-row">
+          <span class="h3">Metformin</span>
+          <span class="label">08:00</span>
+        </div>
+        <span class="body">500 mg · Daily · Tablet</span>
+        <span class="caption">Next dose in 2 hours</span>
+      </div>
+      <div class="scale-row">
+        <div class="scale-item"><span class="h1" style="line-height:1">Aa</span><span class="scale-label-ui">h1 / 700</span></div>
+        <div class="scale-item"><span class="h2" style="line-height:1">Aa</span><span class="scale-label-ui">h2 / 700</span></div>
+        <div class="scale-item"><span class="h3" style="line-height:1">Aa</span><span class="scale-label-ui">h3 / 600</span></div>
+        <div class="scale-item"><span class="body" style="line-height:1">Aa</span><span class="scale-label-ui">body</span></div>
+        <div class="scale-item"><span class="label" style="line-height:1">Aa</span><span class="scale-label-ui">label</span></div>
+        <div class="scale-item"><span class="caption" style="line-height:1">Aa</span><span class="scale-label-ui">caption</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLUS JAKARTA SANS -->
+  <div class="option jakarta" data-choice="jakarta" onclick="toggleSelect(this)">
+    <div class="option-header">
+      <span class="font-name">B — Plus Jakarta Sans</span>
+      <span class="font-used-by">Used by: health apps, fintech, modern SaaS</span>
+    </div>
+    <div class="mock-screen">
+      <div class="med-row">
+        <span class="h2">Good morning 👋</span>
+        <span class="badge">2 due</span>
+      </div>
+      <div class="med-card">
+        <div class="med-row">
+          <span class="h3">Metformin</span>
+          <span class="label">08:00</span>
+        </div>
+        <span class="body">500 mg · Daily · Tablet</span>
+        <span class="caption">Next dose in 2 hours</span>
+      </div>
+      <div class="scale-row">
+        <div class="scale-item"><span class="h1" style="line-height:1">Aa</span><span class="scale-label-ui">h1 / 700</span></div>
+        <div class="scale-item"><span class="h2" style="line-height:1">Aa</span><span class="scale-label-ui">h2 / 700</span></div>
+        <div class="scale-item"><span class="h3" style="line-height:1">Aa</span><span class="scale-label-ui">h3 / 600</span></div>
+        <div class="scale-item"><span class="body" style="line-height:1">Aa</span><span class="scale-label-ui">body</span></div>
+        <div class="scale-item"><span class="label" style="line-height:1">Aa</span><span class="scale-label-ui">label</span></div>
+        <div class="scale-item"><span class="caption" style="line-height:1">Aa</span><span class="scale-label-ui">caption</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DM SANS -->
+  <div class="option dmsans" data-choice="dmsans" onclick="toggleSelect(this)">
+    <div class="option-header">
+      <span class="font-name">C — DM Sans</span>
+      <span class="font-used-by">Used by: Figma community, health dashboards</span>
+    </div>
+    <div class="mock-screen">
+      <div class="med-row">
+        <span class="h2">Good morning 👋</span>
+        <span class="badge">2 due</span>
+      </div>
+      <div class="med-card">
+        <div class="med-row">
+          <span class="h3">Metformin</span>
+          <span class="label">08:00</span>
+        </div>
+        <span class="body">500 mg · Daily · Tablet</span>
+        <span class="caption">Next dose in 2 hours</span>
+      </div>
+      <div class="scale-row">
+        <div class="scale-item"><span class="h1" style="line-height:1">Aa</span><span class="scale-label-ui">h1 / 700</span></div>
+        <div class="scale-item"><span class="h2" style="line-height:1">Aa</span><span class="scale-label-ui">h2 / 700</span></div>
+        <div class="scale-item"><span class="h3" style="line-height:1">Aa</span><span class="scale-label-ui">h3 / 600</span></div>
+        <div class="scale-item"><span class="body" style="line-height:1">Aa</span><span class="scale-label-ui">body</span></div>
+        <div class="scale-item"><span class="label" style="line-height:1">Aa</span><span class="scale-label-ui">label</span></div>
+        <div class="scale-item"><span class="caption" style="line-height:1">Aa</span><span class="scale-label-ui">caption</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="indicator" id="indicator"></div>
+
+<script>
+function toggleSelect(el) {
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  const ind = document.getElementById('indicator');
+  ind.textContent = '✓ Selected: ' + el.dataset.choice.toUpperCase();
+  ind.classList.add('visible');
+  if (window.recordChoice) recordChoice(el.dataset.choice, el.querySelector('.font-name').textContent);
+}
+</script>
+</body>
+</html>

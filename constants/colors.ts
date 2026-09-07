@@ -1,45 +1,45 @@
 export const Colors = {
-  // ── Brand ─────────────────────────────────────────────────────────────────
-  primary:       '#2563EB',
-  primaryLight:  '#DBEAFE',
-  primaryXLight: '#EFF6FF',
-  primaryDark:   '#1D4ED8',
+  // ── Brand — Warm Teal ─────────────────────────────────────────────────────
+  primary: '#0D9488',
+  primaryLight: '#CCFBF1',
+  primaryXLight: '#F0FDFA',
+  primaryDark: '#0F766E',
 
   // ── Semantic: bg (light) + icon/border + text (dark) ─────────────────────
-  successLight:  '#DCFCE7',
-  success:       '#10B981',
-  successText:   '#15803D',
+  successLight: '#DCFCE7',
+  success: '#10B981',
+  successText: '#15803D',
 
-  warningLight:  '#FEF9C3',
-  warning:       '#F59E0B',
-  warningText:   '#A16207',
+  warningLight: '#FEF9C3',
+  warning: '#F59E0B',
+  warningText: '#A16207',
 
-  dangerLight:   '#FEE2E2',
-  danger:        '#EF4444',
-  dangerText:    '#B91C1C',
+  dangerLight: '#FEE2E2',
+  danger: '#EF4444',
+  dangerText: '#B91C1C',
 
   // Skipped / amber (distinct from warning)
-  skippedLight:  '#FEF3C7',
-  skippedText:   '#92400E',
+  skippedLight: '#FEF3C7',
+  skippedText: '#92400E',
 
-  // ── Surface ───────────────────────────────────────────────────────────────
-  background:    '#F8FAFC',
-  surfaceSubtle: '#F1F5F9',
-  surface:       '#FFFFFF',
-  border:        '#E2E8F0',
+  // ── Surface — Warm Stone ──────────────────────────────────────────────────
+  background: '#FAFAF9',
+  surfaceSubtle: '#F5F4F2',
+  surface: '#FFFFFF',
+  border: '#E7E5E4',
 
-  // ── Text ──────────────────────────────────────────────────────────────────
-  textPrimary:   '#0F172A',
-  textSecondary: '#64748B',
-  textDisabled:  '#CBD5E1',
-  textInverse:   '#FFFFFF',
+  // ── Text — Warm Stone ─────────────────────────────────────────────────────
+  textPrimary: '#1C1917',
+  textSecondary: '#78716C',
+  textDisabled: '#D6D3D1',
+  textInverse: '#FFFFFF',
 
   // ── Medical type (data-ink — intentionally distinct from semantic) ─────────
-  pill:          '#6366F1',
-  syrup:         '#EC4899',
-  injection:     '#F97316',
-  supplement:    '#059669',  // differentiated from success (#10B981)
-  other:         '#94A3B8',
+  pill: '#6366F1',
+  syrup: '#EC4899',
+  injection: '#F97316',
+  supplement: '#16A34A', // green-600, distinct from teal primary
+  other: '#94A3B8',
 } as const;
 
 export type ColorKey = keyof typeof Colors;

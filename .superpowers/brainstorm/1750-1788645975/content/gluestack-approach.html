@@ -1,0 +1,79 @@
+<h2>Gluestack UI — Which approach?</h2>
+<p class="subtitle">The answer shapes the entire migration. Pick the direction that fits your goals.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="full" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#F0F7FF;padding:16px;border-radius:8px;margin-bottom:12px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="background:#3B82F6;color:#fff;border-radius:8px;padding:10px 16px;text-align:center;font-weight:600;font-size:14px">Take Medication</div>
+        <div style="display:flex;gap:6px">
+          <div style="flex:1;background:#EFF6FF;border:1.5px solid #3B82F6;border-radius:20px;padding:6px 10px;text-align:center;font-size:12px;font-weight:600;color:#3B82F6">Daily</div>
+          <div style="flex:1;border:1.5px solid #E2E8F0;border-radius:20px;padding:6px 10px;text-align:center;font-size:12px;font-weight:600;color:#64748B">Weekly</div>
+          <div style="flex:1;border:1.5px solid #E2E8F0;border-radius:20px;padding:6px 10px;text-align:center;font-size:12px;font-weight:600;color:#64748B">Custom</div>
+        </div>
+        <div style="background:#fff;border:1px solid #E2E8F0;border-radius:10px;padding:10px;display:flex;align-items:center;gap:10px">
+          <div style="width:36px;height:36px;border-radius:8px;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:16px">💊</div>
+          <div>
+            <div style="font-weight:600;font-size:13px;color:#1E293B">Metformin 500mg</div>
+            <div style="font-size:11px;color:#64748B">08:00 · Daily</div>
+          </div>
+          <div style="margin-left:auto;background:#DCFCE7;color:#16A34A;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600">Taken</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Full Gluestack Migration</h3>
+      <p>Replace all custom components (Button, SelectableChip, BottomSheet…) with Gluestack equivalents, themed to match current MediTrack colors. Uses Gluestack v2 + NativeWind under the hood.</p>
+    </div>
+    <div class="pros-cons" style="margin-top:8px">
+      <div class="pros"><h4>Pros</h4><ul><li>Consistent component API</li><li>Accessibility built-in</li><li>Active community</li></ul></div>
+      <div class="cons"><h4>Cons</h4><ul><li>Large migration effort</li><li>NativeWind adds tooling</li><li>Risk of visual regression</li></ul></div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="incremental" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#F0FFF4;padding:16px;border-radius:8px;margin-bottom:12px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="background:#3B82F6;color:#fff;border-radius:8px;padding:10px 16px;text-align:center;font-weight:600;font-size:14px">Take Medication</div>
+        <div style="background:#fff;border:1px solid #E2E8F0;border-radius:10px;padding:10px;font-size:12px;color:#64748B;text-align:center">Custom SelectableChip (unchanged)</div>
+        <div style="background:#fff;border:2px dashed #22C55E;border-radius:10px;padding:10px;font-size:12px;color:#16A34A;text-align:center">✦ New Gluestack component here</div>
+        <div style="background:#fff;border:1px solid #E2E8F0;border-radius:10px;padding:10px;font-size:12px;color:#64748B;text-align:center">Custom MedListItem (unchanged)</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Incremental Adoption</h3>
+      <p>Add Gluestack alongside existing components. Use it for new screens/features only. Gradually migrate old components as they need changes. Zero risk to existing UI.</p>
+    </div>
+    <div class="pros-cons" style="margin-top:8px">
+      <div class="pros"><h4>Pros</h4><ul><li>Zero migration risk</li><li>Ship features now</li><li>Learn as you go</li></ul></div>
+      <div class="cons"><h4>Cons</h4><ul><li>Two systems in parallel</li><li>Visual inconsistency possible</li><li>Slower full adoption</li></ul></div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="wrapper" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#FFF7ED;padding:16px;border-radius:8px;margin-bottom:12px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="background:#3B82F6;color:#fff;border-radius:8px;padding:10px 16px;text-align:center;font-weight:600;font-size:14px;position:relative">
+          Take Medication
+          <span style="position:absolute;top:-8px;right:-4px;background:#F97316;color:#fff;font-size:9px;padding:2px 5px;border-radius:8px">Gluestack</span>
+        </div>
+        <div style="display:flex;gap:6px;position:relative">
+          <div style="flex:1;background:#EFF6FF;border:1.5px solid #3B82F6;border-radius:20px;padding:6px 10px;text-align:center;font-size:12px;font-weight:600;color:#3B82F6">Daily</div>
+          <div style="flex:1;border:1.5px solid #E2E8F0;border-radius:20px;padding:6px 10px;text-align:center;font-size:12px;font-weight:600;color:#64748B">Weekly</div>
+          <span style="position:absolute;top:-8px;right:-4px;background:#F97316;color:#fff;font-size:9px;padding:2px 5px;border-radius:8px">Gluestack</span>
+        </div>
+        <div style="background:#fff;border:1px solid #E2E8F0;border-radius:10px;padding:8px;font-size:11px;color:#64748B;text-align:center">Same look · Gluestack engine inside</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Swap Engine, Keep Look</h3>
+      <p>Rebuild each existing custom component (Button, SelectableChip, etc.) using Gluestack primitives internally — same visual output, better engine. No visual change for users.</p>
+    </div>
+    <div class="pros-cons" style="margin-top:8px">
+      <div class="pros"><h4>Pros</h4><ul><li>Zero visual regression</li><li>Gain Gluestack benefits</li><li>Clean component API</li></ul></div>
+      <div class="cons"><h4>Cons</h4><ul><li>Non-trivial per-component work</li><li>Need to match pixel-exact</li><li>Still need NativeWind setup</li></ul></div>
+    </div>
+  </div>
+
+</div>

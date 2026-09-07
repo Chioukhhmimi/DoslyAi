@@ -17,11 +17,19 @@ export default function AddScreen() {
   const router = useRouter();
   const { addMedication } = useMedications();
   const { activeProfile } = useProfiles();
-  const params = useLocalSearchParams<{ prefillName?: string; prefillUnit?: string; prefillQty?: string }>();
+  const params = useLocalSearchParams<{
+    prefillName?: string;
+    prefillUnit?: string;
+    prefillQty?: string;
+  }>();
 
   // Bump this key every time the screen is focused → remounts MedForm with fresh state
   const [formKey, setFormKey] = useState(0);
-  useFocusEffect(useCallback(() => { setFormKey((k) => k + 1); }, []));
+  useFocusEffect(
+    useCallback(() => {
+      setFormKey((k) => k + 1);
+    }, []),
+  );
 
   if (!activeProfile) {
     return (

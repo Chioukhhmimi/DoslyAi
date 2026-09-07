@@ -15,7 +15,7 @@ interface ScreenHeaderProps {
 
 export function ScreenHeader({ title, onBack, right }: ScreenHeaderProps) {
   const router = useRouter();
-  const isRTL  = useIsRTL();
+  const isRTL = useIsRTL();
   const backIcon = isRTL ? 'arrow-forward' : 'arrow-back';
 
   return (
@@ -27,15 +27,17 @@ export function ScreenHeader({ title, onBack, right }: ScreenHeaderProps) {
       >
         <Ionicons name={backIcon} size={24} color={Colors.textPrimary} />
       </TouchableOpacity>
-      <Text style={styles.title} numberOfLines={1}>{title}</Text>
+      <Text style={styles.title} numberOfLines={1}>
+        {title}
+      </Text>
       <View style={styles.right}>{right ?? null}</View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  header:  { flexDirection: 'row', alignItems: 'center', marginBottom: Spacing.lg },
+  header: { flexDirection: 'row', alignItems: 'center', marginBottom: Spacing.lg },
   backBtn: { padding: 4, marginRight: Spacing.sm },
-  title:   { flex: 1, fontSize: FontSize.lg, fontWeight: '700', color: Colors.textPrimary },
-  right:   { minWidth: 32, alignItems: 'flex-end' },
+  title: { flex: 1, fontSize: FontSize.lg, fontWeight: '700', color: Colors.textPrimary },
+  right: { minWidth: 32, alignItems: 'flex-end' },
 });

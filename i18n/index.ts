@@ -10,17 +10,16 @@ export const RTL_LANGUAGES = ['ar'];
 
 export const SUPPORTED_LANGUAGES = [
   { code: 'fr', label: 'Français', nativeLabel: 'Français' },
-  { code: 'en', label: 'English',  nativeLabel: 'English' },
-  { code: 'ar', label: 'Arabic',   nativeLabel: 'العربية' },
+  { code: 'en', label: 'English', nativeLabel: 'English' },
+  { code: 'ar', label: 'Arabic', nativeLabel: 'العربية' },
 ] as const;
 
 export type LanguageCode = (typeof SUPPORTED_LANGUAGES)[number]['code'];
 
 const deviceLocale = getLocales()[0]?.languageCode ?? 'fr';
-const defaultLanguage: LanguageCode =
-  SUPPORTED_LANGUAGES.some((l) => l.code === deviceLocale)
-    ? (deviceLocale as LanguageCode)
-    : 'fr';
+const defaultLanguage: LanguageCode = SUPPORTED_LANGUAGES.some((l) => l.code === deviceLocale)
+  ? (deviceLocale as LanguageCode)
+  : 'fr';
 
 i18n.use(initReactI18next).init({
   resources: {

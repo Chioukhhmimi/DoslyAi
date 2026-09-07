@@ -11,14 +11,22 @@ export default function TermsScreen() {
     <ScreenContainer scrollable>
       <ScreenHeader title={t('settings.terms')} />
       <Text style={styles.body}>
-        {t('settings.termsScreen.intro')}{'\n\n'}
-        <Text style={styles.bold}>{t('settings.termsScreen.section1Title')}</Text>{'\n'}
-        {t('settings.termsScreen.section1Body')}{'\n\n'}
-        <Text style={styles.bold}>{t('settings.termsScreen.section2Title')}</Text>{'\n'}
-        {t('settings.termsScreen.section2Body')}{'\n\n'}
-        <Text style={styles.bold}>{t('settings.termsScreen.section3Title')}</Text>{'\n'}
-        {t('settings.termsScreen.section3Body')}{'\n\n'}
-        <Text style={styles.bold}>{t('settings.termsScreen.section4Title')}</Text>{'\n'}
+        {t('settings.termsScreen.intro')}
+        {'\n\n'}
+        <Text style={styles.bold}>{t('settings.termsScreen.section1Title')}</Text>
+        {'\n'}
+        {t('settings.termsScreen.section1Body')}
+        {'\n\n'}
+        <Text style={styles.bold}>{t('settings.termsScreen.section2Title')}</Text>
+        {'\n'}
+        {t('settings.termsScreen.section2Body')}
+        {'\n\n'}
+        <Text style={styles.bold}>{t('settings.termsScreen.section3Title')}</Text>
+        {'\n'}
+        {t('settings.termsScreen.section3Body')}
+        {'\n\n'}
+        <Text style={styles.bold}>{t('settings.termsScreen.section4Title')}</Text>
+        {'\n'}
         {t('settings.termsScreen.section4Body')}
       </Text>
     </ScreenContainer>

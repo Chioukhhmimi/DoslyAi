@@ -53,7 +53,7 @@ export function ScreenContainer({
 }
 
 const styles = StyleSheet.create({
-  safe:   { flex: 1, backgroundColor: Colors.background },
-  flex:   { flex: 1 },
+  safe: { flex: 1, backgroundColor: Colors.background },
+  flex: { flex: 1 },
   padded: { padding: Spacing.md },
 });

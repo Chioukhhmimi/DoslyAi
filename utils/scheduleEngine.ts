@@ -66,7 +66,7 @@ export function isMedicationActiveOnDate(medication: Medication, date: Date): bo
 
 export function generateTodayIntakeRecords(
   medication: Medication,
-  existingRecords: IntakeRecord[]
+  existingRecords: IntakeRecord[],
 ): Omit<IntakeRecord, 'id'>[] {
   const today = new Date();
   const doses = getScheduledDosesForDay(medication, today);
@@ -75,7 +75,7 @@ export function generateTodayIntakeRecords(
     .filter((dose) => {
       const isoStr = dose.toISOString();
       return !existingRecords.some(
-        (r) => r.medicationId === medication.id && r.scheduledAt === isoStr
+        (r) => r.medicationId === medication.id && r.scheduledAt === isoStr,
       );
     })
     .map((dose) => ({
@@ -88,7 +88,7 @@ export function generateTodayIntakeRecords(
 export function computeAdherence(
   medication: Medication,
   intakeRecords: IntakeRecord[],
-  days: number
+  days: number,
 ): number {
   const today = new Date();
   let expected = 0;
@@ -105,7 +105,7 @@ export function computeAdherence(
           r.medicationId === medication.id &&
           isSameDay(r.scheduledAt, dose) &&
           r.takenAt &&
-          !r.skipped
+          !r.skipped,
       );
       if (record) taken++;
     }

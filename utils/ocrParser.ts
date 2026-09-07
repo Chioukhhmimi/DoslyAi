@@ -8,7 +8,8 @@ export interface ParsedMedication {
 
 // ─── Regex patterns for French prescriptions ────────────────────────────────
 
-const DOSAGE_RE = /(\d+(?:[.,]\d+)?)\s*(mg|ml|g|µg|mcg|UI|cp|comprimés?|gélules?|gouttes?|sachets?)/gi;
+const DOSAGE_RE =
+  /(\d+(?:[.,]\d+)?)\s*(mg|ml|g|µg|mcg|UI|cp|comprimés?|gélules?|gouttes?|sachets?)/gi;
 
 const FREQUENCY_RE =
   /(\d+\s*[x×]\s*\/?\s*j(?:our)?|\d+\s*fois?\s*(?:par\s*)?(?:jour|j)\b|matin\s*(?:et|,)?\s*(?:midi\s*(?:et|,)?\s*)?soir|soir\s*et\s*matin|\b\d-\d(?:-\d)?\b|\bonce\s+daily\b|\btwice\s+daily\b)/gi;
@@ -86,9 +87,7 @@ export function parsePrescription(lines: string[]): ParsedMedication[] {
     const duration = firstMatch(blockText, DURATION_RE);
 
     // Avoid duplicates (same name + dosage already added)
-    const isDup = results.some(
-      (r) => r.name === name && r.dosage === dosage
-    );
+    const isDup = results.some((r) => r.name === name && r.dosage === dosage);
     if (!isDup && dosage) {
       results.push({ name, dosage, frequency, duration, rawLines: blockLines });
     }
@@ -100,7 +99,7 @@ export function parsePrescription(lines: string[]): ParsedMedication[] {
     const dosage = extractDosage(fullText);
     if (name && dosage) {
       const frequency = firstMatch(fullText, FREQUENCY_RE);
-      const duration  = firstMatch(fullText, DURATION_RE);
+      const duration = firstMatch(fullText, DURATION_RE);
       results.push({ name, dosage, frequency, duration, rawLines: lines });
     }
   }
@@ -120,14 +119,14 @@ export interface ParsedPrescription {
 
 export function parseOCRResult(rawText: string): ParsedPrescription {
   const lines = rawText.split('\n').filter(Boolean);
-  const meds  = parsePrescription(lines);
+  const meds = parsePrescription(lines);
   const first = meds[0];
   const prescribedBy = firstMatch(rawText, DOCTOR_RE);
   return {
     medicationName: first?.name,
-    dosage:         first?.dosage,
-    frequency:      first?.frequency,
-    duration:       first?.duration,
+    dosage: first?.dosage,
+    frequency: first?.frequency,
+    duration: first?.duration,
     prescribedBy,
     rawText,
   };

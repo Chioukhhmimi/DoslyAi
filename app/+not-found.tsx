@@ -21,6 +21,6 @@ export default function NotFound() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: Spacing.lg },
-  title:     { fontSize: 20, color: Colors.textPrimary, marginBottom: Spacing.md },
-  link:      { color: Colors.primary, fontSize: 16 },
+  title: { fontSize: 20, color: Colors.textPrimary, marginBottom: Spacing.md },
+  link: { color: Colors.primary, fontSize: 16 },
 });

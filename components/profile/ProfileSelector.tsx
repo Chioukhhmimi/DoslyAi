@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     gap: Spacing.xs,
     paddingVertical: 6,
     paddingHorizontal: Spacing.sm,
-    borderRadius: Radius.full,
+    borderRadius: Radius.sm,
     borderWidth: 1,
     minHeight: 44,
     justifyContent: 'center',

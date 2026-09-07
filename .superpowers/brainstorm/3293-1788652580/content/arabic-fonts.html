@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arabic Font Choice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Tajawal:wght@400;500;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #FAFAF9; padding: 24px; font-family: Cairo, sans-serif; direction: rtl; }
+  h2 { font-size: 20px; font-weight: 700; color: #1C1917; margin-bottom: 6px; direction: ltr; font-family: 'Plus Jakarta Sans', sans-serif; }
+  .subtitle { font-size: 13px; color: #78716C; margin-bottom: 24px; direction: ltr; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+  .options { display: flex; flex-direction: column; gap: 16px; }
+
+  .option {
+    background: #fff;
+    border: 2px solid #E7E5E4;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    direction: rtl;
+  }
+  .option:hover { border-color: #0D9488; }
+  .option.selected { border-color: #0D9488; box-shadow: 0 0 0 3px rgba(13,148,136,0.15); }
+
+  .option-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; direction: ltr; }
+  .font-name { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #0D9488; font-family: 'Plus Jakarta Sans', sans-serif; }
+  .font-used-by { font-size: 11px; color: #78716C; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+  .mock-screen {
+    background: #FAFAF9;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .med-card { background: #fff; border: 1px solid #E7E5E4; border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
+  .med-row { display: flex; justify-content: space-between; align-items: center; }
+  .badge { font-size: 11px; font-weight: 600; background: #CCFBF1; color: #0F766E; padding: 2px 8px; border-radius: 6px; display: inline-block; }
+
+  .scale-row { display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; margin-top: 8px; direction: rtl; justify-content: flex-start; }
+  .scale-item { display: flex; flex-direction: column; gap: 2px; align-items: center; }
+  .scale-label-ui { font-size: 10px; color: #A8A29E; text-align: center; font-family: monospace; direction: ltr; }
+
+  /* Cairo */
+  .cairo-font { font-family: 'Cairo', sans-serif; }
+  .cairo .h1 { font-family: 'Cairo', sans-serif; font-size: 26px; font-weight: 700; color: #1C1917; }
+  .cairo .h2 { font-family: 'Cairo', sans-serif; font-size: 20px; font-weight: 700; color: #1C1917; }
+  .cairo .h3 { font-family: 'Cairo', sans-serif; font-size: 16px; font-weight: 600; color: #1C1917; }
+  .cairo .body { font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 400; color: #44403C; line-height: 1.7; }
+  .cairo .label { font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 500; color: #78716C; }
+  .cairo .caption { font-family: 'Cairo', sans-serif; font-size: 11px; font-weight: 400; color: #78716C; }
+  .cairo .badge { font-family: 'Cairo', sans-serif; }
+
+  /* Tajawal */
+  .tajawal .h1 { font-family: 'Tajawal', sans-serif; font-size: 26px; font-weight: 700; color: #1C1917; }
+  .tajawal .h2 { font-family: 'Tajawal', sans-serif; font-size: 20px; font-weight: 700; color: #1C1917; }
+  .tajawal .h3 { font-family: 'Tajawal', sans-serif; font-size: 16px; font-weight: 500; color: #1C1917; }
+  .tajawal .body { font-family: 'Tajawal', sans-serif; font-size: 14px; font-weight: 400; color: #44403C; line-height: 1.7; }
+  .tajawal .label { font-family: 'Tajawal', sans-serif; font-size: 12px; font-weight: 500; color: #78716C; }
+  .tajawal .caption { font-family: 'Tajawal', sans-serif; font-size: 11px; font-weight: 400; color: #78716C; }
+
+  /* IBM Plex Arabic */
+  .ibm .h1 { font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 26px; font-weight: 700; color: #1C1917; }
+  .ibm .h2 { font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 20px; font-weight: 700; color: #1C1917; }
+  .ibm .h3 { font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 16px; font-weight: 600; color: #1C1917; }
+  .ibm .body { font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 14px; font-weight: 400; color: #44403C; line-height: 1.7; }
+  .ibm .label { font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 12px; font-weight: 500; color: #78716C; }
+  .ibm .caption { font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 11px; font-weight: 400; color: #78716C; }
+
+  .indicator {
+    position: fixed; bottom: 16px; left: 16px;
+    background: #0D9488; color: #fff;
+    padding: 8px 16px; border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    display: none;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    direction: ltr;
+  }
+  .indicator.visible { display: block; }
+</style>
+</head>
+<body>
+<h2>Which font for Arabic?</h2>
+<p class="subtitle">Same medical content in Arabic — three typefaces. Click to select.</p>
+
+<div class="options">
+
+  <!-- CAIRO -->
+  <div class="option cairo" data-choice="cairo" onclick="toggleSelect(this)">
+    <div class="option-header">
+      <span class="font-name">A — Cairo</span>
+      <span class="font-used-by">Geometric · widely used in Arab health apps</span>
+    </div>
+    <div class="mock-screen">
+      <div class="med-row">
+        <span class="h2">صباح الخير 👋</span>
+        <span class="badge cairo-font">موعدان</span>
+      </div>
+      <div class="med-card">
+        <div class="med-row">
+          <span class="h3">ميتفورمين</span>
+          <span class="label">٠٨:٠٠</span>
+        </div>
+        <span class="body">٥٠٠ ملغ · يومي · قرص</span>
+        <span class="caption">الجرعة التالية خلال ساعتين</span>
+      </div>
+      <div class="scale-row">
+        <div class="scale-item"><span class="h1" style="line-height:1">أ</span><span class="scale-label-ui">h1/700</span></div>
+        <div class="scale-item"><span class="h2" style="line-height:1">أ</span><span class="scale-label-ui">h2/700</span></div>
+        <div class="scale-item"><span class="h3" style="line-height:1">أ</span><span class="scale-label-ui">h3/600</span></div>
+        <div class="scale-item"><span class="body" style="line-height:1">أ</span><span class="scale-label-ui">body</span></div>
+        <div class="scale-item"><span class="label" style="line-height:1">أ</span><span class="scale-label-ui">label</span></div>
+        <div class="scale-item"><span class="caption" style="line-height:1">أ</span><span class="scale-label-ui">caption</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAJAWAL -->
+  <div class="option tajawal" data-choice="tajawal" onclick="toggleSelect(this)">
+    <div class="option-header">
+      <span class="font-name">B — Tajawal</span>
+      <span class="font-used-by">Minimalist · clean strokes · modern feel</span>
+    </div>
+    <div class="mock-screen">
+      <div class="med-row">
+        <span class="h2">صباح الخير 👋</span>
+        <span class="badge" style="font-family:'Tajawal',sans-serif">موعدان</span>
+      </div>
+      <div class="med-card">
+        <div class="med-row">
+          <span class="h3">ميتفورمين</span>
+          <span class="label">٠٨:٠٠</span>
+        </div>
+        <span class="body">٥٠٠ ملغ · يومي · قرص</span>
+        <span class="caption">الجرعة التالية خلال ساعتين</span>
+      </div>
+      <div class="scale-row">
+        <div class="scale-item"><span class="h1" style="line-height:1">أ</span><span class="scale-label-ui">h1/700</span></div>
+        <div class="scale-item"><span class="h2" style="line-height:1">أ</span><span class="scale-label-ui">h2/700</span></div>
+        <div class="scale-item"><span class="h3" style="line-height:1">أ</span><span class="scale-label-ui">h3/500</span></div>
+        <div class="scale-item"><span class="body" style="line-height:1">أ</span><span class="scale-label-ui">body</span></div>
+        <div class="scale-item"><span class="label" style="line-height:1">أ</span><span class="scale-label-ui">label</span></div>
+        <div class="scale-item"><span class="caption" style="line-height:1">أ</span><span class="scale-label-ui">caption</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IBM PLEX ARABIC -->
+  <div class="option ibm" data-choice="ibm" onclick="toggleSelect(this)">
+    <div class="option-header">
+      <span class="font-name">C — IBM Plex Arabic</span>
+      <span class="font-used-by">Technical · precise · clinical / professional</span>
+    </div>
+    <div class="mock-screen">
+      <div class="med-row">
+        <span class="h2">صباح الخير 👋</span>
+        <span class="badge" style="font-family:'IBM Plex Sans Arabic',sans-serif">موعدان</span>
+      </div>
+      <div class="med-card">
+        <div class="med-row">
+          <span class="h3">ميتفورمين</span>
+          <span class="label">٠٨:٠٠</span>
+        </div>
+        <span class="body">٥٠٠ ملغ · يومي · قرص</span>
+        <span class="caption">الجرعة التالية خلال ساعتين</span>
+      </div>
+      <div class="scale-row">
+        <div class="scale-item"><span class="h1" style="line-height:1">أ</span><span class="scale-label-ui">h1/700</span></div>
+        <div class="scale-item"><span class="h2" style="line-height:1">أ</span><span class="scale-label-ui">h2/700</span></div>
+        <div class="scale-item"><span class="h3" style="line-height:1">أ</span><span class="scale-label-ui">h3/600</span></div>
+        <div class="scale-item"><span class="body" style="line-height:1">أ</span><span class="scale-label-ui">body</span></div>
+        <div class="scale-item"><span class="label" style="line-height:1">أ</span><span class="scale-label-ui">label</span></div>
+        <div class="scale-item"><span class="caption" style="line-height:1">أ</span><span class="scale-label-ui">caption</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="indicator" id="indicator"></div>
+
+<script>
+function toggleSelect(el) {
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  const ind = document.getElementById('indicator');
+  ind.textContent = '✓ ' + el.querySelector('.font-name').textContent;
+  ind.classList.add('visible');
+  if (window.recordChoice) recordChoice(el.dataset.choice, el.querySelector('.font-name').textContent);
+}
+</script>
+</body>
+</html>

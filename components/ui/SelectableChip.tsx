@@ -61,12 +61,12 @@ const styles = StyleSheet.create({
   pillMd: {
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.xs,
-    borderRadius: Radius.full,
+    borderRadius: Radius.sm,
   },
   pillSm: {
     paddingHorizontal: Spacing.sm,
     paddingVertical: 3,
-    borderRadius: Radius.full,
+    borderRadius: Radius.sm,
     minHeight: 44,
   },
   circle: {

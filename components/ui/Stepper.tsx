@@ -31,7 +31,7 @@ export function Stepper({
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.btn} onPress={decrement} disabled={value <= min} activeOpacity={0.7} accessibilityLabel="Decrease" accessibilityRole="button" accessibilityState={{ disabled: value <= min }}>
+      <TouchableOpacity style={[styles.btn, styles.btnLeft]} onPress={decrement} disabled={value <= min} activeOpacity={0.7} accessibilityLabel="Decrease" accessibilityRole="button" accessibilityState={{ disabled: value <= min }}>
         <Text style={[styles.btnText, value <= min && styles.btnDisabled]}>−</Text>
       </TouchableOpacity>
       {editable ? (
@@ -44,12 +44,13 @@ export function Stepper({
           }}
           keyboardType="decimal-pad"
           textAlign="center"
+          underlineColorAndroid="transparent"
           accessibilityLabel="Value"
         />
       ) : (
         <Text style={styles.valueText}>{value}</Text>
       )}
-      <TouchableOpacity style={styles.btn} onPress={increment} disabled={value >= max} activeOpacity={0.7} accessibilityLabel="Increase" accessibilityRole="button" accessibilityState={{ disabled: value >= max }}>
+      <TouchableOpacity style={[styles.btn, styles.btnRight]} onPress={increment} disabled={value >= max} activeOpacity={0.7} accessibilityLabel="Increase" accessibilityRole="button" accessibilityState={{ disabled: value >= max }}>
         <Text style={[styles.btnText, value >= max && styles.btnDisabled]}>+</Text>
       </TouchableOpacity>
     </View>
@@ -59,37 +60,45 @@ export function Stepper({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'stretch',
     borderWidth: 1,
     borderColor: Colors.border,
     borderRadius: Radius.sm,
-    overflow: 'hidden',
     backgroundColor: Colors.surface,
-    height: 48,
   },
   btn: {
-    width: 44,
-    height: 48,
+    width: 40,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingVertical: Spacing.sm,
     backgroundColor: Colors.background,
   },
-  btnText: { fontSize: FontSize.lg, fontWeight: '600', color: Colors.primary },
+  btnLeft: {
+    borderTopLeftRadius: Radius.sm - 1,
+    borderBottomLeftRadius: Radius.sm - 1,
+  },
+  btnRight: {
+    borderTopRightRadius: Radius.sm - 1,
+    borderBottomRightRadius: Radius.sm - 1,
+  },
+  btnText: { fontSize: FontSize.md, fontWeight: '600', color: Colors.primary },
   btnDisabled: { color: Colors.textDisabled },
   input: {
-    flex: 1,
-    height: 48,
-    fontSize: FontSize.md,
+    minWidth: 64,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.xs,
+    fontSize: FontSize.sm,
     fontWeight: '600',
     color: Colors.textPrimary,
     textAlign: 'center',
+    backgroundColor: 'transparent',
   },
   valueText: {
-    flex: 1,
-    fontSize: FontSize.md,
+    minWidth: 64,
+    paddingVertical: Spacing.sm,
+    fontSize: FontSize.sm,
     fontWeight: '600',
     color: Colors.textPrimary,
     textAlign: 'center',
-    lineHeight: 48,
   },
 });

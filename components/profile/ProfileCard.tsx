@@ -26,7 +26,13 @@ function calcAge(dateOfBirth?: string): number | null {
   return age;
 }
 
-export function ProfileCard({ profile, isActive, medicationCount, onPress, onLongPress }: ProfileCardProps) {
+export function ProfileCard({
+  profile,
+  isActive,
+  medicationCount,
+  onPress,
+  onLongPress,
+}: ProfileCardProps) {
   const { t } = useTranslation();
   const age = calcAge(profile.dateOfBirth);
   const subtitle = [profile.relationship, age !== null ? `${age} ${t('profile.ageYears')}` : null]
@@ -75,7 +81,7 @@ const styles = StyleSheet.create({
     width: 4,
     backgroundColor: Colors.primary,
   },
-  info:     { flex: 1 },
-  name:     { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary },
+  info: { flex: 1 },
+  name: { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary },
   subtitle: { fontSize: FontSize.sm, color: Colors.textSecondary, marginTop: 2 },
 });

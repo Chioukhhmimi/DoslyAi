@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
   tagRow:            { paddingVertical: Spacing.xs, borderBottomWidth: 1, borderBottomColor: Colors.border },
   rowLabel:          { fontSize: FontSize.sm, color: Colors.textSecondary, marginBottom: 4 },
   tagList:           { flexDirection: 'row', flexWrap: 'wrap', gap: 4 },
-  tag:               { backgroundColor: Colors.primaryLight, borderRadius: 20, paddingHorizontal: 8, paddingVertical: 2 },
+  tag:               { backgroundColor: Colors.primaryLight, borderRadius: Radius.sm, paddingHorizontal: 8, paddingVertical: 2 },
   tagText:           { fontSize: FontSize.xs, color: Colors.primary },
   notFound:          { fontSize: FontSize.md, color: Colors.textSecondary, textAlign: 'center' },
   editLink:          { fontSize: FontSize.sm, color: Colors.primary, fontWeight: '600', paddingVertical: 4 },

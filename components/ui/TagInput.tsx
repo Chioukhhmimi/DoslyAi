@@ -18,7 +18,10 @@ export function TagInput({ label, values, onChange, placeholder }: TagInputProps
 
   function addTag() {
     const trimmed = text.trim();
-    if (!trimmed || values.includes(trimmed)) { setText(''); return; }
+    if (!trimmed || values.includes(trimmed)) {
+      setText('');
+      return;
+    }
     onChange([...values, trimmed]);
     setText('');
   }
@@ -59,11 +62,39 @@ export function TagInput({ label, values, onChange, placeholder }: TagInputProps
 }
 
 const styles = StyleSheet.create({
-  label:    { fontSize: FontSize.sm, color: Colors.textSecondary, marginBottom: 4, marginTop: Spacing.sm },
-  chipRow:  { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 6 },
-  chip:     { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: Colors.primaryLight, borderRadius: 20, paddingHorizontal: Spacing.sm, paddingVertical: 4 },
+  label: {
+    fontSize: FontSize.sm,
+    color: Colors.textSecondary,
+    marginBottom: 4,
+    marginTop: Spacing.sm,
+  },
+  chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 6 },
+  chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: Colors.primaryLight,
+    borderRadius: Radius.sm,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 4,
+  },
   chipText: { fontSize: FontSize.xs, color: Colors.primary, fontWeight: '600' },
   inputRow: { flexDirection: 'row', gap: Spacing.xs },
-  input:    { flex: 1, borderWidth: 1, borderColor: Colors.border, borderRadius: Radius.sm, padding: Spacing.sm, fontSize: FontSize.sm, color: Colors.textPrimary, backgroundColor: Colors.surface },
-  addBtn:   { backgroundColor: Colors.primary, borderRadius: Radius.sm, padding: Spacing.sm, justifyContent: 'center', alignItems: 'center' },
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: Radius.sm,
+    padding: Spacing.sm,
+    fontSize: FontSize.sm,
+    color: Colors.textPrimary,
+    backgroundColor: Colors.surface,
+  },
+  addBtn: {
+    backgroundColor: Colors.primary,
+    borderRadius: Radius.sm,
+    padding: Spacing.sm,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

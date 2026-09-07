@@ -28,7 +28,7 @@ async function runMigrations(db: SQLiteDatabase): Promise<void> {
   for (const migration of ALL_MIGRATIONS) {
     const applied = await db.getFirstAsync<{ version: number }>(
       'SELECT version FROM _migrations WHERE version = ?',
-      [migration.version]
+      [migration.version],
     );
 
     if (!applied) {

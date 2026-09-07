@@ -12,11 +12,15 @@ export function isToday(isoDate: string): boolean {
 }
 
 export function isSameDay(dateA: string | Date, dateB: string | Date): boolean {
-  const a = typeof dateA === 'string' ? new Date(dateA + (dateA.length === 10 ? 'T00:00:00' : '')) : dateA;
-  const b = typeof dateB === 'string' ? new Date(dateB + (dateB.length === 10 ? 'T00:00:00' : '')) : dateB;
-  return a.getFullYear() === b.getFullYear() &&
+  const a =
+    typeof dateA === 'string' ? new Date(dateA + (dateA.length === 10 ? 'T00:00:00' : '')) : dateA;
+  const b =
+    typeof dateB === 'string' ? new Date(dateB + (dateB.length === 10 ? 'T00:00:00' : '')) : dateB;
+  return (
+    a.getFullYear() === b.getFullYear() &&
     a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate();
+    a.getDate() === b.getDate()
+  );
 }
 
 export function startOfDay(date?: Date): Date {

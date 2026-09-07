@@ -24,8 +24,8 @@ export function Input({ label, error, style, ...props }: InputProps) {
 }
 
 const styles = StyleSheet.create({
-  wrapper:    { marginBottom: Spacing.md },
-  label:      { fontSize: FontSize.sm, color: Colors.textSecondary, marginBottom: Spacing.xs },
+  wrapper: { marginBottom: Spacing.md },
+  label: { fontSize: FontSize.sm, color: Colors.textSecondary, marginBottom: Spacing.xs },
   input: {
     height: 48,
     borderWidth: 1,
@@ -37,5 +37,5 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surface,
   },
   inputError: { borderColor: Colors.danger },
-  error:      { fontSize: FontSize.xs, color: Colors.danger, marginTop: Spacing.xs },
+  error: { fontSize: FontSize.xs, color: Colors.danger, marginTop: Spacing.xs },
 });

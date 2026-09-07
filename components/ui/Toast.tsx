@@ -15,31 +15,31 @@ interface ToastProps {
 
 const BG: Record<ToastType, string> = {
   success: '#DCFCE7',
-  error:   '#FEE2E2',
-  info:    Colors.primaryLight,
+  error: '#FEE2E2',
+  info: Colors.primaryLight,
 };
 
 const TEXT: Record<ToastType, string> = {
   success: '#15803D',
-  error:   '#B91C1C',
-  info:    Colors.primaryDark,
+  error: '#B91C1C',
+  info: Colors.primaryDark,
 };
 
 export function Toast({ message, type = 'info', visible, onHide }: ToastProps) {
   const translateY = useRef(new Animated.Value(20)).current;
-  const opacity    = useRef(new Animated.Value(0)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (visible) {
       Animated.parallel([
-        Animated.timing(translateY, { toValue: 0,  duration: 250, useNativeDriver: true }),
-        Animated.timing(opacity,    { toValue: 1,  duration: 250, useNativeDriver: true }),
+        Animated.timing(translateY, { toValue: 0, duration: 250, useNativeDriver: true }),
+        Animated.timing(opacity, { toValue: 1, duration: 250, useNativeDriver: true }),
       ]).start();
 
       const timer = setTimeout(() => {
         Animated.parallel([
           Animated.timing(translateY, { toValue: 20, duration: 200, useNativeDriver: true }),
-          Animated.timing(opacity,    { toValue: 0,  duration: 200, useNativeDriver: true }),
+          Animated.timing(opacity, { toValue: 0, duration: 200, useNativeDriver: true }),
         ]).start(() => onHide());
       }, 3000);
 

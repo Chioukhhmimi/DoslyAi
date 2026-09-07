@@ -26,7 +26,12 @@ export default function ErrorScreen({ error, retry }: ErrorProps) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: Spacing.lg },
-  title:     { fontSize: 20, fontWeight: '700', color: Colors.danger, marginBottom: Spacing.sm },
-  message:   { fontSize: 14, color: Colors.textSecondary, textAlign: 'center', marginBottom: Spacing.lg },
-  button:    { width: 200 },
+  title: { fontSize: 20, fontWeight: '700', color: Colors.danger, marginBottom: Spacing.sm },
+  message: {
+    fontSize: 14,
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: Spacing.lg,
+  },
+  button: { width: 200 },
 });

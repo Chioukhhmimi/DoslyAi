@@ -6,18 +6,18 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          50:  '#eff6ff',
+          50: '#eff6ff',
           100: '#dbeafe',
           500: '#3b82f6',
           600: '#2563eb',
           700: '#1d4ed8',
         },
         medical: {
-          blue:  '#2563EB',
+          blue: '#2563EB',
           light: '#E6F4FE',
           green: '#10B981',
-          red:   '#EF4444',
-          gray:  '#6B7280',
+          red: '#EF4444',
+          gray: '#6B7280',
         },
       },
       fontFamily: {

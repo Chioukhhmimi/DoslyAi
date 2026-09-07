@@ -1,0 +1,1048 @@
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f5f4f2;
+  }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1c1917;
+    margin-bottom: 6px;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: #78716c;
+    margin-bottom: 28px;
+  }
+
+  .directions {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .direction-card {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    width: 340px;
+    cursor: pointer;
+    border: 3px solid transparent;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    transition: all 0.2s;
+  }
+  .direction-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  }
+  .direction-card.selected {
+    border-color: #7c3aed;
+    box-shadow: 0 6px 24px rgba(124, 58, 237, 0.18);
+  }
+
+  .dir-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+  .dir-title {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .dir-sub {
+    font-size: 13px;
+    margin-bottom: 18px;
+    line-height: 1.4;
+  }
+
+  /* Palette chips */
+  .palette {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 18px;
+    align-items: center;
+  }
+  .chip {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+  }
+  .chip-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #78716c;
+    margin-left: 4px;
+  }
+
+  /* Component previews */
+  .comp-section {
+    margin-bottom: 16px;
+  }
+  .comp-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #a8a29e;
+    margin-bottom: 8px;
+  }
+
+  /* Buttons */
+  .btn-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 9px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.2px;
+  }
+
+  /* Badges */
+  .badge-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  /* Med card */
+  .med-card {
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    align-items: stretch;
+    border-width: 1px;
+    border-style: solid;
+    margin-bottom: 8px;
+  }
+  .med-accent {
+    width: 5px;
+    flex-shrink: 0;
+  }
+  .med-body {
+    flex: 1;
+    padding: 12px 14px;
+  }
+  .med-name {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .med-sub {
+    font-size: 12px;
+  }
+  .med-time {
+    font-size: 11px;
+    margin-top: 1px;
+  }
+  .med-badge {
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    align-self: center;
+    margin-right: 12px;
+  }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 8px;
+  }
+  .stat-card {
+    flex: 1;
+    border-radius: 12px;
+    padding: 10px 8px;
+    text-align: center;
+    border-width: 1px;
+    border-style: solid;
+  }
+  .stat-val {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .stat-lbl {
+    font-size: 10px;
+    margin-top: 2px;
+  }
+
+  /* Day strip */
+  .day-strip {
+    display: flex;
+    gap: 4px;
+  }
+  .day-btn {
+    flex: 1;
+    border-radius: 10px;
+    padding: 6px 4px;
+    text-align: center;
+  }
+  .day-name {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .day-num {
+    font-size: 14px;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+  .day-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 2px;
+    margin: 3px auto 0;
+  }
+
+  /* Input */
+  .input-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .inp {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    border-width: 1.5px;
+    border-style: solid;
+    outline: none;
+  }
+  .stepper {
+    display: flex;
+    align-items: center;
+    border-radius: 12px;
+    overflow: hidden;
+    border-width: 1.5px;
+    border-style: solid;
+  }
+  .step-btn {
+    width: 36px;
+    height: 38px;
+    font-size: 18px;
+    font-weight: 300;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .step-val {
+    width: 40px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  /* ── DIRECTION A: Warm Stone + Teal ─────────────────────────────── */
+  .a-primary {
+    background: #0d9488;
+  }
+  .a-plight {
+    background: #ccfbf1;
+  }
+  .a-bg {
+    background: #fafaf9;
+  }
+  .a-surface {
+    background: #ffffff;
+  }
+  .a-border {
+    background: #e7e5e4;
+  }
+  .a-text {
+    background: #1c1917;
+  }
+  .a-textsec {
+    background: #78716c;
+  }
+
+  .a-btn-primary {
+    background: #0d9488;
+    color: white;
+  }
+  .a-btn-secondary {
+    background: #ccfbf1;
+    color: #0d9488;
+  }
+  .a-btn-ghost {
+    background: transparent;
+    color: #0d9488;
+    border: 1.5px solid #e7e5e4;
+  }
+  .a-btn-danger {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+
+  .a-badge-success {
+    background: #d1fae5;
+    color: #065f46;
+  }
+  .a-badge-taken {
+    background: #ccfbf1;
+    color: #0f766e;
+  }
+  .a-badge-missed {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+  .a-badge-skip {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  .a-badge-info {
+    background: #ccfbf1;
+    color: #0f766e;
+  }
+
+  .a-card {
+    border-color: #e7e5e4;
+    background: #ffffff;
+  }
+  .a-accent-pill {
+    background: #6366f1;
+  }
+  .a-med-name {
+    color: #1c1917;
+  }
+  .a-med-sub {
+    color: #78716c;
+  }
+  .a-med-taken {
+    background: #d1fae5;
+    color: #065f46;
+  }
+
+  .a-stat {
+    background: #fafaf9;
+    border-color: #e7e5e4;
+  }
+  .a-stat-val {
+    color: #1c1917;
+  }
+  .a-stat-lbl {
+    color: #78716c;
+  }
+  .a-stat-main {
+    color: #0d9488;
+  }
+
+  .a-day-sel {
+    background: #0d9488;
+  }
+  .a-day-sel .day-name {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  .a-day-sel .day-num {
+    color: white;
+  }
+  .a-day-inact {
+    background: #fafaf9;
+  }
+  .a-day-inact .day-name {
+    color: #a8a29e;
+  }
+  .a-day-inact .day-num {
+    color: #1c1917;
+  }
+  .a-day-dot-el {
+    background: #0d9488;
+  }
+
+  .a-inp {
+    border-color: #e7e5e4;
+    background: #fafaf9;
+    color: #1c1917;
+  }
+  .a-inp:focus {
+    border-color: #0d9488;
+    background: white;
+  }
+  .a-stepper {
+    border-color: #e7e5e4;
+  }
+  .a-step-btn {
+    background: #fafaf9;
+    color: #0d9488;
+  }
+  .a-step-val {
+    color: #1c1917;
+  }
+
+  /* ── DIRECTION B: Warm Violet + Rose ───────────────────────────── */
+  .b-btn-primary {
+    background: #7c3aed;
+    color: white;
+  }
+  .b-btn-secondary {
+    background: #ede9fe;
+    color: #6d28d9;
+  }
+  .b-btn-ghost {
+    background: transparent;
+    color: #7c3aed;
+    border: 1.5px solid #ddd6fe;
+  }
+  .b-btn-danger {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+
+  .b-badge-taken {
+    background: #d1fae5;
+    color: #065f46;
+  }
+  .b-badge-missed {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+  .b-badge-skip {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  .b-badge-info {
+    background: #ede9fe;
+    color: #6d28d9;
+  }
+  .b-badge-upcoming {
+    background: #e0f2fe;
+    color: #0369a1;
+  }
+
+  .b-card {
+    border-color: #e5e7eb;
+    background: #fffbff;
+  }
+  .b-accent-pill {
+    background: #7c3aed;
+  }
+  .b-med-name {
+    color: #1f1235;
+  }
+  .b-med-sub {
+    color: #7c6f8e;
+  }
+  .b-med-taken {
+    background: #d1fae5;
+    color: #065f46;
+  }
+
+  .b-stat {
+    background: #fffbff;
+    border-color: #e5e7eb;
+  }
+  .b-stat-val {
+    color: #1f1235;
+  }
+  .b-stat-lbl {
+    color: #7c6f8e;
+  }
+  .b-stat-main {
+    color: #7c3aed;
+  }
+
+  .b-day-sel {
+    background: linear-gradient(135deg, #7c3aed, #9333ea);
+  }
+  .b-day-sel .day-name {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  .b-day-sel .day-num {
+    color: white;
+  }
+  .b-day-inact {
+    background: #faf8ff;
+  }
+  .b-day-inact .day-name {
+    color: #a78bfa;
+  }
+  .b-day-inact .day-num {
+    color: #1f1235;
+  }
+  .b-day-dot-el {
+    background: #7c3aed;
+  }
+
+  .b-inp {
+    border-color: #ddd6fe;
+    background: #faf8ff;
+    color: #1f1235;
+  }
+  .b-stepper {
+    border-color: #ddd6fe;
+  }
+  .b-step-btn {
+    background: #f5f3ff;
+    color: #7c3aed;
+  }
+  .b-step-val {
+    color: #1f1235;
+  }
+
+  /* ── DIRECTION C: Warm Amber + Deep Navy ────────────────────────── */
+  .c-btn-primary {
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: white;
+  }
+  .c-btn-secondary {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  .c-btn-ghost {
+    background: transparent;
+    color: #d97706;
+    border: 1.5px solid #fde68a;
+  }
+  .c-btn-danger {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+
+  .c-badge-taken {
+    background: #d1fae5;
+    color: #065f46;
+  }
+  .c-badge-missed {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+  .c-badge-skip {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  .c-badge-info {
+    background: #fef9c3;
+    color: #713f12;
+  }
+  .c-badge-upcoming {
+    background: #e0f2fe;
+    color: #0369a1;
+  }
+
+  .c-card {
+    border-color: #fde68a;
+    background: #fffbeb;
+  }
+  .c-accent-pill {
+    background: #f59e0b;
+  }
+  .c-med-name {
+    color: #1c1917;
+  }
+  .c-med-sub {
+    color: #78716c;
+  }
+  .c-med-taken {
+    background: #d1fae5;
+    color: #065f46;
+  }
+
+  .c-stat {
+    background: #fffbeb;
+    border-color: #fde68a;
+  }
+  .c-stat-val {
+    color: #1c1917;
+  }
+  .c-stat-lbl {
+    color: #78716c;
+  }
+  .c-stat-main {
+    color: #d97706;
+  }
+
+  .c-day-sel {
+    background: #f59e0b;
+  }
+  .c-day-sel .day-name {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  .c-day-sel .day-num {
+    color: white;
+  }
+  .c-day-inact {
+    background: #fffbeb;
+  }
+  .c-day-inact .day-name {
+    color: #d97706;
+    opacity: 0.6;
+  }
+  .c-day-inact .day-num {
+    color: #1c1917;
+  }
+  .c-day-dot-el {
+    background: #f59e0b;
+  }
+
+  .c-inp {
+    border-color: #fde68a;
+    background: #fffbeb;
+    color: #1c1917;
+  }
+  .c-stepper {
+    border-color: #fde68a;
+  }
+  .c-step-btn {
+    background: #fef3c7;
+    color: #d97706;
+  }
+  .c-step-val {
+    color: #1c1917;
+  }
+
+  .check {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    background: #7c3aed;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 13px;
+  }
+  .direction-card.selected .check {
+    display: flex;
+  }
+  .direction-card {
+    position: relative;
+  }
+
+  .divider {
+    height: 1px;
+    background: #f0eee9;
+    margin: 14px 0;
+  }
+</style>
+
+<h2>Warm Design Direction</h2>
+<p class="subtitle">
+  Each option shows the full component kit — buttons, badges, cards, inputs, stats. Pick the
+  direction that feels right.
+</p>
+
+<div class="directions">
+  <!-- ── A: Warm Stone + Teal ── -->
+  <div class="direction-card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="check">✓</div>
+    <div class="dir-label" style="background: #ccfbf1; color: #0f766e">Option A</div>
+    <div class="dir-title" style="color: #1c1917">Warm Stone + Teal</div>
+    <div class="dir-sub" style="color: #78716c">
+      Clinical warmth. Warm beige neutrals, teal primary — calm, trustworthy, healthcare-native.
+    </div>
+
+    <div class="palette">
+      <div class="chip a-primary"></div>
+      <div class="chip a-plight"></div>
+      <div class="chip a-bg"></div>
+      <div class="chip a-surface" style="border: 1px solid #e7e5e4"></div>
+      <div class="chip a-border"></div>
+      <div class="chip a-text"></div>
+      <div class="chip a-textsec"></div>
+      <span class="chip-label">Teal · Stone</span>
+    </div>
+
+    <div class="comp-section">
+      <div class="comp-label">Buttons</div>
+      <div class="btn-row">
+        <button class="btn a-btn-primary">Enregistrer</button>
+        <button class="btn a-btn-secondary">Passer</button>
+        <button class="btn a-btn-ghost">Retour</button>
+        <button class="btn a-btn-danger">Supprimer</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="comp-section">
+      <div class="comp-label">Badges</div>
+      <div class="badge-row">
+        <span class="badge a-badge-taken">Pris</span>
+        <span class="badge a-badge-missed">Manqué</span>
+        <span class="badge a-badge-skip">Passé</span>
+        <span class="badge a-badge-info">À venir</span>
+        <span class="badge a-badge-success">Actif</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="comp-section">
+      <div class="comp-label">Medication card</div>
+      <div class="med-card a-card" style="display: flex; align-items: stretch">
+        <div class="med-accent a-accent-pill"></div>
+        <div class="med-body" style="flex: 1">
+          <div class="med-name a-med-name">Amoxicilline</div>
+          <div class="med-sub a-med-sub">500 mg · Quotidien</div>
+          <div class="med-time a-med-sub">8h00 · 20h00</div>
+        </div>
+        <div class="med-badge a-med-taken">Pris</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="comp-section">
+      <div class="comp-label">Stats</div>
+      <div class="stats-row">
+        <div class="stat-card a-stat">
+          <div class="stat-val a-stat-main">94%</div>
+          <div class="stat-lbl a-stat-lbl">Observance</div>
+        </div>
+        <div class="stat-card a-stat">
+          <div class="stat-val a-stat-val">12/13</div>
+          <div class="stat-lbl a-stat-lbl">Aujourd'hui</div>
+        </div>
+        <div class="stat-card a-stat">
+          <div class="stat-val" style="color: #ef4444">1</div>
+          <div class="stat-lbl a-stat-lbl">Manqué</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="comp-section">
+      <div class="comp-label">Day strip</div>
+      <div class="day-strip">
+        <div class="day-btn a-day-inact">
+          <div class="day-name">LUN</div>
+          <div class="day-num">1</div>
+        </div>
+        <div class="day-btn a-day-inact">
+          <div class="day-name">MAR</div>
+          <div class="day-num">2</div>
+          <div class="day-dot a-day-dot-el"></div>
+        </div>
+        <div class="day-btn a-day-sel">
+          <div class="day-name">MER</div>
+          <div class="day-num">3</div>
+        </div>
+        <div class="day-btn a-day-inact">
+          <div class="day-name">JEU</div>
+          <div class="day-num">4</div>
+        </div>
+        <div class="day-btn a-day-inact">
+          <div class="day-name">VEN</div>
+          <div class="day-num">5</div>
+          <div class="day-dot a-day-dot-el"></div>
+        </div>
+        <div class="day-btn a-day-inact">
+          <div class="day-name">SAM</div>
+          <div class="day-num">6</div>
+        </div>
+        <div class="day-btn a-day-inact">
+          <div class="day-name">DIM</div>
+          <div class="day-num">7</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="comp-section">
+      <div class="comp-label">Input + Stepper</div>
+      <div class="input-row">
+        <input class="inp a-inp" placeholder="Nom du médicament" style="font-size: 13px" />
+        <div class="stepper a-stepper">
+          <button class="step-btn a-step-btn">−</button>
+          <span class="step-val a-step-val">2.5</span>
+          <button class="step-btn a-step-btn">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── B: Warm Violet ── -->
+  <div class="direction-card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="check">✓</div>
+    <div class="dir-label" style="background: #ede9fe; color: #6d28d9">Option B</div>
+    <div class="dir-title" style="color: #1f1235">Warm Violet + Cream</div>
+    <div class="dir-sub" style="color: #7c6f8e">
+      Friendly warmth. Deep violet primary on near-white warm cream — approachable, modern, premium
+      feel.
+    </div>
+
+    <div class="palette">
+      <div class="chip" style="background: #7c3aed"></div>
+      <div class="chip" style="background: #ede9fe"></div>
+      <div class="chip" style="background: #fffbff; border: 1px solid #e5e7eb"></div>
+      <div class="chip" style="background: #ffffff; border: 1px solid #e5e7eb"></div>
+      <div class="chip" style="background: #ddd6fe"></div>
+      <div class="chip" style="background: #1f1235"></div>
+      <div class="chip" style="background: #7c6f8e"></div>
+      <span class="chip-label">Violet · Cream</span>
+    </div>
+
+    <div class="comp-section">
+      <div class="comp-label">Buttons</div>
+      <div class="btn-row">
+        <button class="btn b-btn-primary">Enregistrer</button>
+        <button class="btn b-btn-secondary">Passer</button>
+        <button class="btn b-btn-ghost">Retour</button>
+        <button class="btn b-btn-danger">Supprimer</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="comp-section">
+      <div class="comp-label">Badges</div>
+      <div class="badge-row">
+        <span class="badge b-badge-taken">Pris</span>
+        <span class="badge b-badge-missed">Manqué</span>
+        <span class="badge b-badge-skip">Passé</span>
+        <span class="badge b-badge-upcoming">À venir</span>
+        <span class="badge b-badge-info">En pause</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="comp-section">
+      <div class="comp-label">Medication card</div>
+      <div class="med-card b-card" style="display: flex; align-items: stretch">
+        <div class="med-accent b-accent-pill"></div>
+        <div class="med-body" style="flex: 1">
+          <div class="med-name b-med-name">Amoxicilline</div>
+          <div class="med-sub b-med-sub">500 mg · Quotidien</div>
+          <div class="med-time b-med-sub">8h00 · 20h00</div>
+        </div>
+        <div class="med-badge b-med-taken">Pris</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="comp-section">
+      <div class="comp-label">Stats</div>
+      <div class="stats-row">
+        <div class="stat-card b-stat">
+          <div class="stat-val b-stat-main">94%</div>
+          <div class="stat-lbl b-stat-lbl">Observance</div>
+        </div>
+        <div class="stat-card b-stat">
+          <div class="stat-val b-stat-val">12/13</div>
+          <div class="stat-lbl b-stat-lbl">Aujourd'hui</div>
+        </div>
+        <div class="stat-card b-stat">
+          <div class="stat-val" style="color: #ef4444">1</div>
+          <div class="stat-lbl b-stat-lbl">Manqué</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="comp-section">
+      <div class="comp-label">Day strip</div>
+      <div class="day-strip">
+        <div class="day-btn b-day-inact">
+          <div class="day-name">LUN</div>
+          <div class="day-num">1</div>
+        </div>
+        <div class="day-btn b-day-inact">
+          <div class="day-name">MAR</div>
+          <div class="day-num">2</div>
+          <div class="day-dot b-day-dot-el"></div>
+        </div>
+        <div class="day-btn b-day-sel" style="border-radius: 10px">
+          <div class="day-name">MER</div>
+          <div class="day-num">3</div>
+        </div>
+        <div class="day-btn b-day-inact">
+          <div class="day-name">JEU</div>
+          <div class="day-num">4</div>
+        </div>
+        <div class="day-btn b-day-inact">
+          <div class="day-name">VEN</div>
+          <div class="day-num">5</div>
+          <div class="day-dot b-day-dot-el"></div>
+        </div>
+        <div class="day-btn b-day-inact">
+          <div class="day-name">SAM</div>
+          <div class="day-num">6</div>
+        </div>
+        <div class="day-btn b-day-inact">
+          <div class="day-name">DIM</div>
+          <div class="day-num">7</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="comp-section">
+      <div class="comp-label">Input + Stepper</div>
+      <div class="input-row">
+        <input class="inp b-inp" placeholder="Nom du médicament" style="font-size: 13px" />
+        <div class="stepper b-stepper">
+          <button class="step-btn b-step-btn">−</button>
+          <span class="step-val b-step-val">2.5</span>
+          <button class="step-btn b-step-btn">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── C: Warm Amber ── -->
+  <div class="direction-card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="check">✓</div>
+    <div class="dir-label" style="background: #fef3c7; color: #92400e">Option C</div>
+    <div class="dir-title" style="color: #1c1917">Warm Amber + Stone</div>
+    <div class="dir-sub" style="color: #78716c">
+      Bold warmth. Amber/golden primary on warm cream — energetic, sunshine, very welcoming but less
+      clinical.
+    </div>
+
+    <div class="palette">
+      <div class="chip" style="background: #f59e0b"></div>
+      <div class="chip" style="background: #fef3c7"></div>
+      <div class="chip" style="background: #fffbeb; border: 1px solid #fde68a"></div>
+      <div class="chip" style="background: #ffffff; border: 1px solid #e5e7eb"></div>
+      <div class="chip" style="background: #fde68a"></div>
+      <div class="chip" style="background: #1c1917"></div>
+      <div class="chip" style="background: #78716c"></div>
+      <span class="chip-label">Amber · Stone</span>
+    </div>
+
+    <div class="comp-section">
+      <div class="comp-label">Buttons</div>
+      <div class="btn-row">
+        <button class="btn c-btn-primary">Enregistrer</button>
+        <button class="btn c-btn-secondary">Passer</button>
+        <button class="btn c-btn-ghost">Retour</button>
+        <button class="btn c-btn-danger">Supprimer</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="comp-section">
+      <div class="comp-label">Badges</div>
+      <div class="badge-row">
+        <span class="badge c-badge-taken">Pris</span>
+        <span class="badge c-badge-missed">Manqué</span>
+        <span class="badge c-badge-skip">Passé</span>
+        <span class="badge c-badge-upcoming">À venir</span>
+        <span class="badge c-badge-info">En pause</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="comp-section">
+      <div class="comp-label">Medication card</div>
+      <div class="med-card c-card" style="display: flex; align-items: stretch">
+        <div class="med-accent c-accent-pill"></div>
+        <div class="med-body" style="flex: 1">
+          <div class="med-name c-med-name">Amoxicilline</div>
+          <div class="med-sub c-med-sub">500 mg · Quotidien</div>
+          <div class="med-time c-med-sub">8h00 · 20h00</div>
+        </div>
+        <div class="med-badge c-med-taken">Pris</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="comp-section">
+      <div class="comp-label">Stats</div>
+      <div class="stats-row">
+        <div class="stat-card c-stat">
+          <div class="stat-val c-stat-main">94%</div>
+          <div class="stat-lbl c-stat-lbl">Observance</div>
+        </div>
+        <div class="stat-card c-stat">
+          <div class="stat-val c-stat-val">12/13</div>
+          <div class="stat-lbl c-stat-lbl">Aujourd'hui</div>
+        </div>
+        <div class="stat-card c-stat">
+          <div class="stat-val" style="color: #ef4444">1</div>
+          <div class="stat-lbl c-stat-lbl">Manqué</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="comp-section">
+      <div class="comp-label">Day strip</div>
+      <div class="day-strip">
+        <div class="day-btn c-day-inact">
+          <div class="day-name">LUN</div>
+          <div class="day-num">1</div>
+        </div>
+        <div class="day-btn c-day-inact">
+          <div class="day-name">MAR</div>
+          <div class="day-num">2</div>
+          <div class="day-dot c-day-dot-el"></div>
+        </div>
+        <div class="day-btn c-day-sel">
+          <div class="day-name">MER</div>
+          <div class="day-num">3</div>
+        </div>
+        <div class="day-btn c-day-inact">
+          <div class="day-name">JEU</div>
+          <div class="day-num">4</div>
+        </div>
+        <div class="day-btn c-day-inact">
+          <div class="day-name">VEN</div>
+          <div class="day-num">5</div>
+          <div class="day-dot c-day-dot-el"></div>
+        </div>
+        <div class="day-btn c-day-inact">
+          <div class="day-name">SAM</div>
+          <div class="day-num">6</div>
+        </div>
+        <div class="day-btn c-day-inact">
+          <div class="day-name">DIM</div>
+          <div class="day-num">7</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="comp-section">
+      <div class="comp-label">Input + Stepper</div>
+      <div class="input-row">
+        <input class="inp c-inp" placeholder="Nom du médicament" style="font-size: 13px" />
+        <div class="stepper c-stepper">
+          <button class="step-btn c-step-btn">−</button>
+          <span class="step-val c-step-val">2.5</span>
+          <button class="step-btn c-step-btn">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
