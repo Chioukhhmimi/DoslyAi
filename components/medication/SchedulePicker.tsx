@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { MedicationSchedule, FrequencyType } from '@store/medicationStore';
 import { Colors } from '@constants/colors';
@@ -7,6 +7,8 @@ import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import { DosePicker } from './DosePicker';
 import { SelectableChip } from '@components/ui/SelectableChip';
+
+import { AppText } from '../ui/AppText';
 
 interface SchedulePickerProps {
   value: MedicationSchedule;
@@ -112,7 +114,7 @@ export function SchedulePicker({ value, onChange }: SchedulePickerProps) {
         {freq === 'interval' && (
           <>
             <View style={styles.intervalRow}>
-              <Text style={styles.intervalLabel}>{t('scheduler.everyN')}</Text>
+              <AppText style={styles.intervalLabel}>{t('scheduler.everyN')}</AppText>
               <TextInput
                 style={styles.intervalInput}
                 value={String(value.intervalDays ?? 2)}
@@ -120,7 +122,7 @@ export function SchedulePicker({ value, onChange }: SchedulePickerProps) {
                 keyboardType="number-pad"
                 maxLength={3}
               />
-              <Text style={styles.intervalLabel}>{t('scheduler.days_label')}</Text>
+              <AppText style={styles.intervalLabel}>{t('scheduler.days_label')}</AppText>
             </View>
             <DosePicker times={value.times} onChange={(t) => onChange({ ...value, times: t })} />
           </>
@@ -128,7 +130,7 @@ export function SchedulePicker({ value, onChange }: SchedulePickerProps) {
 
         {freq === 'pattern' && (
           <>
-            <Text style={styles.patternLabel}>{t('scheduler.pattern.label')}</Text>
+            <AppText style={styles.patternLabel}>{t('scheduler.pattern.label')}</AppText>
             <View style={styles.presets}>
               {PATTERN_PRESETS.map((p) => (
                 <SelectableChip
@@ -147,7 +149,7 @@ export function SchedulePicker({ value, onChange }: SchedulePickerProps) {
                   onPress={() => togglePatternBit(i)}
                   style={[styles.bit, bit === 1 && styles.bitActive]}
                 >
-                  <Text style={[styles.bitText, bit === 1 && styles.bitTextActive]}>{bit}</Text>
+                  <AppText style={[styles.bitText, bit === 1 && styles.bitTextActive]}>{bit}</AppText>
                 </TouchableOpacity>
               ))}
             </View>

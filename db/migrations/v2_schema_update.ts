@@ -2,6 +2,9 @@ export const migration_v2 = {
   version: 2,
   up: [
     `PRAGMA foreign_keys = OFF`,
+    // Guard for legacy devices whose medications table predates v1's profile_id column.
+    // Migration runner silently skips this if the column already exists.
+    `ALTER TABLE medications ADD COLUMN profile_id TEXT NOT NULL DEFAULT ''`,
     `CREATE TABLE medications_new (
        id TEXT PRIMARY KEY NOT NULL,
        profile_id TEXT NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,

@@ -1,13 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-  Platform,
-  Modal,
-  StyleSheet,
-} from 'react-native';
+import { View, TouchableOpacity, ActivityIndicator, Platform, Modal, StyleSheet } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
@@ -23,6 +15,8 @@ import { useMedicationStore } from '@store/medicationStore';
 import { useProfileStore } from '@store/profileStore';
 import { exportCSV, exportPDF, exportJSON } from '@utils/exportService';
 import { format } from 'date-fns';
+
+import { AppText } from '@components/ui/AppText';
 
 type Preset = '7d' | '30d' | '90d' | 'custom';
 
@@ -108,7 +102,7 @@ export default function ExportScreen() {
     <ScreenContainer scrollable>
       <ScreenHeader title={t('export.title')} />
 
-      <Text style={styles.sectionLabel}>{t('export.period')}</Text>
+      <AppText style={styles.sectionLabel}>{t('export.period')}</AppText>
       <Card style={styles.presetCard}>
         {PRESETS.map((p) => (
           <TouchableOpacity
@@ -116,9 +110,9 @@ export default function ExportScreen() {
             style={[styles.presetRow, preset === p.key && styles.presetRowActive]}
             onPress={() => setPreset(p.key)}
           >
-            <Text style={[styles.presetLabel, preset === p.key && styles.presetLabelActive]}>
+            <AppText style={[styles.presetLabel, preset === p.key && styles.presetLabelActive]}>
               {p.label}
-            </Text>
+            </AppText>
             {preset === p.key && <Ionicons name="checkmark" size={18} color={Colors.primary} />}
           </TouchableOpacity>
         ))}
@@ -128,9 +122,9 @@ export default function ExportScreen() {
         <Card style={styles.dateCard}>
           <View style={styles.dateRow}>
             <View style={styles.dateItem}>
-              <Text style={styles.dateLabel}>{t('export.from')}</Text>
+              <AppText style={styles.dateLabel}>{t('export.from')}</AppText>
               <TouchableOpacity style={styles.dateBtn} onPress={() => setPickerTarget('from')}>
-                <Text style={styles.dateBtnText}>{format(customFrom, 'dd/MM/yyyy')}</Text>
+                <AppText style={styles.dateBtnText}>{format(customFrom, 'dd/MM/yyyy')}</AppText>
                 <Ionicons name="calendar-outline" size={16} color={Colors.primary} />
               </TouchableOpacity>
             </View>
@@ -141,9 +135,9 @@ export default function ExportScreen() {
               style={styles.arrow}
             />
             <View style={styles.dateItem}>
-              <Text style={styles.dateLabel}>{t('export.to')}</Text>
+              <AppText style={styles.dateLabel}>{t('export.to')}</AppText>
               <TouchableOpacity style={styles.dateBtn} onPress={() => setPickerTarget('to')}>
-                <Text style={styles.dateBtnText}>{format(customTo, 'dd/MM/yyyy')}</Text>
+                <AppText style={styles.dateBtnText}>{format(customTo, 'dd/MM/yyyy')}</AppText>
                 <Ionicons name="calendar-outline" size={16} color={Colors.primary} />
               </TouchableOpacity>
             </View>
@@ -152,16 +146,16 @@ export default function ExportScreen() {
       )}
 
       {dateRangeError && (
-        <Text style={styles.dateError}>End date must be after start date</Text>
+        <AppText style={styles.dateError}>End date must be after start date</AppText>
       )}
 
-      <Text style={styles.rangeSummary}>
+      <AppText style={styles.rangeSummary}>
         {t('export.summary', {
           from: format(from, 'dd/MM/yyyy'),
           to: format(to, 'dd/MM/yyyy'),
           count: recordCount,
         })}
-      </Text>
+      </AppText>
 
       <View style={styles.exportBtns}>
         <Button
@@ -189,7 +183,7 @@ export default function ExportScreen() {
       {loading && (
         <View style={styles.loadingRow}>
           <ActivityIndicator color={Colors.primary} />
-          <Text style={styles.loadingText}>{t('export.generating')}</Text>
+          <AppText style={styles.loadingText}>{t('export.generating')}</AppText>
         </View>
       )}
 
@@ -209,7 +203,7 @@ export default function ExportScreen() {
             <View style={styles.pickerSheet}>
               <View style={styles.pickerHeader}>
                 <TouchableOpacity onPress={() => setPickerTarget(null)}>
-                  <Text style={styles.pickerDone}>{t('common.done')}</Text>
+                  <AppText style={styles.pickerDone}>{t('common.done')}</AppText>
                 </TouchableOpacity>
               </View>
               <DateTimePicker

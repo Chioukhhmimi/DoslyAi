@@ -1,12 +1,14 @@
 // components/profile/AvatarPicker.tsx
 import React from 'react';
-import { View, TouchableOpacity, Text, Alert, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useTranslation } from 'react-i18next';
 import { Avatar } from '@components/ui/Avatar';
 import { Colors } from '@constants/colors';
 import { Spacing } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
+
+import { AppText } from '../ui/AppText';
 
 interface AvatarPickerProps {
   name: string;
@@ -57,7 +59,7 @@ export function AvatarPicker({ name, uri, onPicked }: AvatarPickerProps) {
   return (
     <TouchableOpacity onPress={showOptions} style={styles.container} activeOpacity={0.8}>
       <Avatar name={name} uri={uri} size={80} />
-      <Text style={styles.label}>{t('profile.medical.edit')}</Text>
+      <AppText style={styles.label}>{t('profile.medical.edit')}</AppText>
     </TouchableOpacity>
   );
 }

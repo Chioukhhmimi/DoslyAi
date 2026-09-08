@@ -1,8 +1,10 @@
 import React from 'react';
-import { TouchableOpacity, Text, ActivityIndicator, StyleSheet, ViewStyle } from 'react-native';
+import { TouchableOpacity, ActivityIndicator, StyleSheet, ViewStyle } from 'react-native';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
+
+import { AppText } from './AppText';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 
@@ -38,9 +40,9 @@ export function Button({
       {loading ? (
         <ActivityIndicator color={variant === 'primary' ? Colors.textInverse : Colors.primary} />
       ) : (
-        <Text style={[styles.label, styles[`${variant}Label` as keyof typeof styles]]}>
+        <AppText style={[styles.label, styles[`${variant}Label` as keyof typeof styles]]}>
           {label}
-        </Text>
+        </AppText>
       )}
     </TouchableOpacity>
   );

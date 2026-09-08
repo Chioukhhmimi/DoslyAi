@@ -1,16 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Switch,
-  TouchableOpacity,
-  ScrollView,
-  Platform,
-  StyleSheet,
-  Animated,
-  I18nManager,
-} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, Switch, TouchableOpacity, ScrollView, Platform, StyleSheet, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useTranslation } from 'react-i18next';
@@ -32,6 +21,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { SelectableChip } from '@components/ui/SelectableChip';
 import { Stepper } from '@components/ui/Stepper';
 
+import { AppText } from '../ui/AppText';
+
 interface MedFormProps {
   initialValues?: Partial<Medication>;
   onSubmit: (data: NewMedication) => void;
@@ -41,6 +32,20 @@ interface MedFormProps {
 
 const TYPES: MedicationType[] = ['pill', 'syrup', 'injection', 'supplement', 'other'];
 const UNIT_PRESET_KEYS = ['mg', 'g', 'ml', 'mcg', 'tablet', 'capsule', 'drop', 'dose'] as const;
+
+const PILL_COLOR_KEYS: Record<string, string> = {
+  '#6366F1': 'violet',
+  '#EC4899': 'pink',
+  '#F97316': 'orange',
+  '#10B981': 'green',
+  '#EAB308': 'yellow',
+  '#06B6D4': 'cyan',
+  '#EF4444': 'red',
+  '#8B5CF6': 'purple',
+  '#84CC16': 'lime',
+  '#F59E0B': 'amber',
+};
+
 const PILL_COLORS = [
   '#6366F1',
   '#EC4899',
@@ -59,15 +64,6 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
   const { t } = useTranslation();
   const [step, setStep] = useState(1);
   const totalSteps = 4;
-  const fadeAnim = useRef(new Animated.Value(1)).current;
-
-  function goToStep(next: number) {
-    Animated.timing(fadeAnim, { toValue: 0, duration: 100, useNativeDriver: true }).start(() => {
-      setStep(next);
-      Animated.timing(fadeAnim, { toValue: 1, duration: 150, useNativeDriver: true }).start();
-    });
-  }
-
   const [name, setName] = useState(initialValues?.name ?? '');
   const [doseQuantity, setDoseQuantity] = useState(
     initialValues?.doseQuantity != null ? String(initialValues.doseQuantity) : '',
@@ -127,7 +123,7 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
     if (step === 1 && !validateStep1()) return;
     if (step === 3 && !validateStep3()) return;
     setNameSuggestions([]);
-    goToStep(step + 1);
+    setStep(step + 1);
   }
 
   function handleSubmit() {
@@ -172,17 +168,22 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.progressBar}>
-        <View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
+        <View
+          style={[styles.progressFill, { width: `${progress * 100}%` }]}
+          accessible={true}
+          accessibilityRole="progressbar"
+          accessibilityValue={{ min: 0, max: totalSteps, now: step }}
+        />
       </View>
-      <Text style={styles.stepLabel}>
+      <AppText style={styles.stepLabel}>
         {t('medication.form.step')} {step} {t('medication.form.of')} {totalSteps}
-      </Text>
+      </AppText>
 
       <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-        <Animated.View style={{ opacity: fadeAnim }}>
+        <View key={step}>
         {step === 1 && (
           <View>
-            <Text style={styles.label}>{t('medication.form.nameLabel')}</Text>
+            <AppText style={styles.label}>{t('medication.form.nameLabel')}</AppText>
             <View style={{ zIndex: 10, position: 'relative' }}>
               <TextInput
                 style={[styles.input, !!errors.name && styles.inputError]}
@@ -204,6 +205,8 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
                 }}
                 placeholder={t('medication.form.namePlaceholder')}
                 placeholderTextColor={Colors.textDisabled}
+                accessibilityLabel={t('medication.form.nameLabel')}
+                aria-required={true}
               />
               {nameSuggestions.length > 0 && (
                 <View style={styles.suggestionList}>
@@ -213,15 +216,15 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
                       style={styles.suggestion}
                       onPress={() => { setName(s); setNameSuggestions([]); }}
                     >
-                      <Text style={styles.suggestionText}>{s}</Text>
+                      <AppText style={styles.suggestionText}>{s}</AppText>
                     </TouchableOpacity>
                   ))}
                 </View>
               )}
             </View>
-            {!!errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
+            {!!errors.name && <AppText style={styles.errorText}>{errors.name}</AppText>}
 
-            <Text style={styles.label}>{t('medication.form.doseLabel')}</Text>
+            <AppText style={styles.label}>{t('medication.form.doseLabel')}</AppText>
             <View style={styles.doseRow}>
               <Stepper
                 value={parseFloat(doseQuantity) || 1}
@@ -243,10 +246,12 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
                 }}
                 placeholder="mg"
                 placeholderTextColor={Colors.textDisabled}
+                accessibilityLabel={t('medication.form.doseLabel')}
+                aria-required={true}
               />
             </View>
             {(!!errors.doseQuantity || !!errors.unit) && (
-              <Text style={styles.errorText}>{errors.doseQuantity || errors.unit}</Text>
+              <AppText style={styles.errorText}>{errors.doseQuantity || errors.unit}</AppText>
             )}
             <View style={styles.unitPresets}>
               {UNIT_PRESET_KEYS.map((key) => (
@@ -263,7 +268,7 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
               ))}
             </View>
 
-            <Text style={styles.label}>{t('medication.form.typeLabel')}</Text>
+            <AppText style={styles.label}>{t('medication.form.typeLabel')}</AppText>
             <View style={styles.chips}>
               {TYPES.map((tp) => (
                 <SelectableChip
@@ -275,7 +280,7 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
               ))}
             </View>
 
-            <Text style={styles.label}>{t('medication.form.colorLabel')}</Text>
+            <AppText style={styles.label}>{t('medication.form.colorLabel')}</AppText>
             <View style={styles.colorRow}>
               {PILL_COLORS.map((c) => (
                 <TouchableOpacity
@@ -286,14 +291,19 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
                     pillColor === c && styles.colorSwatchActive,
                   ]}
                   accessibilityRole="button"
-                  accessibilityLabel={c}
+                  accessibilityLabel={t(`colors.${PILL_COLOR_KEYS[c]}`)}
+                  accessibilityState={{ selected: pillColor === c }}
                 >
-                  <View style={[styles.colorSwatchInner, { backgroundColor: c }]} />
+                  <View style={[styles.colorSwatchInner, { backgroundColor: c }]}>
+                    {pillColor === c && (
+                      <Ionicons name="checkmark" size={14} color="#FFFFFF" style={styles.colorSwatchCheck} />
+                    )}
+                  </View>
                 </TouchableOpacity>
               ))}
             </View>
 
-            <Text style={styles.label}>{t('medication.form.notesLabel')}</Text>
+            <AppText style={styles.label}>{t('medication.form.notesLabel')}</AppText>
             <TextInput
               style={[styles.input, styles.multiline]}
               value={notes}
@@ -307,27 +317,27 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
 
         {step === 2 && (
           <View>
-            <Text style={styles.sectionTitle}>{t('medication.form.schedulingLabel')}</Text>
+            <AppText style={styles.sectionTitle}>{t('medication.form.schedulingLabel')}</AppText>
             <SchedulePicker value={schedule} onChange={setSchedule} />
           </View>
         )}
 
         {step === 3 && (
           <View>
-            <Text style={styles.label}>{t('medication.schedule.start')}</Text>
+            <AppText style={styles.label}>{t('medication.schedule.start')}</AppText>
             <TouchableOpacity
               style={styles.input}
               onPress={() => setShowStartPicker(true)}
               activeOpacity={0.7}
             >
               <View style={styles.dateRow}>
-                <Text style={styles.dateText}>{format(startDate, 'dd/MM/yyyy')}</Text>
+                <AppText style={styles.dateText}>{format(startDate, 'dd/MM/yyyy')}</AppText>
                 <Ionicons name="calendar-outline" size={18} color={Colors.textSecondary} />
               </View>
             </TouchableOpacity>
 
             <View style={styles.toggleRow}>
-              <Text style={styles.label}>{t('medication.form.indefinite')}</Text>
+              <AppText style={styles.label}>{t('medication.form.indefinite')}</AppText>
               <Switch
                 value={ongoing}
                 onValueChange={(v) => {
@@ -341,39 +351,39 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
 
             {!ongoing && (
               <>
-                <Text style={styles.label}>{t('medication.schedule.end')}</Text>
+                <AppText style={styles.label}>{t('medication.schedule.end')}</AppText>
                 <TouchableOpacity
                   style={[styles.input, !!errors.endDate && styles.inputError]}
                   onPress={() => setShowEndPicker(true)}
                   activeOpacity={0.7}
                 >
                   <View style={styles.dateRow}>
-                    <Text style={endDate ? styles.dateText : styles.datePlaceholder}>
+                    <AppText style={endDate ? styles.dateText : styles.datePlaceholder}>
                       {endDate ? format(endDate, 'dd/MM/yyyy') : t('profile.form.dobPlaceholder')}
-                    </Text>
+                    </AppText>
                     <Ionicons name="calendar-outline" size={18} color={Colors.textSecondary} />
                   </View>
                 </TouchableOpacity>
-                {!!errors.endDate && <Text style={styles.errorText}>{errors.endDate}</Text>}
+                {!!errors.endDate && <AppText style={styles.errorText}>{errors.endDate}</AppText>}
               </>
             )}
 
             {/* Refill reminder */}
             <View style={styles.refillRow}>
               <View style={styles.refillLabel}>
-                <Text style={styles.fieldLabel}>{t('medication.form.refillReminder')}</Text>
-                <Text style={styles.fieldSub}>{t('medication.form.refillReminderSub')}</Text>
+                <AppText style={styles.fieldLabel}>{t('medication.form.refillReminder')}</AppText>
+                <AppText style={styles.fieldSub}>{t('medication.form.refillReminderSub')}</AppText>
               </View>
-              <TouchableOpacity
-                style={[styles.toggle, refillReminderEnabled && styles.toggleOn]}
-                onPress={() => setRefillReminderEnabled(!refillReminderEnabled)}
-              >
-                <View style={[styles.toggleThumb, refillReminderEnabled && { alignSelf: I18nManager.isRTL ? 'flex-start' : 'flex-end' }]} />
-              </TouchableOpacity>
+              <Switch
+                value={refillReminderEnabled}
+                onValueChange={setRefillReminderEnabled}
+                trackColor={{ false: Colors.border, true: Colors.primary }}
+                accessibilityLabel={t('medication.form.refillReminder')}
+              />
             </View>
             {refillReminderEnabled && (
               <View style={styles.refillDaysRow}>
-                <Text style={styles.fieldLabel}>{t('medication.form.refillDaysBefore')}</Text>
+                <AppText style={styles.fieldLabel}>{t('medication.form.refillDaysBefore')}</AppText>
                 <Stepper
                   value={refillReminderDays}
                   onChange={setRefillReminderDays}
@@ -399,7 +409,7 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
               >
                 <View style={styles.pickerHeader}>
                   <TouchableOpacity onPress={() => setShowStartPicker(false)}>
-                    <Text style={styles.pickerDone}>{t('common.done')}</Text>
+                    <AppText style={styles.pickerDone}>{t('common.done')}</AppText>
                   </TouchableOpacity>
                 </View>
                 <DateTimePicker
@@ -429,7 +439,7 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
               >
                 <View style={styles.pickerHeader}>
                   <TouchableOpacity onPress={() => setShowEndPicker(false)}>
-                    <Text style={styles.pickerDone}>{t('common.done')}</Text>
+                    <AppText style={styles.pickerDone}>{t('common.done')}</AppText>
                   </TouchableOpacity>
                 </View>
                 <DateTimePicker
@@ -447,7 +457,7 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
 
         {step === 4 && (
           <View style={styles.review}>
-            <Text style={styles.sectionTitle}>{t('medication.form.summaryLabel')}</Text>
+            <AppText style={styles.sectionTitle}>{t('medication.form.summaryLabel')}</AppText>
             <View style={styles.reviewCard}>
               <ReviewRow label={t('medication.form.nameLabel').replace(' *', '')} value={name} />
               <ReviewRow
@@ -485,7 +495,7 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
             </View>
           </View>
         )}
-        </Animated.View>
+        </View>
       </ScrollView>
 
       <View style={styles.nav}>
@@ -500,7 +510,7 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
           <Button
             label={t('medication.form.previous')}
             variant="secondary"
-            onPress={() => goToStep(step - 1)}
+            onPress={() => setStep(step - 1)}
             style={styles.navBtn}
           />
         )}
@@ -517,8 +527,8 @@ export function MedForm({ initialValues, onSubmit, onCancel, profileId }: MedFor
 function ReviewRow({ label, value }: { label: string; value: string }) {
   return (
     <View style={reviewStyles.row}>
-      <Text style={reviewStyles.label}>{label}</Text>
-      <Text style={reviewStyles.value}>{value}</Text>
+      <AppText style={reviewStyles.label}>{label}</AppText>
+      <AppText style={reviewStyles.value}>{value}</AppText>
     </View>
   );
 }
@@ -601,7 +611,10 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
+  colorSwatchCheck: {},
   colorSwatchActive: { borderColor: Colors.textPrimary, transform: [{ scale: 1.15 }] },
   dateRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   dateText: { fontSize: FontSize.md, color: Colors.textPrimary },
@@ -645,7 +658,4 @@ const styles = StyleSheet.create({
   refillRow:      { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: Spacing.sm },
   refillLabel:    { flex: 1 },
   refillDaysRow:  { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: Spacing.sm },
-  toggle:         { width: 48, height: 28, borderRadius: 14, backgroundColor: Colors.border, justifyContent: 'center', padding: 2 },
-  toggleOn:       { backgroundColor: Colors.primary },
-  toggleThumb:    { width: 24, height: 24, borderRadius: 12, backgroundColor: Colors.surface },
 });

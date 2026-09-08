@@ -1,8 +1,10 @@
 import { Link, Stack } from 'expo-router';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Colors } from '@constants/colors';
 import { Spacing } from '@constants/spacing';
+
+import { AppText } from '@components/ui/AppText';
 
 export default function NotFound() {
   const { t } = useTranslation();
@@ -10,7 +12,7 @@ export default function NotFound() {
     <>
       <Stack.Screen options={{ title: '404' }} />
       <View style={styles.container}>
-        <Text style={styles.title}>{t('notFound.title')}</Text>
+        <AppText style={styles.title}>{t('notFound.title')}</AppText>
         <Link href="/(tabs)" style={styles.link}>
           {t('notFound.backHome')}
         </Link>

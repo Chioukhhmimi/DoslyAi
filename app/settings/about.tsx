@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ScreenContainer } from '@components/layout/ScreenContainer';
 import { ScreenHeader } from '@components/ui/ScreenHeader';
@@ -6,6 +6,8 @@ import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import Constants from 'expo-constants';
+
+import { AppText } from '@components/ui/AppText';
 
 export default function AboutScreen() {
   const { t } = useTranslation();
@@ -16,11 +18,11 @@ export default function AboutScreen() {
         <View style={styles.logo}>
           <Image source={require('@assets/icon.png')} style={styles.logoImage} />
         </View>
-        <Text style={styles.name}>{t('common.appName')}</Text>
-        <Text style={styles.version}>
+        <AppText style={styles.name}>{t('common.appName')}</AppText>
+        <AppText style={styles.version}>
           {t('settings.version')} {Constants.expoConfig?.version}
-        </Text>
-        <Text style={styles.tagline}>{t('settings.aboutScreen.tagline')}</Text>
+        </AppText>
+        <AppText style={styles.tagline}>{t('settings.aboutScreen.tagline')}</AppText>
       </View>
 
       <View style={styles.infoBlock}>
@@ -45,8 +47,8 @@ export default function AboutScreen() {
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <View style={infoStyles.row}>
-      <Text style={infoStyles.label}>{label}</Text>
-      <Text style={infoStyles.value}>{value}</Text>
+      <AppText style={infoStyles.label}>{label}</AppText>
+      <AppText style={infoStyles.value}>{value}</AppText>
     </View>
   );
 }

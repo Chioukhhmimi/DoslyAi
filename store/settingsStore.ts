@@ -10,6 +10,7 @@ interface SettingsState {
   quietHoursStart: string; // "HH:MM"
   quietHoursEnd: string; // "HH:MM"
   biometricLock: boolean;
+  seenSwipeHint: boolean;
   hydrated: boolean;
   layoutKey: number;
 
@@ -22,6 +23,7 @@ interface SettingsState {
   setQuietHoursStart: (time: string) => void;
   setQuietHoursEnd: (time: string) => void;
   setBiometricLock: (enabled: boolean) => void;
+  markSwipeHintSeen: () => void;
   reset: () => Promise<void>;
 }
 
@@ -33,6 +35,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   quietHoursStart: '22:00',
   quietHoursEnd: '07:00',
   biometricLock: false,
+  seenSwipeHint: false,
   hydrated: false,
   layoutKey: 0,
 
@@ -62,6 +65,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       quietHoursStart: quietHoursStart ?? '22:00',
       quietHoursEnd: quietHoursEnd ?? '07:00',
       biometricLock: biometricLock === 'true',
+      seenSwipeHint: false,
       hydrated: true,
     });
   },
@@ -95,6 +99,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     dbSetSetting('biometricLock', String(biometricLock));
     set({ biometricLock });
   },
+  markSwipeHintSeen: () => set({ seenSwipeHint: true }),
 
   reset: async () => {
     await dbDeleteAllSettings();
@@ -106,6 +111,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       quietHoursStart: '22:00',
       quietHoursEnd: '07:00',
       biometricLock: false,
+      seenSwipeHint: false,
       hydrated: false,
       layoutKey: 0,
     });

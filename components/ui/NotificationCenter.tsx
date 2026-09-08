@@ -1,11 +1,13 @@
 import React from 'react';
-import { View, Text, Modal, TouchableOpacity, FlatList, SafeAreaView, StyleSheet } from 'react-native';
+import { View, Modal, TouchableOpacity, FlatList, SafeAreaView, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import { Badge } from '@components/ui/Badge';
+
+import { AppText } from './AppText';
 
 export interface NotificationItem {
   id: string;
@@ -35,7 +37,7 @@ export function NotificationCenter({ visible, onClose, items }: NotificationCent
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
       <SafeAreaView style={styles.safe}>
         <View style={styles.header}>
-          <Text style={styles.title}>{t('notificationCenter.title')}</Text>
+          <AppText style={styles.title}>{t('notificationCenter.title')}</AppText>
           <TouchableOpacity onPress={onClose} hitSlop={12} accessibilityRole="button">
             <Ionicons name="close" size={24} color={Colors.textSecondary} />
           </TouchableOpacity>
@@ -43,7 +45,7 @@ export function NotificationCenter({ visible, onClose, items }: NotificationCent
         {items.length === 0 ? (
           <View style={styles.empty}>
             <Ionicons name="notifications-off-outline" size={48} color={Colors.textDisabled} />
-            <Text style={styles.emptyText}>{t('notificationCenter.empty')}</Text>
+            <AppText style={styles.emptyText}>{t('notificationCenter.empty')}</AppText>
           </View>
         ) : (
           <FlatList
@@ -53,14 +55,14 @@ export function NotificationCenter({ visible, onClose, items }: NotificationCent
             renderItem={({ item }) => (
               <View style={styles.item}>
                 <View style={styles.itemInfo}>
-                  <Text style={styles.itemName}>{item.medicationName}</Text>
-                  <Text style={styles.itemDose}>{item.dose} · {item.scheduledTime}</Text>
+                  <AppText style={styles.itemName}>{item.medicationName}</AppText>
+                  <AppText style={styles.itemDose}>{item.dose} · {item.scheduledTime}</AppText>
                 </View>
                 <View style={styles.itemRight}>
                   <Badge label={t(`notificationCenter.status.${item.status}`)} variant={STATUS_VARIANT[item.status]} size="sm" />
                   {item.status === 'pending' && item.onMarkTaken && (
                     <TouchableOpacity style={styles.takenBtn} onPress={item.onMarkTaken} accessibilityRole="button">
-                      <Text style={styles.takenBtnText}>{t('notificationCenter.markTaken')}</Text>
+                      <AppText style={styles.takenBtnText}>{t('notificationCenter.markTaken')}</AppText>
                     </TouchableOpacity>
                   )}
                 </View>

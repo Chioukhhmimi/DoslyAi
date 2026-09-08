@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Medication } from '@store/medicationStore';
 import { Colors } from '@constants/colors';
@@ -8,6 +8,8 @@ import { FontSize } from '@constants/typography';
 import { Badge } from '@components/ui/Badge';
 import { BottomSheet } from '@components/ui/BottomSheet';
 import { formatTime, formatDate } from '@utils/dateHelpers';
+
+import { AppText } from '../ui/AppText';
 
 interface MedDetailSheetProps {
   medication: Medication | null;
@@ -50,10 +52,10 @@ export function MedDetailSheet({ medication, onClose }: MedDetailSheetProps) {
               ]}
             />
             <View style={styles.headerText}>
-              <Text style={styles.name}>{medication.name}</Text>
-              <Text style={styles.dose}>
+              <AppText style={styles.name}>{medication.name}</AppText>
+              <AppText style={styles.dose}>
                 {medication.doseQuantity} {medication.unit}
-              </Text>
+              </AppText>
             </View>
             <Badge
               label={t(`medication.types.${medication.type}`, { defaultValue: medication.type })}
@@ -83,7 +85,7 @@ export function MedDetailSheet({ medication, onClose }: MedDetailSheetProps) {
           </ScrollView>
 
           <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
-            <Text style={styles.closeBtnText}>{t('common.close')}</Text>
+            <AppText style={styles.closeBtnText}>{t('common.close')}</AppText>
           </TouchableOpacity>
         </>
       )}
@@ -94,8 +96,8 @@ export function MedDetailSheet({ medication, onClose }: MedDetailSheetProps) {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <View style={styles.row}>
-      <Text style={styles.rowLabel}>{label}</Text>
-      <Text style={styles.rowValue}>{value}</Text>
+      <AppText style={styles.rowLabel}>{label}</AppText>
+      <AppText style={styles.rowValue}>{value}</AppText>
     </View>
   );
 }

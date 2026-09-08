@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Text, StyleSheet } from 'react-native';
+import { Animated, StyleSheet, TouchableOpacity } from 'react-native';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
+
+import { AppText } from './AppText';
 
 type ToastType = 'success' | 'error' | 'info';
 
@@ -41,7 +43,7 @@ export function Toast({ message, type = 'info', visible, onHide }: ToastProps) {
           Animated.timing(translateY, { toValue: 20, duration: 200, useNativeDriver: true }),
           Animated.timing(opacity, { toValue: 0, duration: 200, useNativeDriver: true }),
         ]).start(() => onHide());
-      }, 3000);
+      }, 5000);
 
       return () => clearTimeout(timer);
     }
@@ -55,8 +57,12 @@ export function Toast({ message, type = 'info', visible, onHide }: ToastProps) {
         styles.container,
         { backgroundColor: BG[type], transform: [{ translateY }], opacity },
       ]}
+      accessibilityRole="alert"
+      accessibilityLiveRegion="polite"
     >
-      <Text style={[styles.text, { color: TEXT[type] }]}>{message}</Text>
+      <TouchableOpacity onPress={onHide} activeOpacity={0.8}>
+        <AppText style={[styles.text, { color: TEXT[type] }]}>{message}</AppText>
+      </TouchableOpacity>
     </Animated.View>
   );
 }

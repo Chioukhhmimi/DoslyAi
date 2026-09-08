@@ -35,6 +35,8 @@
       "description": "Suivez les traitements de toute votre famille depuis une seule application. Vos données restent sur votre appareil.",
       "getStarted": "Commencer"
     },
+    "slide": "Diapositive",
+    "of": "sur",
     "slide4": {
       "title": "Activez les rappels",
       "description": "Recevez une notification à chaque heure de prise pour ne jamais manquer un médicament. Vous pouvez modifier cela à tout moment dans les Paramètres."
@@ -57,6 +59,8 @@
     "changeProfile": "Changer de profil",
     "manageProfiles": "Gérer les profils",
     "snoozeLater": "Plus tard",
+    "swipeHint": "← Passer · Glisser · Pris →",
+    "swipeHintDismiss": "Masquer l'astuce",
     "status": {
       "taken": "Pris",
       "skipped": "Passé",
@@ -312,6 +316,10 @@
     "deleteAllBtn": "Supprimer toutes les données",
     "deleteAllTitle": "Supprimer toutes les données",
     "deleteAllMessage": "Cette action est irréversible. Tous vos médicaments, profils et historique seront supprimés.",
+    "deleteAllConfirm": "Supprimer",
+    "deleteAllTitle2": "Confirmer la suppression",
+    "deleteAllMessage2": "Êtes-vous absolument sûr ? Cette action ne peut pas être annulée.",
+    "deleteAllConfirm2": "Oui, tout supprimer",
     "termsScreen": {
       "intro": "En utilisant Dosly, vous acceptez les conditions suivantes :",
       "section1Title": "1. Usage",
@@ -380,5 +388,17 @@
     "gallery": "Galerie",
     "cancel": "Annuler",
     "permissionDenied": "Permission refusée"
+  },
+  "colors": {
+    "violet": "Violet",
+    "pink": "Rose",
+    "orange": "Orange",
+    "green": "Vert",
+    "yellow": "Jaune",
+    "cyan": "Cyan",
+    "red": "Rouge",
+    "purple": "Mauve",
+    "lime": "Citron vert",
+    "amber": "Ambré"
   }
 }

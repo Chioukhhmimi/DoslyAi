@@ -1,9 +1,11 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@constants/colors';
 import { Spacing } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
+
+import { AppText } from './AppText';
 
 interface SheetActionProps {
   label: string;
@@ -22,7 +24,7 @@ export function SheetAction({ label, icon, onPress, variant = 'default' }: Sheet
         color={isDanger ? Colors.danger : Colors.textSecondary}
         style={styles.icon}
       />
-      <Text style={[styles.label, isDanger && styles.labelDanger]}>{label}</Text>
+      <AppText style={[styles.label, isDanger && styles.labelDanger]}>{label}</AppText>
     </TouchableOpacity>
   );
 }

@@ -1,14 +1,5 @@
 import React, { useRef, useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  FlatList,
-  TextInput,
-  ActivityIndicator,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
+import { View, TouchableOpacity, FlatList, TextInput, ActivityIndicator, StyleSheet, Dimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { CameraView, useCameraPermissions, FlashMode } from 'expo-camera';
 import { useRouter } from 'expo-router';
@@ -22,9 +13,13 @@ import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import { useOCR } from '@hooks/useOCR';
 import { ParsedMedication } from '@utils/ocrParser';
+import { useOCRQueue } from '@store/ocrQueueStore';
+
+import { AppText } from '@components/ui/AppText';
 
 const { width: SCREEN_W } = Dimensions.get('window');
-const FRAME_SIZE = SCREEN_W * 0.75;
+const FRAME_W = SCREEN_W * 0.82;
+const FRAME_H = FRAME_W * 1.41; // A4 portrait ratio
 
 type Screen = 'camera' | 'processing' | 'results';
 
@@ -37,6 +32,7 @@ interface EditableMed extends ParsedMedication {
 export default function ScanScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const setOCRQueue = useOCRQueue((s) => s.setQueue);
   const [permission, requestPermission] = useCameraPermissions();
   const { runOCR, pickFromGallery, isProcessing, medications, error, reset } = useOCR();
   const cameraRef = useRef<CameraView>(null);
@@ -80,7 +76,7 @@ export default function ScanScreen() {
     if (!cameraRef.current) return;
     setScreen('processing');
     try {
-      const photo = await cameraRef.current.takePictureAsync({ quality: 0.85 });
+      const photo = await cameraRef.current.takePictureAsync({ quality: 1.0 });
       await runOCR(photo.uri);
     } catch {
       setScreen('camera');
@@ -112,6 +108,11 @@ export default function ScanScreen() {
       return;
     }
 
+    // Queue remaining meds so add screen can cycle through them
+    setOCRQueue(
+      selected.slice(1).map((m) => ({ name: m.editedName, dosage: m.editedDosage })),
+    );
+
     const first = selected[0];
     router.push({
       pathname: '/(tabs)/add',
@@ -130,7 +131,7 @@ export default function ScanScreen() {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color={Colors.primary} />
-        <Text style={styles.processingText}>{t('medication.scan.processing')}</Text>
+        <AppText style={styles.processingText}>{t('medication.scan.processing')}</AppText>
       </View>
     );
   }
@@ -140,7 +141,7 @@ export default function ScanScreen() {
     const includedCount = editableMeds.filter((m) => m.included).length;
     return (
       <ScreenContainer scrollable>
-        <Text style={styles.title}>{t('medication.scan.detected')}</Text>
+        <AppText style={styles.title}>{t('medication.scan.detected')}</AppText>
 
         {error ? (
           <EmptyState
@@ -175,14 +176,14 @@ export default function ScanScreen() {
                 </TouchableOpacity>
 
                 <View style={styles.resultFields}>
-                  <Text style={styles.fieldLabel}>{t('medication.scan.nameLabel')}</Text>
+                  <AppText style={styles.fieldLabel}>{t('medication.scan.nameLabel')}</AppText>
                   <TextInput
                     style={styles.fieldInput}
                     value={item.editedName}
                     onChangeText={(v) => updateMed(index, { editedName: v })}
                     editable={item.included}
                   />
-                  <Text style={styles.fieldLabel}>{t('medication.scan.dosageLabel')}</Text>
+                  <AppText style={styles.fieldLabel}>{t('medication.scan.dosageLabel')}</AppText>
                   <TextInput
                     style={styles.fieldInput}
                     value={item.editedDosage}
@@ -192,13 +193,13 @@ export default function ScanScreen() {
                   {item.frequency ? (
                     <View style={styles.hintRow}>
                       <Ionicons name="time-outline" size={12} color={Colors.textSecondary} />
-                      <Text style={styles.hint}>{item.frequency}</Text>
+                      <AppText style={styles.hint}>{item.frequency}</AppText>
                     </View>
                   ) : null}
                   {item.duration ? (
                     <View style={styles.hintRow}>
                       <Ionicons name="calendar-outline" size={12} color={Colors.textSecondary} />
-                      <Text style={styles.hint}>{item.duration}</Text>
+                      <AppText style={styles.hint}>{item.duration}</AppText>
                     </View>
                   ) : null}
                 </View>
@@ -253,7 +254,7 @@ export default function ScanScreen() {
 
       {/* Guide label */}
       <View style={styles.guideContainer}>
-        <Text style={styles.guideText}>{t('medication.scan.alignGuide')}</Text>
+        <AppText style={styles.guideText}>{t('medication.scan.alignGuide')}</AppText>
       </View>
 
       {/* Top controls */}
@@ -279,7 +280,7 @@ export default function ScanScreen() {
           style={styles.iconBtn}
         >
           <Ionicons name="images-outline" size={28} color="#fff" />
-          <Text style={styles.iconLabel}>{t('medication.scan.gallery')}</Text>
+          <AppText style={styles.iconLabel}>{t('medication.scan.gallery')}</AppText>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={handleCapture} style={styles.captureBtn}>
@@ -310,10 +311,10 @@ const styles = StyleSheet.create({
   cameraContainer: { flex: 1, backgroundColor: '#000' },
   overlay: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 },
   overlayTop: { flex: 1, backgroundColor: OVERLAY_COLOR },
-  overlayMiddle: { flexDirection: 'row', height: FRAME_SIZE },
+  overlayMiddle: { flexDirection: 'row', height: FRAME_H },
   overlaySide: { flex: 1, backgroundColor: OVERLAY_COLOR },
   overlayBottom: { flex: 1, backgroundColor: OVERLAY_COLOR },
-  frame: { width: FRAME_SIZE, height: FRAME_SIZE },
+  frame: { width: FRAME_W, height: FRAME_H },
 
   // Frame corners
   corner: { position: 'absolute', width: CORNER_SIZE, height: CORNER_SIZE, borderColor: '#fff' },

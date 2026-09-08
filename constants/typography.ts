@@ -71,23 +71,23 @@ export const TypeScale = {
     weight: 'semibold' as const,
   },
   bodyLg: {
+    fontSize:   17,
+    lineHeight: 26,
+    weight: 'regular' as const,
+  },
+  body: {
     fontSize:   15,
     lineHeight: 22,
     weight: 'regular' as const,
   },
-  body: {
-    fontSize:   13,
-    lineHeight: 20,
-    weight: 'regular' as const,
-  },
   label: {
-    fontSize:   13,
-    lineHeight: 20,
+    fontSize:   15,
+    lineHeight: 22,
     weight: 'semibold' as const,
   },
   caption: {
-    fontSize:   11,
-    lineHeight: 16,
+    fontSize:   13,
+    lineHeight: 18,
     weight: 'regular' as const,
   },
   overline: {

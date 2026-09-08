@@ -35,6 +35,8 @@
       "description": "Track treatments for your whole family from one app. Your data stays on your device.",
       "getStarted": "Get started"
     },
+    "slide": "Slide",
+    "of": "of",
     "slide4": {
       "title": "Enable reminders",
       "description": "Receive a notification at each dose time so you never miss a medication. You can change this at any time in Settings."
@@ -57,6 +59,8 @@
     "changeProfile": "Switch profile",
     "manageProfiles": "Manage profiles",
     "snoozeLater": "Later",
+    "swipeHint": "← Skip · Swipe · Taken →",
+    "swipeHintDismiss": "Dismiss tip",
     "status": {
       "taken": "Taken",
       "skipped": "Skipped",
@@ -312,6 +316,10 @@
     "deleteAllBtn": "Delete all data",
     "deleteAllTitle": "Delete all data",
     "deleteAllMessage": "This action is irreversible. All your medications, profiles and history will be deleted.",
+    "deleteAllConfirm": "Delete",
+    "deleteAllTitle2": "Confirm deletion",
+    "deleteAllMessage2": "Are you absolutely sure? This action cannot be undone.",
+    "deleteAllConfirm2": "Yes, delete everything",
     "termsScreen": {
       "intro": "By using Dosly, you agree to the following terms:",
       "section1Title": "1. Use",
@@ -380,5 +388,17 @@
     "gallery": "Gallery",
     "cancel": "Cancel",
     "permissionDenied": "Permission denied"
+  },
+  "colors": {
+    "violet": "Violet",
+    "pink": "Pink",
+    "orange": "Orange",
+    "green": "Green",
+    "yellow": "Yellow",
+    "cyan": "Cyan",
+    "red": "Red",
+    "purple": "Purple",
+    "lime": "Lime",
+    "amber": "Amber"
   }
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMedicationStore } from '@store/medicationStore';
@@ -10,6 +10,8 @@ import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import { BottomSheet } from '@components/ui/BottomSheet';
 import { formatTime } from '@utils/dateHelpers';
+
+import { AppText } from '@components/ui/AppText';
 
 export default function ConfirmScreen() {
   const { t } = useTranslation();
@@ -33,9 +35,9 @@ export default function ConfirmScreen() {
   if (!medication) {
     return (
       <View style={styles.fallback}>
-        <Text style={styles.fallbackText}>{t('medication.confirm.notFound')}</Text>
+        <AppText style={styles.fallbackText}>{t('medication.confirm.notFound')}</AppText>
         <TouchableOpacity onPress={() => router.replace('/(tabs)')} style={styles.fallbackBtn}>
-          <Text style={styles.fallbackBtnText}>{t('common.back')}</Text>
+          <AppText style={styles.fallbackBtnText}>{t('common.back')}</AppText>
         </TouchableOpacity>
       </View>
     );
@@ -79,10 +81,10 @@ export default function ConfirmScreen() {
   return (
     <View style={styles.overlay}>
       <View style={styles.sheet}>
-        <Text style={styles.title}>{medication.name}</Text>
-        <Text style={styles.subtitle}>
+        <AppText style={styles.title}>{medication.name}</AppText>
+        <AppText style={styles.subtitle}>
           {medication.doseQuantity} {medication.unit} · {timeLabel}
-        </Text>
+        </AppText>
 
         <TextInput
           style={styles.noteInput}
@@ -94,35 +96,35 @@ export default function ConfirmScreen() {
         />
 
         <TouchableOpacity style={styles.btnTaken} onPress={handleTaken}>
-          <Text style={styles.btnTakenText}>{t('medication.confirm.taken')}</Text>
+          <AppText style={styles.btnTakenText}>{t('medication.confirm.taken')}</AppText>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.btnSnooze} onPress={() => setShowSnooze(true)}>
-          <Text style={styles.btnSnoozeText}>{t('medication.confirm.snooze')}</Text>
+          <AppText style={styles.btnSnoozeText}>{t('medication.confirm.snooze')}</AppText>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.btnSkip} onPress={handleSkip}>
-          <Text style={styles.btnSkipText}>{t('medication.confirm.skip')}</Text>
+          <AppText style={styles.btnSkipText}>{t('medication.confirm.skip')}</AppText>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.btnCancel} onPress={() => router.back()}>
-          <Text style={styles.btnCancelText}>{t('common.cancel')}</Text>
+          <AppText style={styles.btnCancelText}>{t('common.cancel')}</AppText>
         </TouchableOpacity>
       </View>
 
       <BottomSheet visible={showSnooze} onClose={() => setShowSnooze(false)}>
-        <Text style={styles.snoozeTitle}>{t('medication.confirm.snoozeTitle')}</Text>
+        <AppText style={styles.snoozeTitle}>{t('medication.confirm.snoozeTitle')}</AppText>
         {SNOOZE_OPTIONS.map((opt) => (
           <TouchableOpacity
             key={opt.minutes}
             style={styles.snoozeOption}
             onPress={() => handleSnooze(opt.minutes)}
           >
-            <Text style={styles.snoozeOptionText}>{opt.label}</Text>
+            <AppText style={styles.snoozeOptionText}>{opt.label}</AppText>
           </TouchableOpacity>
         ))}
         <TouchableOpacity style={styles.snoozeCancel} onPress={() => setShowSnooze(false)}>
-          <Text style={styles.snoozeCancelText}>{t('common.cancel')}</Text>
+          <AppText style={styles.snoozeCancelText}>{t('common.cancel')}</AppText>
         </TouchableOpacity>
       </BottomSheet>
     </View>

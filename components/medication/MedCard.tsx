@@ -1,9 +1,10 @@
 import React, { useState, useMemo, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated, PanResponder } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Animated, PanResponder } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { Medication, IntakeRecord } from '@store/medicationStore';
+import { useSettingsStore } from '@store/settingsStore';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
@@ -12,6 +13,8 @@ import { BottomSheet } from '@components/ui/BottomSheet';
 import { formatTime } from '@utils/dateHelpers';
 import { snoozeDoseNotification } from '@utils/snoozeNotification';
 import * as Haptics from 'expo-haptics';
+
+import { AppText } from '../ui/AppText';
 
 interface MedCardProps {
   medication: Medication;
@@ -32,6 +35,7 @@ const SWIPE_THRESHOLD = 80;
 export const MedCard = React.memo(function MedCard({ medication, scheduledTime, scheduledISO, intakeRecord, onMarkTaken, onSkip }: MedCardProps) {
   const { t } = useTranslation();
   const router = useRouter();
+  const { seenSwipeHint, markSwipeHintSeen } = useSettingsStore();
   const [showSnooze, setShowSnooze] = useState(false);
 
   const translateX = useRef(new Animated.Value(0)).current;
@@ -121,46 +125,56 @@ export const MedCard = React.memo(function MedCard({ medication, scheduledTime, 
             <View style={[styles.dot, { backgroundColor: medication.pillColor ?? TYPE_COLOR[medication.type] }]} />
             <View style={styles.info}>
               <View style={styles.nameRow}>
-                <Text style={styles.name}>{medication.name}</Text>
+                <AppText style={styles.name}>{medication.name}</AppText>
                 {medication.paused && <Badge label={t('medications.paused')} variant="warning" size="sm" />}
               </View>
-              <Text style={styles.sub}>{medication.doseQuantity} {medication.unit} · {medication.schedule.times.map(formatTime).join(' · ')}</Text>
+              <AppText style={styles.sub}>{medication.doseQuantity} {medication.unit} · {medication.schedule.times.map(formatTime).join(' · ')}</AppText>
               <View style={styles.timeRow}>
                 <Ionicons name="time-outline" size={12} color={isOverdue ? Colors.danger : Colors.textSecondary} />
-                <Text style={[styles.time, isOverdue && styles.timeOverdue]}>{formatTime(scheduledTime)}</Text>
+                <AppText style={[styles.time, isOverdue && styles.timeOverdue]}>{formatTime(scheduledTime)}</AppText>
               </View>
             </View>
             <Badge label={statusLabel} variant={statusVariant} size="sm" />
           </View>
         </TouchableOpacity>
 
+        {isPending && !medication.paused && !seenSwipeHint && (
+          <TouchableOpacity
+            style={styles.swipeHint}
+            onPress={markSwipeHintSeen}
+            accessibilityRole="button"
+            accessibilityLabel={t('home.swipeHintDismiss')}
+          >
+            <AppText style={styles.swipeHintText}>{t('home.swipeHint')}</AppText>
+          </TouchableOpacity>
+        )}
         {isPending && !medication.paused && (
           <View style={styles.actions}>
             <TouchableOpacity onPress={triggerTaken} style={styles.btnTaken}>
               <Animated.View style={{ transform: [{ scale: checkScale }] }}>
                 <Ionicons name="checkmark" size={14} color={Colors.successText} />
               </Animated.View>
-              <Text style={styles.btnTakenText}>{t('medication.confirm.taken')}</Text>
+              <AppText style={styles.btnTakenText}>{t('medication.confirm.taken')}</AppText>
             </TouchableOpacity>
             <TouchableOpacity onPress={openSnooze} style={styles.btnSnooze}>
-              <Text style={styles.btnSnoozeText}>{t('home.snoozeLater')}</Text>
+              <AppText style={styles.btnSnoozeText}>{t('home.snoozeLater')}</AppText>
             </TouchableOpacity>
             <TouchableOpacity onPress={triggerSkip} style={styles.btnSkip}>
-              <Text style={styles.btnSkipText}>{t('medication.confirm.skip')}</Text>
+              <AppText style={styles.btnSkipText}>{t('medication.confirm.skip')}</AppText>
             </TouchableOpacity>
           </View>
         )}
       </Animated.View>
 
       <BottomSheet visible={showSnooze} onClose={() => setShowSnooze(false)}>
-        <Text style={styles.snoozeTitle}>{t('medication.confirm.snoozeTitle')}</Text>
+        <AppText style={styles.snoozeTitle}>{t('medication.confirm.snoozeTitle')}</AppText>
         {SNOOZE_OPTIONS.map((opt) => (
           <TouchableOpacity key={opt.minutes} style={styles.snoozeOption} onPress={() => handleSnooze(opt.minutes)}>
-            <Text style={styles.snoozeOptionText}>{opt.label}</Text>
+            <AppText style={styles.snoozeOptionText}>{opt.label}</AppText>
           </TouchableOpacity>
         ))}
         <TouchableOpacity style={styles.snoozeCancel} onPress={() => setShowSnooze(false)}>
-          <Text style={styles.snoozeCancelText}>{t('common.cancel')}</Text>
+          <AppText style={styles.snoozeCancelText}>{t('common.cancel')}</AppText>
         </TouchableOpacity>
       </BottomSheet>
     </>
@@ -181,15 +195,17 @@ const styles = StyleSheet.create({
   time:             { fontSize: FontSize.xs, color: Colors.textSecondary },
   timeOverdue:      { color: Colors.danger, fontWeight: '600' },
   actions:          { flexDirection: 'row', gap: Spacing.xs, marginTop: Spacing.sm, paddingTop: Spacing.sm, borderTopWidth: 1, borderTopColor: Colors.border },
-  btnTaken:         { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, backgroundColor: Colors.successLight, borderRadius: Radius.sm, padding: Spacing.sm },
-  btnTakenText:     { fontSize: FontSize.xs, fontWeight: '700', color: Colors.successText },
-  btnSnooze:        { flex: 1, backgroundColor: Colors.warningLight, borderRadius: Radius.sm, padding: Spacing.sm, alignItems: 'center' },
-  btnSnoozeText:    { fontSize: FontSize.xs, fontWeight: '700', color: Colors.skippedText },
-  btnSkip:          { flex: 1, borderRadius: Radius.sm, padding: Spacing.sm, alignItems: 'center', borderWidth: 1, borderColor: Colors.border },
-  btnSkipText:      { fontSize: FontSize.xs, fontWeight: '700', color: Colors.textSecondary },
+  btnTaken:         { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, backgroundColor: Colors.successLight, borderRadius: Radius.sm, paddingVertical: 12, paddingHorizontal: Spacing.xs, minHeight: 44 },
+  btnTakenText:     { fontSize: FontSize.sm, fontWeight: '700', color: Colors.successText },
+  btnSnooze:        { flex: 1, backgroundColor: Colors.warningLight, borderRadius: Radius.sm, paddingVertical: 12, paddingHorizontal: Spacing.xs, alignItems: 'center', minHeight: 44 },
+  btnSnoozeText:    { fontSize: FontSize.sm, fontWeight: '700', color: Colors.skippedText },
+  btnSkip:          { flex: 1, borderRadius: Radius.sm, paddingVertical: 12, paddingHorizontal: Spacing.xs, alignItems: 'center', borderWidth: 1, borderColor: Colors.border, minHeight: 44 },
+  btnSkipText:      { fontSize: FontSize.sm, fontWeight: '700', color: Colors.textSecondary },
   snoozeTitle:      { fontSize: FontSize.md, fontWeight: '700', color: Colors.textPrimary, marginBottom: Spacing.sm },
   snoozeOption:     { padding: Spacing.md, backgroundColor: Colors.background, borderRadius: Radius.sm, alignItems: 'center', marginBottom: Spacing.xs },
   snoozeOptionText: { fontSize: FontSize.md, color: Colors.primary, fontWeight: '600' },
   snoozeCancel:     { padding: Spacing.sm, alignItems: 'center', marginTop: Spacing.xs },
   snoozeCancelText: { fontSize: FontSize.sm, color: Colors.textSecondary },
+  swipeHint:        { alignItems: 'center', paddingVertical: 4 },
+  swipeHintText:    { fontSize: FontSize.xs, color: Colors.textSecondary, fontStyle: 'italic' },
 });

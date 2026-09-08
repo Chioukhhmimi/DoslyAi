@@ -1,34 +1,36 @@
-import { Text, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ScreenContainer } from '@components/layout/ScreenContainer';
 import { ScreenHeader } from '@components/ui/ScreenHeader';
 import { Colors } from '@constants/colors';
 import { FontSize } from '@constants/typography';
 
+import { AppText } from '@components/ui/AppText';
+
 export default function TermsScreen() {
   const { t } = useTranslation();
   return (
     <ScreenContainer scrollable>
       <ScreenHeader title={t('settings.terms')} />
-      <Text style={styles.body}>
+      <AppText style={styles.body}>
         {t('settings.termsScreen.intro')}
         {'\n\n'}
-        <Text style={styles.bold}>{t('settings.termsScreen.section1Title')}</Text>
+        <AppText style={styles.bold}>{t('settings.termsScreen.section1Title')}</AppText>
         {'\n'}
         {t('settings.termsScreen.section1Body')}
         {'\n\n'}
-        <Text style={styles.bold}>{t('settings.termsScreen.section2Title')}</Text>
+        <AppText style={styles.bold}>{t('settings.termsScreen.section2Title')}</AppText>
         {'\n'}
         {t('settings.termsScreen.section2Body')}
         {'\n\n'}
-        <Text style={styles.bold}>{t('settings.termsScreen.section3Title')}</Text>
+        <AppText style={styles.bold}>{t('settings.termsScreen.section3Title')}</AppText>
         {'\n'}
         {t('settings.termsScreen.section3Body')}
         {'\n\n'}
-        <Text style={styles.bold}>{t('settings.termsScreen.section4Title')}</Text>
+        <AppText style={styles.bold}>{t('settings.termsScreen.section4Title')}</AppText>
         {'\n'}
         {t('settings.termsScreen.section4Body')}
-      </Text>
+      </AppText>
     </ScreenContainer>
   );
 }

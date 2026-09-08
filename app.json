@@ -41,6 +41,12 @@
       ],
       "expo-sqlite",
       [
+        "rn-mlkit-ocr",
+        {
+          "androidScriptModels": ["latin", "arabic"]
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "image": "./assets/splash-icon.png",

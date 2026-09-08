@@ -1,10 +1,12 @@
 import React from 'react';
-import { ScrollView, TouchableOpacity, Text, StyleSheet, View } from 'react-native';
+import { ScrollView, TouchableOpacity, StyleSheet, View } from 'react-native';
 import { Profile } from '@store/profileStore';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import { Avatar } from '@components/ui/Avatar';
+
+import { AppText } from '../ui/AppText';
 
 interface ProfileSelectorProps {
   profiles: Profile[];
@@ -31,9 +33,9 @@ export function ProfileSelector({ profiles, activeProfileId, onSelect }: Profile
             accessibilityState={{ selected: p.id === activeProfileId }}
           >
             <Avatar name={p.name} uri={p.avatarUri} size={28} />
-            <Text style={[styles.name, isActive ? styles.nameActive : styles.nameInactive]}>
+            <AppText style={[styles.name, isActive ? styles.nameActive : styles.nameInactive]}>
               {p.name}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         );
       })}

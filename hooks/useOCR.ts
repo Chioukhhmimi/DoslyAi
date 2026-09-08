@@ -8,17 +8,13 @@ interface OCRState {
   error: string | null;
 }
 
-// expo-text-extractor is a native module installed via:
-//   npx expo install expo-text-extractor
-// It is lazily required so the app does not crash if the native module
-// is not yet linked (e.g. running in plain Expo Go without a dev build).
-function getExtractor(): {
-  extractTextFromImage: (uri: string) => Promise<string[]>;
-  isSupported: boolean;
-} | null {
+type MlkitBlock = { text: string; lines: Array<{ text: string }> };
+
+function getMlkitOcr(): { detectFromUri: (uri: string) => Promise<MlkitBlock[]> } | null {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    return require('expo-text-extractor');
+    // rn-mlkit-ocr ships a default export; some bundlers expose it differently
+    const mod = require('rn-mlkit-ocr');
+    return mod?.default ?? mod;
   } catch {
     return null;
   }
@@ -34,8 +30,8 @@ export function useOCR() {
   const runOCR = useCallback(async (imageUri: string) => {
     setState({ isProcessing: true, medications: null, error: null });
 
-    const extractor = getExtractor();
-    if (!extractor) {
+    const MlkitOcr = getMlkitOcr();
+    if (!MlkitOcr) {
       setState({
         isProcessing: false,
         medications: null,
@@ -44,17 +40,9 @@ export function useOCR() {
       return;
     }
 
-    if (!extractor.isSupported) {
-      setState({
-        isProcessing: false,
-        medications: null,
-        error: 'OCR not supported on this device.',
-      });
-      return;
-    }
-
     try {
-      const lines = await extractor.extractTextFromImage(imageUri);
+      const blocks = await MlkitOcr.detectFromUri(imageUri);
+      const lines = blocks.flatMap((b) => b.lines.map((l) => l.text));
       const medications = parsePrescription(lines);
       setState({ isProcessing: false, medications, error: null });
     } catch (err) {

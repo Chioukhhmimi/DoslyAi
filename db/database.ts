@@ -33,7 +33,16 @@ async function runMigrations(db: SQLiteDatabase): Promise<void> {
 
     if (!applied) {
       for (const sql of migration.up) {
-        await db.execAsync(sql);
+        try {
+          await db.execAsync(sql);
+        } catch (e) {
+          // ALTER TABLE ... ADD COLUMN fails with "duplicate column name" if column already exists
+          // (happens when a legacy DB already has the column from an older ad-hoc schema).
+          // Safe to ignore — the column is there, which is what we need.
+          const msg = e instanceof Error ? e.message : String(e);
+          if (msg.toLowerCase().includes('duplicate column name')) continue;
+          throw e;
+        }
       }
       await db.runAsync('INSERT INTO _migrations (version) VALUES (?)', [migration.version]);
     }

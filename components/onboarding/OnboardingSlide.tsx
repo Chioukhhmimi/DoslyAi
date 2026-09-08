@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text, SafeAreaView, StyleSheet } from 'react-native';
+import { View, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import { Button } from '@components/ui/Button';
+
+import { AppText } from '../ui/AppText';
 
 interface OnboardingSlideProps {
   title: string;
@@ -12,6 +14,7 @@ interface OnboardingSlideProps {
   illustrationColor: string;
   onNext: () => void;
   onSkip: () => void;
+  onDotPress?: (index: number) => void;
   isLast?: boolean;
   currentSlide: number;
   totalSlides: number;
@@ -23,6 +26,7 @@ export function OnboardingSlide({
   illustrationColor,
   onNext,
   onSkip,
+  onDotPress,
   isLast = false,
   currentSlide,
   totalSlides,
@@ -35,15 +39,23 @@ export function OnboardingSlide({
 
         <View style={styles.dots}>
           {Array.from({ length: totalSlides }).map((_, i) => (
-            <View
+            <TouchableOpacity
               key={i}
-              style={[styles.dot, i + 1 === currentSlide ? styles.dotActive : styles.dotInactive]}
-            />
+              onPress={() => onDotPress?.(i + 1)}
+              accessibilityRole="button"
+              accessibilityLabel={`${t('onboarding.slide')} ${i + 1} ${t('onboarding.of')} ${totalSlides}`}
+              accessibilityState={{ selected: i + 1 === currentSlide }}
+              hitSlop={{ top: 12, bottom: 12, left: 8, right: 8 }}
+            >
+              <View
+                style={[styles.dot, i + 1 === currentSlide ? styles.dotActive : styles.dotInactive]}
+              />
+            </TouchableOpacity>
           ))}
         </View>
 
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.description}>{description}</Text>
+        <AppText style={styles.title}>{title}</AppText>
+        <AppText style={styles.description}>{description}</AppText>
 
         <Button
           label={isLast ? t('onboarding.slide3.getStarted') : t('common.continue')}

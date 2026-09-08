@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
+
+import { AppText } from './AppText';
 
 interface StepperProps {
   value: number;
@@ -32,7 +34,7 @@ export function Stepper({
   return (
     <View style={styles.container}>
       <TouchableOpacity style={[styles.btn, styles.btnLeft]} onPress={decrement} disabled={value <= min} activeOpacity={0.7} accessibilityLabel="Decrease" accessibilityRole="button" accessibilityState={{ disabled: value <= min }}>
-        <Text style={[styles.btnText, value <= min && styles.btnDisabled]}>−</Text>
+        <AppText style={[styles.btnText, value <= min && styles.btnDisabled]}>−</AppText>
       </TouchableOpacity>
       {editable ? (
         <TextInput
@@ -48,10 +50,10 @@ export function Stepper({
           accessibilityLabel="Value"
         />
       ) : (
-        <Text style={styles.valueText}>{value}</Text>
+        <AppText style={styles.valueText}>{value}</AppText>
       )}
       <TouchableOpacity style={[styles.btn, styles.btnRight]} onPress={increment} disabled={value >= max} activeOpacity={0.7} accessibilityLabel="Increase" accessibilityRole="button" accessibilityState={{ disabled: value >= max }}>
-        <Text style={[styles.btnText, value >= max && styles.btnDisabled]}>+</Text>
+        <AppText style={[styles.btnText, value >= max && styles.btnDisabled]}>+</AppText>
       </TouchableOpacity>
     </View>
   );
@@ -67,7 +69,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surface,
   },
   btn: {
-    width: 40,
+    width: 44,
+    minHeight: 44,
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: Spacing.sm,

@@ -1,8 +1,10 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ViewStyle } from 'react-native';
+import { TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
+
+import { AppText } from './AppText';
 
 interface SelectableChipProps {
   label: string;
@@ -39,9 +41,9 @@ export function SelectableChip({
         style,
       ]}
     >
-      <Text style={[styles.label, selected && styles.labelSelected, size === 'sm' && styles.labelSm]}>
+      <AppText style={[styles.label, selected && styles.labelSelected, size === 'sm' && styles.labelSm]}>
         {label}
-      </Text>
+      </AppText>
     </TouchableOpacity>
   );
 }

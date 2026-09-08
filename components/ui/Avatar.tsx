@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Colors } from '@constants/colors';
+
+import { AppText } from './AppText';
 
 interface AvatarProps {
   name: string;
@@ -29,7 +31,7 @@ export function Avatar({ name, uri, size = 40, onPress }: AvatarProps) {
       {uri ? (
         <Image source={{ uri }} style={{ width: size, height: size, borderRadius: size / 2 }} />
       ) : (
-        <Text style={[styles.initials, { fontSize: size * 0.38 }]}>{getInitials(name)}</Text>
+        <AppText style={[styles.initials, { fontSize: size * 0.38 }]}>{getInitials(name)}</AppText>
       )}
     </Container>
   );

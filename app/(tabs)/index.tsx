@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, SectionList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, SectionList, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -19,6 +19,8 @@ import { useScheduler } from '@hooks/useScheduler';
 import { useMedicationStore } from '@store/medicationStore';
 import { getScheduledDosesForDay } from '@utils/scheduleEngine';
 import { Medication } from '@store/medicationStore';
+
+import { AppText } from '@components/ui/AppText';
 
 // ── Time-of-day bucket boundaries ────────────────────────────────────────────
 const BUCKET_KEYS = [
@@ -147,18 +149,18 @@ export default function HomeScreen() {
           activeOpacity={0.7}
           style={styles.greetingBtn}
         >
-          <Text style={styles.greeting}>
+          <AppText style={styles.greeting}>
             {activeProfile ? t('home.greeting', { name: activeProfile.name }) : t('home.title')}
-          </Text>
-          <Text style={styles.profileSwitch}>
+          </AppText>
+          <AppText style={styles.profileSwitch}>
             {profiles.length > 1 ? t('home.changeProfile') : t('home.manageProfiles')}
-          </Text>
+          </AppText>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setShowNotifCenter(true)} style={styles.bellBtn} activeOpacity={0.7} accessibilityRole="button" accessibilityLabel={todaySummary.pending > 0 ? `Notifications, ${todaySummary.pending} pending` : 'Notifications'}>
           <Ionicons name="notifications-outline" size={24} color={Colors.textPrimary} />
           {todaySummary.pending > 0 && (
             <View style={styles.bellBadge}>
-              <Text style={styles.bellBadgeText}>{todaySummary.pending}</Text>
+              <AppText style={styles.bellBadgeText}>{todaySummary.pending}</AppText>
             </View>
           )}
         </TouchableOpacity>
@@ -183,7 +185,7 @@ export default function HomeScreen() {
       {/* Upcoming doses */}
       {upcomingDoses.length > 0 && (
         <View style={styles.upcomingSection}>
-          <Text style={styles.bucketHeader}>{t('home.upcoming')}</Text>
+          <AppText style={styles.bucketHeader}>{t('home.upcoming')}</AppText>
           {upcomingDoses.map(({ medication, scheduledAt }) => {
             const hh = String(scheduledAt.getHours()).padStart(2, '0');
             const mm = String(scheduledAt.getMinutes()).padStart(2, '0');
@@ -192,8 +194,8 @@ export default function HomeScreen() {
             return (
               <View key={`${medication.id}_${scheduledAt.getTime()}`} style={styles.upcomingRow}>
                 <View style={[styles.upcomingDot, { backgroundColor: medication.pillColor ?? TYPE_COLOR[medication.type] }]} />
-                <Text style={styles.upcomingName}>{medication.name}</Text>
-                <Text style={styles.upcomingTime}>{dayLabel} {hh}:{mm}</Text>
+                <AppText style={styles.upcomingName}>{medication.name}</AppText>
+                <AppText style={styles.upcomingTime}>{dayLabel} {hh}:{mm}</AppText>
               </View>
             );
           })}
@@ -216,7 +218,7 @@ export default function HomeScreen() {
           stickySectionHeadersEnabled={false}
           scrollEnabled={false}
           renderSectionHeader={({ section }) => (
-            <Text style={styles.bucketHeader}>{section.label}</Text>
+            <AppText style={styles.bucketHeader}>{section.label}</AppText>
           )}
           renderItem={({ item }) => {
             const intakeRecord = getIntakeForDose(item.medication.id, item.scheduledISO);
@@ -258,9 +260,14 @@ export default function HomeScreen() {
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <View style={statStyles.card}>
-      <Text style={statStyles.value}>{value}</Text>
-      <Text style={statStyles.label}>{label}</Text>
+    <View
+      style={statStyles.card}
+      accessible={true}
+      accessibilityRole="text"
+      accessibilityLabel={`${label}: ${value}`}
+    >
+      <AppText style={statStyles.value}>{value}</AppText>
+      <AppText style={statStyles.label}>{label}</AppText>
     </View>
   );
 }
@@ -305,6 +312,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   bellBtn:       { position: 'relative', padding: 10 },
-  bellBadge:     { position: 'absolute', top: 0, right: 0, backgroundColor: Colors.danger, borderRadius: 8, minWidth: 16, height: 16, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 2 },
-  bellBadgeText: { fontSize: 10, fontWeight: '700', color: Colors.textInverse },
+  bellBadge:     { position: 'absolute', top: 0, right: 0, backgroundColor: Colors.danger, borderRadius: 9, minWidth: 18, height: 18, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 3 },
+  bellBadgeText: { fontSize: 11, fontWeight: '700', color: Colors.textInverse },
 });

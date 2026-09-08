@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Platform, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Platform, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +7,8 @@ import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import { BottomSheet } from '@components/ui/BottomSheet';
+
+import { AppText } from '../ui/AppText';
 
 interface DosePickerProps {
   times: string[];
@@ -94,7 +96,7 @@ export function DosePicker({ times, onChange, maxTimes = 6 }: DosePickerProps) {
     <View>
       <View style={styles.header}>
         <Ionicons name="notifications-outline" size={16} color={Colors.textSecondary} />
-        <Text style={styles.headerLabel}>{t('medication.schedule.alarmTimes')}</Text>
+        <AppText style={styles.headerLabel}>{t('medication.schedule.alarmTimes')}</AppText>
       </View>
 
       {times.map((time, i) => (
@@ -104,7 +106,7 @@ export function DosePicker({ times, onChange, maxTimes = 6 }: DosePickerProps) {
             onPress={() => openPicker(i)}
             activeOpacity={0.7}
           >
-            <Text style={styles.timeText}>{time}</Text>
+            <AppText style={styles.timeText}>{time}</AppText>
             <Ionicons name="time-outline" size={16} color={Colors.textSecondary} />
           </TouchableOpacity>
           <TouchableOpacity
@@ -113,20 +115,20 @@ export function DosePicker({ times, onChange, maxTimes = 6 }: DosePickerProps) {
             disabled={times.length === 1}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <Text style={[styles.deleteText, times.length === 1 && styles.deleteTextDisabled]}>
+            <AppText style={[styles.deleteText, times.length === 1 && styles.deleteTextDisabled]}>
               ✕
-            </Text>
+            </AppText>
           </TouchableOpacity>
         </View>
       ))}
 
       {duplicateError && (
-        <Text style={styles.errorText}>{t('medication.schedule.duplicateTime')}</Text>
+        <AppText style={styles.errorText}>{t('medication.schedule.duplicateTime')}</AppText>
       )}
 
       {times.length < maxTimes && (
         <TouchableOpacity onPress={addTime} style={styles.addBtn}>
-          <Text style={styles.addText}>{t('medication.schedule.addTime')}</Text>
+          <AppText style={styles.addText}>{t('medication.schedule.addTime')}</AppText>
         </TouchableOpacity>
       )}
 
@@ -156,13 +158,13 @@ export function DosePicker({ times, onChange, maxTimes = 6 }: DosePickerProps) {
                 setDuplicateError(false);
               }}
             >
-              <Text style={styles.sheetCancel}>{t('common.cancel')}</Text>
+              <AppText style={styles.sheetCancel}>{t('common.cancel')}</AppText>
             </TouchableOpacity>
             {duplicateError && (
-              <Text style={styles.sheetError}>{t('medication.schedule.duplicateTime')}</Text>
+              <AppText style={styles.sheetError}>{t('medication.schedule.duplicateTime')}</AppText>
             )}
             <TouchableOpacity onPress={confirmIOS}>
-              <Text style={styles.sheetDone}>{t('common.done')}</Text>
+              <AppText style={styles.sheetDone}>{t('common.done')}</AppText>
             </TouchableOpacity>
           </View>
           <DateTimePicker

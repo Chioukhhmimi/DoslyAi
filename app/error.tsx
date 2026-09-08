@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ScreenContainer } from '@components/layout/ScreenContainer';
 import { Button } from '@components/ui/Button';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
+
+import { AppText } from '@components/ui/AppText';
 
 interface ErrorProps {
   error: Error;
@@ -16,8 +18,8 @@ export default function ErrorScreen({ error, retry }: ErrorProps) {
   return (
     <ScreenContainer>
       <View style={styles.container}>
-        <Text style={styles.title}>{t('common.error')}</Text>
-        <Text style={styles.message}>{error.message}</Text>
+        <AppText style={styles.title}>{t('common.error')}</AppText>
+        <AppText style={styles.message}>{error.message}</AppText>
         <Button label={t('common.retry')} onPress={retry} style={styles.button} />
       </View>
     </ScreenContainer>

@@ -1,8 +1,10 @@
 import React from 'react';
-import { TextInput, View, Text, StyleSheet, TextInputProps } from 'react-native';
+import { TextInput, View, StyleSheet, TextInputProps } from 'react-native';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
+
+import { AppText } from './AppText';
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -12,13 +14,13 @@ interface InputProps extends TextInputProps {
 export function Input({ label, error, style, ...props }: InputProps) {
   return (
     <View style={styles.wrapper}>
-      {label ? <Text style={styles.label}>{label}</Text> : null}
+      {label ? <AppText style={styles.label}>{label}</AppText> : null}
       <TextInput
         style={[styles.input, error && styles.inputError, style]}
         placeholderTextColor={Colors.textDisabled}
         {...props}
       />
-      {error ? <Text style={styles.error}>{error}</Text> : null}
+      {error ? <AppText style={styles.error}>{error}</AppText> : null}
     </View>
   );
 }

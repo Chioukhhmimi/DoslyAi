@@ -12,7 +12,7 @@ export const Colors = {
 
   warningLight: '#FEF9C3',
   warning: '#F59E0B',
-  warningText: '#A16207',
+  warningText: '#92400E',
 
   dangerLight: '#FEE2E2',
   danger: '#EF4444',
@@ -30,7 +30,7 @@ export const Colors = {
 
   // ── Text — Warm Stone ─────────────────────────────────────────────────────
   textPrimary: '#1C1917',
-  textSecondary: '#78716C',
+  textSecondary: '#57534E',
   textDisabled: '#D6D3D1',
   textInverse: '#FFFFFF',
 

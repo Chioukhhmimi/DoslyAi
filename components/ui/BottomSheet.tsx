@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Modal, TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
+import { View, Modal, TouchableOpacity, StyleSheet, ViewStyle, AccessibilityInfo } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
@@ -29,7 +29,16 @@ export function BottomSheet({
           onPress={() => {}}
           accessibilityViewIsModal={true}
         >
-          {showHandle && <View style={styles.handle} />}
+          {showHandle && (
+            <TouchableOpacity
+              onPress={onClose}
+              hitSlop={{ top: 12, bottom: 12, left: 40, right: 40 }}
+              accessibilityRole="button"
+              accessibilityLabel="Dismiss"
+            >
+              <View style={styles.handle} />
+            </TouchableOpacity>
+          )}
           {children}
         </TouchableOpacity>
       </TouchableOpacity>

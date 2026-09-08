@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Switch, StyleSheet, Alert } from 'react-native';
+import { View, TouchableOpacity, Switch, StyleSheet, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -15,6 +15,8 @@ import { useMedicationStore } from '@store/medicationStore';
 import { useProfileStore } from '@store/profileStore';
 import { useIsRTL } from '@hooks/useIsRTL';
 import Constants from 'expo-constants';
+
+import { AppText } from '@components/ui/AppText';
 
 interface SettingRowProps {
   label: string;
@@ -36,7 +38,7 @@ function SettingRow({ label, route, icon }: SettingRowProps) {
           style={styles.rowIcon}
         />
       )}
-      <Text style={styles.rowLabel}>{label}</Text>
+      <AppText style={styles.rowLabel}>{label}</AppText>
       <Ionicons name={chevron} size={18} color={Colors.textDisabled} />
     </TouchableOpacity>
   );
@@ -57,15 +59,28 @@ export default function SettingsScreen() {
       t('settings.deleteAllTitle'),
       t('settings.deleteAllMessage'),
       [
-        { text: 'Annuler', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Supprimer',
+          text: t('settings.deleteAllConfirm'),
           style: 'destructive',
-          onPress: async () => {
-            await resetMedications();
-            await resetProfiles();
-            await resetSettings();
-            router.replace('/(onboarding)/slide1');
+          onPress: () => {
+            Alert.alert(
+              t('settings.deleteAllTitle2'),
+              t('settings.deleteAllMessage2'),
+              [
+                { text: t('common.cancel'), style: 'cancel' },
+                {
+                  text: t('settings.deleteAllConfirm2'),
+                  style: 'destructive',
+                  onPress: async () => {
+                    await resetMedications();
+                    await resetProfiles();
+                    await resetSettings();
+                    router.replace('/(onboarding)/slide1');
+                  },
+                },
+              ],
+            );
           },
         },
       ],
@@ -94,16 +109,16 @@ export default function SettingsScreen() {
 
   return (
     <ScreenContainer scrollable>
-      <Text style={styles.title}>{t('settings.title')}</Text>
+      <AppText style={styles.title}>{t('settings.title')}</AppText>
 
       <Card>
         <TouchableOpacity style={styles.row} onPress={() => router.push('/profile')}>
           <Ionicons name="person-circle-outline" size={18} color={Colors.textSecondary} style={styles.rowIcon} />
           <View style={styles.profileInfo}>
-            <Text style={styles.rowLabel}>{t('profile.title')}</Text>
-            <Text style={styles.profileSubtitle} numberOfLines={1}>
+            <AppText style={styles.rowLabel}>{t('profile.title')}</AppText>
+            <AppText style={styles.profileSubtitle} numberOfLines={1}>
               {activeProfile ? activeProfile.name : t('profile.noProfiles')}
-            </Text>
+            </AppText>
           </View>
           <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={18} color={Colors.textDisabled} />
         </TouchableOpacity>
@@ -132,14 +147,14 @@ export default function SettingsScreen() {
               color={Colors.textSecondary}
               style={styles.rowIcon}
             />
-            <Text style={styles.rowLabel}>{t('settings.biometric.label')}</Text>
+            <AppText style={styles.rowLabel}>{t('settings.biometric.label')}</AppText>
             <Switch
               value={biometricLock}
               onValueChange={handleBiometricToggle}
               trackColor={{ false: Colors.border, true: Colors.primary }}
             />
           </View>
-          <Text style={styles.biometricHint}>{t('settings.biometric.description')}</Text>
+          <AppText style={styles.biometricHint}>{t('settings.biometric.description')}</AppText>
         </Card>
       )}
 
@@ -171,9 +186,9 @@ export default function SettingsScreen() {
         />
       </Card>
 
-      <Text style={styles.version}>
+      <AppText style={styles.version}>
         {t('settings.version')} {Constants.expoConfig?.version}
-      </Text>
+      </AppText>
     </ScreenContainer>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Switch, TouchableOpacity, Modal, Platform, StyleSheet } from 'react-native';
+import { View, Switch, TouchableOpacity, Modal, Platform, StyleSheet } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,6 +10,8 @@ import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import { useSettingsStore } from '@store/settingsStore';
+
+import { AppText } from '@components/ui/AppText';
 
 function parseHHMM(hhmm: string): Date {
   const [h, m] = hhmm.split(':').map(Number);
@@ -51,7 +53,7 @@ export default function NotificationsSettingsScreen() {
 
       <Card style={styles.card}>
         <View style={styles.row}>
-          <Text style={styles.rowLabel}>{t('settings.notificationsScreen.enable')}</Text>
+          <AppText style={styles.rowLabel}>{t('settings.notificationsScreen.enable')}</AppText>
           <Switch
             value={notificationsEnabled}
             onValueChange={setNotificationsEnabled}
@@ -62,7 +64,7 @@ export default function NotificationsSettingsScreen() {
         <View style={styles.divider} />
 
         <View style={styles.row}>
-          <Text style={styles.rowLabel}>{t('settings.notificationsScreen.quietHours')}</Text>
+          <AppText style={styles.rowLabel}>{t('settings.notificationsScreen.quietHours')}</AppText>
           <Switch
             value={quietHoursEnabled}
             onValueChange={setQuietHoursEnabled}
@@ -73,14 +75,14 @@ export default function NotificationsSettingsScreen() {
 
         {quietHoursEnabled && notificationsEnabled && (
           <View style={styles.quietHoursBlock}>
-            <Text style={styles.quietHoursHint}>
+            <AppText style={styles.quietHoursHint}>
               {t('settings.notificationsScreen.quietDescription')}
-            </Text>
+            </AppText>
             <View style={styles.timeRow}>
               <View style={styles.timeItem}>
-                <Text style={styles.timeLabel}>{t('settings.notificationsScreen.start')}</Text>
+                <AppText style={styles.timeLabel}>{t('settings.notificationsScreen.start')}</AppText>
                 <TouchableOpacity style={styles.timeBtn} onPress={() => setPickerTarget('start')}>
-                  <Text style={styles.timeBtnText}>{quietHoursStart}</Text>
+                  <AppText style={styles.timeBtnText}>{quietHoursStart}</AppText>
                   <Ionicons name="time-outline" size={16} color={Colors.primary} />
                 </TouchableOpacity>
               </View>
@@ -91,9 +93,9 @@ export default function NotificationsSettingsScreen() {
                 style={styles.arrow}
               />
               <View style={styles.timeItem}>
-                <Text style={styles.timeLabel}>{t('settings.notificationsScreen.end')}</Text>
+                <AppText style={styles.timeLabel}>{t('settings.notificationsScreen.end')}</AppText>
                 <TouchableOpacity style={styles.timeBtn} onPress={() => setPickerTarget('end')}>
-                  <Text style={styles.timeBtnText}>{quietHoursEnd}</Text>
+                  <AppText style={styles.timeBtnText}>{quietHoursEnd}</AppText>
                   <Ionicons name="time-outline" size={16} color={Colors.primary} />
                 </TouchableOpacity>
               </View>
@@ -117,7 +119,7 @@ export default function NotificationsSettingsScreen() {
             <View style={styles.pickerSheet}>
               <View style={styles.pickerHeader}>
                 <TouchableOpacity onPress={() => setPickerTarget(null)}>
-                  <Text style={styles.pickerDone}>{t('common.done')}</Text>
+                  <AppText style={styles.pickerDone}>{t('common.done')}</AppText>
                 </TouchableOpacity>
               </View>
               <DateTimePicker

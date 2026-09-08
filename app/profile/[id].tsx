@@ -1,6 +1,6 @@
 // app/profile/[id].tsx
 import React, { useState } from 'react';
-import { View, Text, TextInput, Alert, Modal, Platform, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TextInput, Alert, Modal, Platform, TouchableOpacity, StyleSheet } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +18,8 @@ import { FontSize } from '@constants/typography';
 import { useProfiles } from '@hooks/useProfiles';
 import { useMedications } from '@hooks/useMedications';
 import { format, parseISO, isValid } from 'date-fns';
+
+import { AppText } from '@components/ui/AppText';
 
 const BLOOD_TYPES = ['A+', 'A−', 'B+', 'B−', 'AB+', 'AB−', 'O+', 'O−'];
 
@@ -58,7 +60,7 @@ export default function ProfileDetailScreen() {
     return (
       <ScreenContainer>
         <ScreenHeader title={t('profile.title')} />
-        <Text style={styles.notFound}>{t('profile.notFound')}</Text>
+        <AppText style={styles.notFound}>{t('profile.notFound')}</AppText>
         <Button label={t('common.back')} onPress={() => router.replace('/profile')} style={{ marginTop: Spacing.lg }} />
       </ScreenContainer>
     );
@@ -137,7 +139,7 @@ export default function ProfileDetailScreen() {
     <ScreenContainer scrollable>
       <ScreenHeader
         title={editing ? t('profile.editTitle') : profile.name}
-        right={!editing ? <Text onPress={() => setEditing(true)} style={styles.editLink}>{t('common.edit')}</Text> : undefined}
+        right={!editing ? <AppText onPress={() => setEditing(true)} style={styles.editLink}>{t('common.edit')}</AppText> : undefined}
       />
 
       {!editing && (
@@ -145,14 +147,14 @@ export default function ProfileDetailScreen() {
           <View style={styles.profileCard}>
             <Avatar name={profile.name} uri={profile.avatarUri} size={72} />
             <View style={styles.profileInfo}>
-              <Text style={styles.name}>{profile.name}</Text>
-              {profile.relationship ? <Text style={styles.sub}>{profile.relationship}</Text> : null}
+              <AppText style={styles.name}>{profile.name}</AppText>
+              {profile.relationship ? <AppText style={styles.sub}>{profile.relationship}</AppText> : null}
               {profile.dateOfBirth ? (
-                <Text style={styles.sub}>
+                <AppText style={styles.sub}>
                   {t('profile.bornOn')} {format(parseISO(profile.dateOfBirth), 'dd/MM/yyyy')}
-                </Text>
+                </AppText>
               ) : null}
-              <Text style={styles.medCount}>{t('profile.detail.medCount', { count: medCount })}</Text>
+              <AppText style={styles.medCount}>{t('profile.detail.medCount', { count: medCount })}</AppText>
             </View>
           </View>
           <View style={styles.card}>
@@ -165,17 +167,17 @@ export default function ProfileDetailScreen() {
             {profile.emergencyPhone   ? <InfoRow label={t('profile.medical.emergencyPhone')}   value={profile.emergencyPhone} /> : null}
             {profile.allergies && profile.allergies.length > 0 ? (
               <View style={styles.tagRow}>
-                <Text style={styles.rowLabel}>{t('profile.medical.allergies')}</Text>
+                <AppText style={styles.rowLabel}>{t('profile.medical.allergies')}</AppText>
                 <View style={styles.tagList}>
-                  {profile.allergies.map((a, i) => <View key={i} style={styles.tag}><Text style={styles.tagText}>{a}</Text></View>)}
+                  {profile.allergies.map((a, i) => <View key={i} style={styles.tag}><AppText style={styles.tagText}>{a}</AppText></View>)}
                 </View>
               </View>
             ) : null}
             {profile.conditions && profile.conditions.length > 0 ? (
               <View style={styles.tagRow}>
-                <Text style={styles.rowLabel}>{t('profile.medical.conditions')}</Text>
+                <AppText style={styles.rowLabel}>{t('profile.medical.conditions')}</AppText>
                 <View style={styles.tagList}>
-                  {profile.conditions.map((c, i) => <View key={i} style={styles.tag}><Text style={styles.tagText}>{c}</Text></View>)}
+                  {profile.conditions.map((c, i) => <View key={i} style={styles.tag}><AppText style={styles.tagText}>{c}</AppText></View>)}
                 </View>
               </View>
             ) : null}
@@ -188,16 +190,16 @@ export default function ProfileDetailScreen() {
         <View>
           <AvatarPicker name={name} uri={avatarUri || undefined} onPicked={setAvatarUri} />
 
-          <Text style={styles.label}>{t('profile.form.nameLabel')}</Text>
+          <AppText style={styles.label}>{t('profile.form.nameLabel')}</AppText>
           <TextInput style={[styles.input, !!nameError && styles.inputError]} value={name}
             onChangeText={(v) => { setName(v); setNameError(''); }}
             placeholder={t('profile.form.namePlaceholder')} placeholderTextColor={Colors.textDisabled} autoFocus />
-          {!!nameError && <Text style={styles.error}>{nameError}</Text>}
+          {!!nameError && <AppText style={styles.error}>{nameError}</AppText>}
 
-          <Text style={styles.label}>{t('profile.form.dobLabel')}</Text>
+          <AppText style={styles.label}>{t('profile.form.dobLabel')}</AppText>
           <TouchableOpacity style={styles.input} onPress={() => setShowDobPicker(true)} activeOpacity={0.7}>
             <View style={styles.dateRow}>
-              <Text style={displayDob ? styles.dateText : styles.datePlaceholder}>{displayDob ?? t('profile.form.dobPlaceholder')}</Text>
+              <AppText style={displayDob ? styles.dateText : styles.datePlaceholder}>{displayDob ?? t('profile.form.dobPlaceholder')}</AppText>
               <Ionicons name="calendar-outline" size={20} color={Colors.textDisabled} />
             </View>
           </TouchableOpacity>
@@ -208,20 +210,20 @@ export default function ProfileDetailScreen() {
             <Modal visible={showDobPicker} transparent animationType="slide">
               <View style={styles.modalOverlay}><View style={styles.modalSheet}>
                 <View style={styles.modalHeader}>
-                  <TouchableOpacity onPress={() => setShowDobPicker(false)}><Text style={styles.modalDone}>{t('common.done')}</Text></TouchableOpacity>
+                  <TouchableOpacity onPress={() => setShowDobPicker(false)}><AppText style={styles.modalDone}>{t('common.done')}</AppText></TouchableOpacity>
                 </View>
                 <DateTimePicker value={dob ?? new Date()} mode="date" display="spinner" maximumDate={new Date()} onChange={onDobChange} style={{ width: '100%' }} />
               </View></View>
             </Modal>
           )}
 
-          <Text style={styles.label}>{t('profile.form.relationLabel')}</Text>
+          <AppText style={styles.label}>{t('profile.form.relationLabel')}</AppText>
           <TextInput style={styles.input} value={relationship} onChangeText={setRelationship}
             placeholder={t('profile.form.relationPlaceholder')} placeholderTextColor={Colors.textDisabled} />
 
-          <Text style={styles.sectionHeader}>{t('profile.medical.sectionTitle')}</Text>
+          <AppText style={styles.sectionHeader}>{t('profile.medical.sectionTitle')}</AppText>
 
-          <Text style={styles.label}>{t('profile.medical.bloodType')}</Text>
+          <AppText style={styles.label}>{t('profile.medical.bloodType')}</AppText>
           <View style={styles.btRow}>
             {BLOOD_TYPES.map((bt) => (
               <SelectableChip
@@ -236,11 +238,11 @@ export default function ProfileDetailScreen() {
 
           <View style={styles.rowTwo}>
             <View style={styles.half}>
-              <Text style={styles.label}>{t('profile.medical.weight')}</Text>
+              <AppText style={styles.label}>{t('profile.medical.weight')}</AppText>
               <TextInput style={styles.input} value={weight} onChangeText={setWeight} keyboardType="decimal-pad" placeholder="70" placeholderTextColor={Colors.textDisabled} />
             </View>
             <View style={styles.half}>
-              <Text style={styles.label}>{t('profile.medical.height')}</Text>
+              <AppText style={styles.label}>{t('profile.medical.height')}</AppText>
               <TextInput style={styles.input} value={height} onChangeText={setHeight} keyboardType="decimal-pad" placeholder="170" placeholderTextColor={Colors.textDisabled} />
             </View>
           </View>
@@ -248,17 +250,17 @@ export default function ProfileDetailScreen() {
           <TagInput label={t('profile.medical.allergies')} values={allergies} onChange={setAllergies} placeholder={t('profile.medical.allergiesPlaceholder')} />
           <TagInput label={t('profile.medical.conditions')} values={conditions} onChange={setConditions} placeholder={t('profile.medical.conditionsPlaceholder')} />
 
-          <Text style={styles.sectionHeader}>{t('profile.medical.doctorSection')}</Text>
-          <Text style={styles.label}>{t('profile.medical.doctorName')}</Text>
+          <AppText style={styles.sectionHeader}>{t('profile.medical.doctorSection')}</AppText>
+          <AppText style={styles.label}>{t('profile.medical.doctorName')}</AppText>
           <TextInput style={styles.input} value={doctorName} onChangeText={setDoctorName} placeholder="Dr. …" placeholderTextColor={Colors.textDisabled} />
-          <Text style={styles.label}>{t('profile.medical.doctorPhone')}</Text>
+          <AppText style={styles.label}>{t('profile.medical.doctorPhone')}</AppText>
           <TextInput style={styles.input} value={doctorPhone} onChangeText={setDoctorPhone} keyboardType="phone-pad" placeholder="+213…" placeholderTextColor={Colors.textDisabled} />
-          <Text style={styles.label}>{t('profile.medical.emergencyContact')}</Text>
+          <AppText style={styles.label}>{t('profile.medical.emergencyContact')}</AppText>
           <TextInput style={styles.input} value={emergencyContact} onChangeText={setEmergencyContact} placeholder="Nom…" placeholderTextColor={Colors.textDisabled} />
-          <Text style={styles.label}>{t('profile.medical.emergencyPhone')}</Text>
+          <AppText style={styles.label}>{t('profile.medical.emergencyPhone')}</AppText>
           <TextInput style={styles.input} value={emergencyPhone} onChangeText={setEmergencyPhone} keyboardType="phone-pad" placeholder="+213…" placeholderTextColor={Colors.textDisabled} />
 
-          <Text style={styles.label}>{t('profile.medical.notes')}</Text>
+          <AppText style={styles.label}>{t('profile.medical.notes')}</AppText>
           <TextInput style={[styles.input, styles.textArea]} value={medicalNotes} onChangeText={setMedicalNotes}
             placeholder={t('profile.medical.notesPlaceholder')} placeholderTextColor={Colors.textDisabled} multiline numberOfLines={3} />
 
@@ -271,7 +273,7 @@ export default function ProfileDetailScreen() {
 
       {!editing && (
         <View style={styles.dangerZone}>
-          <Text style={styles.dangerTitle}>{t('profile.dangerZone')}</Text>
+          <AppText style={styles.dangerTitle}>{t('profile.dangerZone')}</AppText>
           <Button label={t('profile.deleteProfile')} variant="danger" onPress={handleDelete} />
         </View>
       )}
@@ -282,8 +284,8 @@ export default function ProfileDetailScreen() {
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <View style={rowStyles.row}>
-      <Text style={rowStyles.label}>{label}</Text>
-      <Text style={rowStyles.value}>{value}</Text>
+      <AppText style={rowStyles.label}>{label}</AppText>
+      <AppText style={rowStyles.value}>{value}</AppText>
     </View>
   );
 }

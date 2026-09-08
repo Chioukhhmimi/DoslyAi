@@ -1,8 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@constants/colors';
-import { Radius } from '@constants/spacing';
+import { Radius, Spacing } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
+
+import { AppText } from './AppText';
 
 type Variant = 'default' | 'success' | 'warning' | 'danger' | 'info';
 type Size = 'sm' | 'md';
@@ -11,6 +14,7 @@ interface BadgeProps {
   label: string;
   variant?: Variant;
   size?: Size;
+  icon?: keyof typeof Ionicons.glyphMap;
 }
 
 const BG: Record<Variant, string> = {
@@ -29,12 +33,31 @@ const TEXT_COLOR: Record<Variant, string> = {
   info: Colors.primaryDark,
 };
 
-export function Badge({ label, variant = 'default', size = 'md' }: BadgeProps) {
+const VARIANT_ICON: Record<Variant, keyof typeof Ionicons.glyphMap> = {
+  default: 'ellipse-outline',
+  success: 'checkmark-circle',
+  warning: 'time-outline',
+  danger: 'alert-circle',
+  info: 'ellipse-outline',
+};
+
+export function Badge({ label, variant = 'default', size = 'md', icon }: BadgeProps) {
+  const iconName = icon ?? VARIANT_ICON[variant];
+  const iconSize = size === 'sm' ? 10 : 12;
+  const showIcon = variant !== 'default' && variant !== 'info';
   return (
     <View
       style={[styles.base, { backgroundColor: BG[variant] }, size === 'sm' ? styles.sm : styles.md]}
     >
-      <Text
+      {showIcon && (
+        <Ionicons
+          name={iconName}
+          size={iconSize}
+          color={TEXT_COLOR[variant]}
+          style={styles.icon}
+        />
+      )}
+      <AppText
         style={[
           styles.text,
           { color: TEXT_COLOR[variant] },
@@ -42,15 +65,16 @@ export function Badge({ label, variant = 'default', size = 'md' }: BadgeProps) {
         ]}
       >
         {label}
-      </Text>
+      </AppText>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  base: { borderRadius: Radius.sm, alignSelf: 'flex-start' },
+  base: { borderRadius: Radius.sm, alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center' },
   sm: { paddingVertical: 2, paddingHorizontal: 8 },
   md: { paddingVertical: 4, paddingHorizontal: 10 },
+  icon: { marginRight: 3 },
   text: { fontWeight: '600' },
   textSm: { fontSize: FontSize.xs },
   textMd: { fontSize: FontSize.sm },

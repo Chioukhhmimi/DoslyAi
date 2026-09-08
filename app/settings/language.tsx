@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { I18nManager } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ScreenContainer } from '@components/layout/ScreenContainer';
@@ -10,6 +10,8 @@ import { Spacing } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import { SUPPORTED_LANGUAGES, RTL_LANGUAGES, type LanguageCode } from '../../i18n';
 import { useSettingsStore } from '@store/settingsStore';
+
+import { AppText } from '@components/ui/AppText';
 
 export default function LanguageScreen() {
   const { t, i18n } = useTranslation();
@@ -34,8 +36,8 @@ export default function LanguageScreen() {
             accessibilityState={{ selected: i18n.language === lang.code }}
           >
             <View style={styles.langInfo}>
-              <Text style={styles.native}>{lang.nativeLabel}</Text>
-              <Text style={styles.label}>{lang.label}</Text>
+              <AppText style={styles.native}>{lang.nativeLabel}</AppText>
+              <AppText style={styles.label}>{lang.label}</AppText>
             </View>
             {i18n.language === lang.code && (
               <Ionicons name="checkmark-circle" size={22} color={Colors.primary} />

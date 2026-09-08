@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Medication, IntakeRecord } from '@store/medicationStore';
 import { Colors } from '@constants/colors';
@@ -7,6 +7,8 @@ import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import { Badge } from '@components/ui/Badge';
 import { formatTime } from '@utils/dateHelpers';
+
+import { AppText } from '../ui/AppText';
 
 interface MedListItemProps {
   medication: Medication;
@@ -49,13 +51,13 @@ export function MedListItem({ medication, intakeRecord, scheduledAt, onPress }: 
       <View style={styles.content}>
         <View style={styles.row}>
           <View style={styles.info}>
-            <Text style={styles.name}>{medication.name}</Text>
-            <Text style={styles.dosage}>
+            <AppText style={styles.name}>{medication.name}</AppText>
+            <AppText style={styles.dosage}>
               {medication.doseQuantity} {medication.unit}
-            </Text>
+            </AppText>
           </View>
           <View style={styles.right}>
-            <Text style={styles.time}>{formatTime(hhmm)}</Text>
+            <AppText style={styles.time}>{formatTime(hhmm)}</AppText>
             <Badge label={statusLabel} variant={statusVariant} size="sm" />
           </View>
         </View>

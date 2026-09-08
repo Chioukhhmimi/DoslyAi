@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Profile } from '@store/profileStore';
 import { Colors } from '@constants/colors';
@@ -7,6 +7,8 @@ import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import { Avatar } from '@components/ui/Avatar';
 import { Badge } from '@components/ui/Badge';
+
+import { AppText } from '../ui/AppText';
 
 interface ProfileCardProps {
   profile: Profile;
@@ -49,8 +51,8 @@ export function ProfileCard({
       {isActive && <View style={styles.activeBorder} />}
       <Avatar name={profile.name} uri={profile.avatarUri} size={48} />
       <View style={styles.info}>
-        <Text style={styles.name}>{profile.name}</Text>
-        {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+        <AppText style={styles.name}>{profile.name}</AppText>
+        {subtitle ? <AppText style={styles.subtitle}>{subtitle}</AppText> : null}
       </View>
       {(medicationCount ?? 0) > 0 && (
         <Badge label={`${medicationCount} ${t('profile.medAbbrev')}`} variant="info" size="sm" />

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { SelectableChip } from '@components/ui/SelectableChip';
 import { GestureDetector, Gesture, ScrollView as GHScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -16,6 +16,8 @@ import { addDays, isSameDay } from '@utils/dateHelpers';
 import { Medication } from '@store/medicationStore';
 import { getScheduledDosesForDay } from '@utils/scheduleEngine';
 import { useRouter } from 'expo-router';
+
+import { AppText } from '@components/ui/AppText';
 
 type Filter = 'all' | 'taken' | 'missed' | 'skipped';
 type Range = 7 | 30 | 90;
@@ -131,12 +133,12 @@ export default function HistoryScreen() {
           <GHScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
             {/* Header */}
             <View style={styles.headerRow}>
-              <Text style={styles.title}>{t('history.title')}</Text>
+              <AppText style={styles.title}>{t('history.title')}</AppText>
               <TouchableOpacity
                 onPress={() => router.push('/export' as any)}
                 style={styles.exportBtn}
               >
-                <Text style={styles.exportBtnText}>{t('history.export')}</Text>
+                <AppText style={styles.exportBtnText}>{t('history.export')}</AppText>
               </TouchableOpacity>
             </View>
 
@@ -160,30 +162,30 @@ export default function HistoryScreen() {
             {/* Adherence stats */}
             <View style={styles.statsCard}>
               <View style={styles.statItem}>
-                <Text style={styles.statValue}>{adherencePct}%</Text>
-                <Text style={styles.statLabel}>{t('history.stats.adherence')}</Text>
+                <AppText style={styles.statValue}>{adherencePct}%</AppText>
+                <AppText style={styles.statLabel}>{t('history.stats.adherence')}</AppText>
               </View>
               <View style={styles.statDivider} />
               <View style={styles.statItem}>
-                <Text style={[styles.statValue, { color: Colors.successText }]}>{taken}</Text>
-                <Text style={styles.statLabel}>{t('history.stats.taken')}</Text>
+                <AppText style={[styles.statValue, { color: Colors.successText }]}>{taken}</AppText>
+                <AppText style={styles.statLabel}>{t('history.stats.taken')}</AppText>
               </View>
               <View style={styles.statDivider} />
               <View style={styles.statItem}>
-                <Text style={[styles.statValue, { color: Colors.danger }]}>{missed}</Text>
-                <Text style={styles.statLabel}>{t('history.stats.missed')}</Text>
+                <AppText style={[styles.statValue, { color: Colors.danger }]}>{missed}</AppText>
+                <AppText style={styles.statLabel}>{t('history.stats.missed')}</AppText>
               </View>
               <View style={styles.statDivider} />
               <View style={styles.statItem}>
-                <Text style={[styles.statValue, { color: Colors.skippedText }]}>{skipped}</Text>
-                <Text style={styles.statLabel}>{t('history.stats.skipped')}</Text>
+                <AppText style={[styles.statValue, { color: Colors.skippedText }]}>{skipped}</AppText>
+                <AppText style={styles.statLabel}>{t('history.stats.skipped')}</AppText>
               </View>
             </View>
 
             {/* Month / year label */}
-            <Text style={styles.monthLabel}>
+            <AppText style={styles.monthLabel}>
               {selectedDate.toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' })}
-            </Text>
+            </AppText>
 
             {/* Day strip — always 7 days centred on selectedDate, swipe to navigate */}
             <View style={styles.weekStrip}>
@@ -201,10 +203,10 @@ export default function HistoryScreen() {
                     onPress={() => setSelectedDate(day)}
                     style={[styles.dayBtn, isSelected && styles.dayBtnActive]}
                   >
-                    <Text style={[styles.dayLabel, isSelected && styles.dayLabelActive]}>
+                    <AppText style={[styles.dayLabel, isSelected && styles.dayLabelActive]}>
                       {label}
-                    </Text>
-                    <Text
+                    </AppText>
+                    <AppText
                       style={[
                         styles.dayNum,
                         isSelected && styles.dayNumActive,
@@ -212,7 +214,7 @@ export default function HistoryScreen() {
                       ]}
                     >
                       {dayNum}
-                    </Text>
+                    </AppText>
                     {hasActivity && !isSelected && <View style={styles.dot} />}
                   </TouchableOpacity>
                 );

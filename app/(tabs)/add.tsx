@@ -11,6 +11,7 @@ import { useProfiles } from '@hooks/useProfiles';
 import { NewMedication } from '@store/medicationStore';
 import { ScreenContainer } from '@components/layout/ScreenContainer';
 import { useLocalSearchParams } from 'expo-router';
+import { useOCRQueue } from '@store/ocrQueueStore';
 
 export default function AddScreen() {
   const { t } = useTranslation();
@@ -56,7 +57,15 @@ export default function AddScreen() {
 
   function handleSubmit(data: NewMedication) {
     addMedication(data);
-    router.replace('/(tabs)');
+    const next = useOCRQueue.getState().shift();
+    if (next) {
+      router.replace({
+        pathname: '/(tabs)/add',
+        params: { prefillName: next.name, prefillUnit: next.dosage, prefillQty: '1' },
+      });
+    } else {
+      router.replace('/(tabs)');
+    }
   }
 
   return (

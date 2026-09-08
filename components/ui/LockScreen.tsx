@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
+
+import { AppText } from './AppText';
 
 interface LockScreenProps {
   onUnlock: () => void;
@@ -18,11 +20,11 @@ export function LockScreen({ onUnlock }: LockScreenProps) {
         <View style={styles.iconWrap}>
           <Ionicons name="lock-closed" size={48} color={Colors.primary} />
         </View>
-        <Text style={styles.title}>{t('common.appName')}</Text>
-        <Text style={styles.subtitle}>{t('lock.subtitle')}</Text>
+        <AppText style={styles.title}>{t('common.appName')}</AppText>
+        <AppText style={styles.subtitle}>{t('lock.subtitle')}</AppText>
         <TouchableOpacity style={styles.btn} onPress={onUnlock}>
           <Ionicons name="finger-print-outline" size={22} color="#fff" />
-          <Text style={styles.btnText}>{t('lock.unlock')}</Text>
+          <AppText style={styles.btnText}>{t('lock.unlock')}</AppText>
         </TouchableOpacity>
       </View>
     </View>

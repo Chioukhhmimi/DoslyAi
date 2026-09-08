@@ -1,11 +1,13 @@
 import React, { ReactNode } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useIsRTL } from '@hooks/useIsRTL';
 import { Colors } from '@constants/colors';
 import { Spacing } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
+
+import { AppText } from './AppText';
 
 interface ScreenHeaderProps {
   title: string;
@@ -27,9 +29,9 @@ export function ScreenHeader({ title, onBack, right }: ScreenHeaderProps) {
       >
         <Ionicons name={backIcon} size={24} color={Colors.textPrimary} />
       </TouchableOpacity>
-      <Text style={styles.title} numberOfLines={1}>
+      <AppText style={styles.title} numberOfLines={1}>
         {title}
-      </Text>
+      </AppText>
       <View style={styles.right}>{right ?? null}</View>
     </View>
   );

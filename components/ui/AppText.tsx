@@ -7,9 +7,10 @@ import { Colors } from '@constants/colors';
 interface AppTextProps extends TextProps {
   variant?: TypeVariant;
   color?: string;
+  maxFontSizeMultiplier?: number;
 }
 
-export function AppText({ variant = 'body', color, style, children, ...props }: AppTextProps) {
+export function AppText({ variant = 'body', color, style, children, maxFontSizeMultiplier = 2, ...props }: AppTextProps) {
   const { i18n } = useTranslation();
   const isArabic = i18n.language === 'ar';
   const scale = TypeScale[variant];
@@ -19,6 +20,8 @@ export function AppText({ variant = 'body', color, style, children, ...props }: 
 
   return (
     <Text
+      allowFontScaling={true}
+      maxFontSizeMultiplier={maxFontSizeMultiplier}
       style={[
         scaleStyle,
         { fontFamily, color: color ?? Colors.textPrimary },

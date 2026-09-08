@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, SectionList, StyleSheet, Alert } from 'react-native';
+import { View, TouchableOpacity, SectionList, StyleSheet, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
 import { ScreenContainer } from '@components/layout/ScreenContainer';
@@ -18,6 +18,8 @@ import {
   scheduleNotificationsForMedication,
 } from '@hooks/useNotifications';
 import { formatTime } from '@utils/dateHelpers';
+
+import { AppText } from '@components/ui/AppText';
 
 const TYPE_COLOR: Record<string, string> = {
   pill: Colors.pill,
@@ -82,17 +84,17 @@ function MedRow({ item }: { item: Medication }) {
           style={[styles.accent, { backgroundColor: TYPE_COLOR[item.type] ?? TYPE_COLOR.other }]}
         />
         <View style={styles.info}>
-          <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.sub}>
+          <AppText style={styles.name}>{item.name}</AppText>
+          <AppText style={styles.sub}>
             {item.doseQuantity} {item.unit} · {freqLabel}
-          </Text>
-          <Text style={styles.times}>{item.schedule.times.map(formatTime).join(' · ')}</Text>
+          </AppText>
+          <AppText style={styles.times}>{item.schedule.times.map(formatTime).join(' · ')}</AppText>
         </View>
         {item.paused && <Badge label={t('medications.paused')} variant="warning" size="sm" />}
       </TouchableOpacity>
 
       <BottomSheet visible={sheetVisible} onClose={() => setSheetVisible(false)}>
-        <Text style={actionStyles.medName}>{item.name}</Text>
+        <AppText style={actionStyles.medName}>{item.name}</AppText>
         <SheetAction icon="pencil-outline" label={t('common.edit')} onPress={handleEdit} />
         <SheetAction
           icon={item.paused ? 'play-outline' : 'pause-outline'}
@@ -123,7 +125,7 @@ export default function MedicationsScreen() {
   if (medications.length === 0) {
     return (
       <ScreenContainer scrollable onRefresh={hydrate}>
-        <Text style={styles.title}>{t('medications.title')}</Text>
+        <AppText style={styles.title}>{t('medications.title')}</AppText>
         <EmptyState
           illustration={<PillIllustration />}
           title={t('medications.empty.title')}
@@ -137,14 +139,14 @@ export default function MedicationsScreen() {
 
   return (
     <ScreenContainer scrollable onRefresh={hydrate}>
-      <Text style={styles.title}>{t('medications.title')}</Text>
+      <AppText style={styles.title}>{t('medications.title')}</AppText>
       <SectionList
         sections={sections}
         keyExtractor={(item) => item.id}
         stickySectionHeadersEnabled={false}
         scrollEnabled={false}
         renderSectionHeader={({ section }) => (
-          <Text style={styles.sectionHeader}>{section.title}</Text>
+          <AppText style={styles.sectionHeader}>{section.title}</AppText>
         )}
         renderItem={({ item }) => <MedRow item={item} />}
       />

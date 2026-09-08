@@ -1,10 +1,12 @@
 // components/ui/TagInput.tsx
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
+
+import { AppText } from './AppText';
 
 interface TagInputProps {
   label: string;
@@ -32,11 +34,11 @@ export function TagInput({ label, values, onChange, placeholder }: TagInputProps
 
   return (
     <View>
-      <Text style={styles.label}>{label}</Text>
+      <AppText style={styles.label}>{label}</AppText>
       <View style={styles.chipRow}>
         {values.map((v, i) => (
           <View key={i} style={styles.chip}>
-            <Text style={styles.chipText}>{v}</Text>
+            <AppText style={styles.chipText}>{v}</AppText>
             <TouchableOpacity onPress={() => removeTag(i)} hitSlop={8}>
               <Ionicons name="close" size={14} color={Colors.primary} />
             </TouchableOpacity>

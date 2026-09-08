@@ -50,7 +50,7 @@ export async function scheduleNotificationsForMedication(medication: Medication)
               body: `${medication.doseQuantity} ${medication.unit}`,
               data: { medicationId: medication.id, scheduledAt: scheduledAt.toISOString() },
             },
-            trigger: { type: 'date' as const, date: scheduledAt },
+            trigger: { type: 'date', date: scheduledAt } as any,
           }),
         ),
     );
@@ -68,7 +68,7 @@ export async function scheduleNotificationsForMedication(medication: Medication)
             body: 'Il est temps de renouveler votre ordonnance.',
             data: { medicationId: medication.id, scheduledAt: medication.endDate },
           },
-          trigger: { type: 'date' as const, date: reminderDate },
+          trigger: { type: 'date', date: reminderDate } as any,
         });
       }
     }
@@ -113,7 +113,7 @@ export async function snoozeDoseNotification(
         body: `${medication.doseQuantity} ${medication.unit} — rappel`,
         data: { medicationId: medication.id, scheduledAt: scheduledDate.toISOString() },
       },
-      trigger: { type: 'date' as const, date: newTime },
+      trigger: { type: 'date', date: newTime } as any,
     });
   } catch {
     // Notifications not available

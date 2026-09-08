@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ScreenContainer } from '@components/layout/ScreenContainer';
@@ -17,6 +17,8 @@ import {
   scheduleNotificationsForMedication,
 } from '@hooks/useNotifications';
 import { getNextDoses, getScheduledDosesForDay } from '@utils/scheduleEngine';
+
+import { AppText } from '@components/ui/AppText';
 
 const TYPE_COLOR: Record<string, string> = {
   pill: Colors.pill,
@@ -39,7 +41,7 @@ export default function MedicationDetailScreen() {
     return (
       <ScreenContainer>
         <ScreenHeader title={t('medication.detail.title')} />
-        <Text style={styles.notFound}>{t('medication.detail.notFound')}</Text>
+        <AppText style={styles.notFound}>{t('medication.detail.notFound')}</AppText>
         <Button
           label={t('common.back')}
           onPress={() => router.replace('/(tabs)/medications')}
@@ -116,7 +118,7 @@ export default function MedicationDetailScreen() {
             accessibilityRole="button"
             accessibilityLabel={t('common.edit')}
           >
-            <Text style={styles.editLinkText}>{t('common.edit')}</Text>
+            <AppText style={styles.editLinkText}>{t('common.edit')}</AppText>
           </TouchableOpacity>
         }
       />
@@ -128,10 +130,10 @@ export default function MedicationDetailScreen() {
           ]}
         />
         <View style={styles.headerInfo}>
-          <Text style={styles.title}>{medication.name}</Text>
-          <Text style={styles.dosage}>
+          <AppText style={styles.title}>{medication.name}</AppText>
+          <AppText style={styles.dosage}>
             {medication.doseQuantity} {medication.unit}
-          </Text>
+          </AppText>
         </View>
         <View style={styles.headerBadges}>
           <Badge
@@ -166,7 +168,7 @@ export default function MedicationDetailScreen() {
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.sectionTitle}>{t('medication.detail.adherence7')}</Text>
+        <AppText style={styles.sectionTitle}>{t('medication.detail.adherence7')}</AppText>
         <View style={chartStyles.row}>
           {adherenceData.map((day, i) => {
             const barColor =
@@ -187,8 +189,8 @@ export default function MedicationDetailScreen() {
                     style={[chartStyles.barFill, { height: fillHeight, backgroundColor: barColor }]}
                   />
                 </View>
-                <Text style={chartStyles.dayLabel}>{dayLabel}</Text>
-                <Text style={chartStyles.pctLabel}>{pctLabel}</Text>
+                <AppText style={chartStyles.dayLabel}>{dayLabel}</AppText>
+                <AppText style={chartStyles.pctLabel}>{pctLabel}</AppText>
               </View>
             );
           })}
@@ -197,15 +199,15 @@ export default function MedicationDetailScreen() {
 
       {upcomingDoses.length > 0 && (
         <View style={styles.card}>
-          <Text style={styles.sectionTitle}>{t('medication.schedule.upcoming')}</Text>
+          <AppText style={styles.sectionTitle}>{t('medication.schedule.upcoming')}</AppText>
           {upcomingDoses.map((d, i) => (
             <View key={i} style={styles.upcomingRow}>
-              <Text style={styles.upcomingDate}>{formatDate(d.toISOString().split('T')[0])}</Text>
-              <Text style={styles.upcomingTime}>
+              <AppText style={styles.upcomingDate}>{formatDate(d.toISOString().split('T')[0])}</AppText>
+              <AppText style={styles.upcomingTime}>
                 {formatTime(
                   `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`,
                 )}
-              </Text>
+              </AppText>
             </View>
           ))}
         </View>
@@ -251,8 +253,8 @@ function buildLast7Days(medication: Medication, history: IntakeRecord[]): DayAdh
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
     <View style={rowStyles.row}>
-      <Text style={rowStyles.label}>{label}</Text>
-      <Text style={rowStyles.value}>{value}</Text>
+      <AppText style={rowStyles.label}>{label}</AppText>
+      <AppText style={rowStyles.value}>{value}</AppText>
     </View>
   );
 }

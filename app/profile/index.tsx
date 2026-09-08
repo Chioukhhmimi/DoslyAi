@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -15,6 +15,8 @@ import { useProfiles } from '@hooks/useProfiles';
 import { useMedications } from '@hooks/useMedications';
 import { useIsRTL } from '@hooks/useIsRTL';
 import { Profile } from '@store/profileStore';
+
+import { AppText } from '@components/ui/AppText';
 
 export default function ProfileListScreen() {
   const { t } = useTranslation();
@@ -42,7 +44,7 @@ export default function ProfileListScreen() {
         right={
           <TouchableOpacity style={styles.addBtn} onPress={() => router.push('/profile/new')}>
             <Ionicons name="add" size={20} color={Colors.primary} />
-            <Text style={styles.addBtnText}>{t('profile.new')}</Text>
+            <AppText style={styles.addBtnText}>{t('profile.new')}</AppText>
           </TouchableOpacity>
         }
       />
@@ -57,7 +59,7 @@ export default function ProfileListScreen() {
         />
       ) : (
         <>
-          <Text style={styles.hint}>{t('profile.hint')}</Text>
+          <AppText style={styles.hint}>{t('profile.hint')}</AppText>
           <FlatList
             data={profiles}
             keyExtractor={(p) => p.id}
@@ -74,15 +76,15 @@ export default function ProfileListScreen() {
                   <Avatar name={item.name} uri={item.avatarUri} size={48} />
                   <View style={styles.info}>
                     <View style={styles.nameRow}>
-                      <Text style={[styles.name, isActive && styles.nameActive]}>{item.name}</Text>
+                      <AppText style={[styles.name, isActive && styles.nameActive]}>{item.name}</AppText>
                       {isActive && (
                         <View style={styles.activeBadge}>
-                          <Text style={styles.activeBadgeText}>{t('profile.active')}</Text>
+                          <AppText style={styles.activeBadgeText}>{t('profile.active')}</AppText>
                         </View>
                       )}
                     </View>
-                    {item.relationship ? <Text style={styles.rel}>{item.relationship}</Text> : null}
-                    <Text style={styles.medCount}>{t('profile.medCount', { count })}</Text>
+                    {item.relationship ? <AppText style={styles.rel}>{item.relationship}</AppText> : null}
+                    <AppText style={styles.medCount}>{t('profile.medCount', { count })}</AppText>
                   </View>
                   <TouchableOpacity
                     style={styles.detailBtn}
