@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { dbGetSetting, dbSetSetting, dbDeleteAllSettings } from '@db/models/settingsModel';
+import { userRef } from '@utils/firebase';
 import { type LanguageCode } from '../i18n';
 
 interface SettingsState {
@@ -7,28 +7,28 @@ interface SettingsState {
   onboardingComplete: boolean;
   notificationsEnabled: boolean;
   quietHoursEnabled: boolean;
-  quietHoursStart: string; // "HH:MM"
-  quietHoursEnd: string; // "HH:MM"
+  quietHoursStart: string;
+  quietHoursEnd: string;
   biometricLock: boolean;
   seenSwipeHint: boolean;
   hydrated: boolean;
   layoutKey: number;
 
-  hydrate: () => Promise<void>;
-  setLanguage: (lang: LanguageCode) => void;
+  hydrate: (uid: string) => Promise<void>;
+  setLanguage: (uid: string, lang: LanguageCode) => Promise<void>;
   bumpLayoutKey: () => void;
-  completeOnboarding: () => void;
-  setNotificationsEnabled: (enabled: boolean) => void;
-  setQuietHoursEnabled: (enabled: boolean) => void;
-  setQuietHoursStart: (time: string) => void;
-  setQuietHoursEnd: (time: string) => void;
-  setBiometricLock: (enabled: boolean) => void;
+  completeOnboarding: (uid: string) => Promise<void>;
+  setNotificationsEnabled: (uid: string, enabled: boolean) => Promise<void>;
+  setQuietHoursEnabled: (uid: string, enabled: boolean) => Promise<void>;
+  setQuietHoursStart: (uid: string, time: string) => Promise<void>;
+  setQuietHoursEnd: (uid: string, time: string) => Promise<void>;
+  setBiometricLock: (uid: string, enabled: boolean) => Promise<void>;
   markSwipeHintSeen: () => void;
-  reset: () => Promise<void>;
+  reset: () => void;
 }
 
-export const useSettingsStore = create<SettingsState>((set) => ({
-  language: 'fr',
+const DEFAULTS = {
+  language: 'fr' as LanguageCode,
   onboardingComplete: false,
   notificationsEnabled: true,
   quietHoursEnabled: false,
@@ -36,84 +36,62 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   quietHoursEnd: '07:00',
   biometricLock: false,
   seenSwipeHint: false,
+};
+
+async function persist(uid: string, patch: Record<string, unknown>) {
+  await userRef(uid).collection('account').doc('data').set(patch, { merge: true });
+}
+
+export const useSettingsStore = create<SettingsState>((set) => ({
+  ...DEFAULTS,
   hydrated: false,
   layoutKey: 0,
 
-  hydrate: async () => {
-    const [
-      language,
-      onboardingComplete,
-      notificationsEnabled,
-      quietHoursEnabled,
-      quietHoursStart,
-      quietHoursEnd,
-      biometricLock,
-    ] = await Promise.all([
-      dbGetSetting('language'),
-      dbGetSetting('onboardingComplete'),
-      dbGetSetting('notificationsEnabled'),
-      dbGetSetting('quietHoursEnabled'),
-      dbGetSetting('quietHoursStart'),
-      dbGetSetting('quietHoursEnd'),
-      dbGetSetting('biometricLock'),
-    ]);
+  hydrate: async (uid) => {
+    const snap = await userRef(uid).collection('account').doc('data').get();
+    const data = snap.data() ?? {};
     set({
-      language: (language as LanguageCode) ?? 'fr',
-      onboardingComplete: onboardingComplete === 'true',
-      notificationsEnabled: notificationsEnabled !== 'false',
-      quietHoursEnabled: quietHoursEnabled === 'true',
-      quietHoursStart: quietHoursStart ?? '22:00',
-      quietHoursEnd: quietHoursEnd ?? '07:00',
-      biometricLock: biometricLock === 'true',
+      language: (data.language as LanguageCode) ?? DEFAULTS.language,
+      onboardingComplete: data.onboardingComplete ?? false,
+      notificationsEnabled: data.notificationsEnabled ?? true,
+      quietHoursEnabled: data.quietHoursEnabled ?? false,
+      quietHoursStart: data.quietHoursStart ?? '22:00',
+      quietHoursEnd: data.quietHoursEnd ?? '07:00',
+      biometricLock: data.biometricLock ?? false,
       seenSwipeHint: false,
       hydrated: true,
     });
   },
 
-  setLanguage: (language) => {
-    dbSetSetting('language', language);
+  setLanguage: async (uid, language) => {
+    await persist(uid, { language });
     set({ language });
   },
   bumpLayoutKey: () => set((s) => ({ layoutKey: s.layoutKey + 1 })),
-  completeOnboarding: () => {
-    dbSetSetting('onboardingComplete', 'true');
+  completeOnboarding: async (uid) => {
+    await persist(uid, { onboardingComplete: true });
     set({ onboardingComplete: true });
   },
-  setNotificationsEnabled: (notificationsEnabled) => {
-    dbSetSetting('notificationsEnabled', String(notificationsEnabled));
+  setNotificationsEnabled: async (uid, notificationsEnabled) => {
+    await persist(uid, { notificationsEnabled });
     set({ notificationsEnabled });
   },
-  setQuietHoursEnabled: (quietHoursEnabled) => {
-    dbSetSetting('quietHoursEnabled', String(quietHoursEnabled));
+  setQuietHoursEnabled: async (uid, quietHoursEnabled) => {
+    await persist(uid, { quietHoursEnabled });
     set({ quietHoursEnabled });
   },
-  setQuietHoursStart: (quietHoursStart) => {
-    dbSetSetting('quietHoursStart', quietHoursStart);
+  setQuietHoursStart: async (uid, quietHoursStart) => {
+    await persist(uid, { quietHoursStart });
     set({ quietHoursStart });
   },
-  setQuietHoursEnd: (quietHoursEnd) => {
-    dbSetSetting('quietHoursEnd', quietHoursEnd);
+  setQuietHoursEnd: async (uid, quietHoursEnd) => {
+    await persist(uid, { quietHoursEnd });
     set({ quietHoursEnd });
   },
-  setBiometricLock: (biometricLock) => {
-    dbSetSetting('biometricLock', String(biometricLock));
+  setBiometricLock: async (uid, biometricLock) => {
+    await persist(uid, { biometricLock });
     set({ biometricLock });
   },
   markSwipeHintSeen: () => set({ seenSwipeHint: true }),
-
-  reset: async () => {
-    await dbDeleteAllSettings();
-    set({
-      language: 'fr',
-      onboardingComplete: false,
-      notificationsEnabled: true,
-      quietHoursEnabled: false,
-      quietHoursStart: '22:00',
-      quietHoursEnd: '07:00',
-      biometricLock: false,
-      seenSwipeHint: false,
-      hydrated: false,
-      layoutKey: 0,
-    });
-  },
+  reset: () => set({ ...DEFAULTS, hydrated: false, layoutKey: 0 }),
 }));
