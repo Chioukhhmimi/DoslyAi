@@ -1,12 +1,5 @@
 import { create } from 'zustand';
-import {
-  dbGetAllProfiles,
-  dbInsertProfile,
-  dbUpdateProfile,
-  dbDeleteProfile,
-  dbDeleteAllProfiles,
-} from '@db/models/profileModel';
-import { dbGetSetting, dbSetSetting } from '@db/models/settingsModel';
+import { userRef } from '@utils/firebase';
 
 export interface Profile {
   id: string;
@@ -32,12 +25,12 @@ interface ProfileState {
   activeProfileId: string | null;
   hydrated: boolean;
 
-  hydrate: () => Promise<void>;
-  addProfile: (profile: Omit<Profile, 'id' | 'createdAt'>) => void;
-  updateProfile: (id: string, data: Partial<Profile>) => void;
-  deleteProfile: (id: string) => void;
-  setActiveProfile: (id: string) => void;
-  reset: () => Promise<void>;
+  hydrate: (uid: string) => Promise<void>;
+  addProfile: (uid: string, data: Omit<Profile, 'id' | 'createdAt'>) => Promise<void>;
+  updateProfile: (uid: string, id: string, data: Partial<Profile>) => Promise<void>;
+  deleteProfile: (uid: string, id: string) => Promise<void>;
+  setActiveProfile: (uid: string, id: string) => Promise<void>;
+  reset: () => void;
 }
 
 export const useProfileStore = create<ProfileState>((set, get) => ({
@@ -45,53 +38,64 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
   activeProfileId: null,
   hydrated: false,
 
-  hydrate: async () => {
-    const profiles = await dbGetAllProfiles();
-    const activeProfileId = await dbGetSetting('activeProfileId');
+  hydrate: async (uid) => {
+    const snap = await userRef(uid).collection('profiles').get();
+    const profiles = snap.docs.map((d) => d.data() as Profile);
+
+    const accountSnap = await userRef(uid).collection('account').doc('data').get();
+    const activeProfileId: string | null =
+      (accountSnap.data()?.activeProfileId as string) ?? profiles[0]?.id ?? null;
+
     set({ profiles, activeProfileId, hydrated: true });
   },
 
-  addProfile: (data) => {
+  addProfile: async (uid, data) => {
     const newProfile: Profile = {
       ...data,
       id: Date.now().toString(),
       createdAt: new Date().toISOString(),
     };
+    await userRef(uid).collection('profiles').doc(newProfile.id).set(newProfile);
     set((state) => {
       const activeProfileId = state.activeProfileId ?? newProfile.id;
-      dbInsertProfile(newProfile);
-      dbSetSetting('activeProfileId', activeProfileId);
+      userRef(uid)
+        .collection('account')
+        .doc('data')
+        .set({ activeProfileId }, { merge: true });
       return { profiles: [...state.profiles, newProfile], activeProfileId };
     });
   },
 
-  updateProfile: (id, data) => {
-    set((state) => {
-      dbUpdateProfile(id, data);
-      return {
-        profiles: state.profiles.map((p) => (p.id === id ? { ...p, ...data } : p)),
-      };
-    });
+  updateProfile: async (uid, id, data) => {
+    await userRef(uid).collection('profiles').doc(id).update(data);
+    set((state) => ({
+      profiles: state.profiles.map((p) => (p.id === id ? { ...p, ...data } : p)),
+    }));
   },
 
-  deleteProfile: (id) => {
+  deleteProfile: async (uid, id) => {
+    await userRef(uid).collection('profiles').doc(id).delete();
     set((state) => {
-      dbDeleteProfile(id);
       const remaining = state.profiles.filter((p) => p.id !== id);
       const activeProfileId =
         state.activeProfileId === id ? (remaining[0]?.id ?? null) : state.activeProfileId;
-      if (activeProfileId) dbSetSetting('activeProfileId', activeProfileId);
+      if (activeProfileId) {
+        userRef(uid)
+          .collection('account')
+          .doc('data')
+          .set({ activeProfileId }, { merge: true });
+      }
       return { profiles: remaining, activeProfileId };
     });
   },
 
-  setActiveProfile: (id) => {
-    dbSetSetting('activeProfileId', id);
+  setActiveProfile: async (uid, id) => {
+    await userRef(uid)
+      .collection('account')
+      .doc('data')
+      .set({ activeProfileId: id }, { merge: true });
     set({ activeProfileId: id });
   },
 
-  reset: async () => {
-    await dbDeleteAllProfiles();
-    set({ profiles: [], activeProfileId: null, hydrated: false });
-  },
+  reset: () => set({ profiles: [], activeProfileId: null, hydrated: false }),
 }));
