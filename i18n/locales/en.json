@@ -320,6 +320,7 @@
     "deleteAllTitle2": "Confirm deletion",
     "deleteAllMessage2": "Are you absolutely sure? This action cannot be undone.",
     "deleteAllConfirm2": "Yes, delete everything",
+    "signOut": "Sign out",
     "termsScreen": {
       "intro": "By using Dosly, you agree to the following terms:",
       "section1Title": "1. Use",

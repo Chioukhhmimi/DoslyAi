@@ -57,14 +57,12 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
       createdAt: new Date().toISOString(),
     };
     await userRef(uid).collection('profiles').doc(newProfile.id).set(newProfile);
-    set((state) => {
-      const activeProfileId = state.activeProfileId ?? newProfile.id;
-      userRef(uid)
-        .collection('account')
-        .doc('data')
-        .set({ activeProfileId }, { merge: true });
-      return { profiles: [...state.profiles, newProfile], activeProfileId };
-    });
+    const activeProfileId = get().activeProfileId ?? newProfile.id;
+    await userRef(uid)
+      .collection('account')
+      .doc('data')
+      .set({ activeProfileId }, { merge: true });
+    set((state) => ({ profiles: [...state.profiles, newProfile], activeProfileId }));
   },
 
   updateProfile: async (uid, id, data) => {
@@ -76,18 +74,17 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
 
   deleteProfile: async (uid, id) => {
     await userRef(uid).collection('profiles').doc(id).delete();
-    set((state) => {
-      const remaining = state.profiles.filter((p) => p.id !== id);
-      const activeProfileId =
-        state.activeProfileId === id ? (remaining[0]?.id ?? null) : state.activeProfileId;
-      if (activeProfileId) {
-        userRef(uid)
-          .collection('account')
-          .doc('data')
-          .set({ activeProfileId }, { merge: true });
-      }
-      return { profiles: remaining, activeProfileId };
-    });
+    const state = get();
+    const remaining = state.profiles.filter((p) => p.id !== id);
+    const activeProfileId =
+      state.activeProfileId === id ? (remaining[0]?.id ?? null) : state.activeProfileId;
+    if (activeProfileId) {
+      await userRef(uid)
+        .collection('account')
+        .doc('data')
+        .set({ activeProfileId }, { merge: true });
+    }
+    set({ profiles: remaining, activeProfileId });
   },
 
   setActiveProfile: async (uid, id) => {

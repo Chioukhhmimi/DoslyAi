@@ -68,6 +68,20 @@ function NavigationGate({ ready }: { ready: boolean }) {
       return;
     }
 
+    // Authenticated from here on
+    if (inAuth) {
+      // Returning user just logged in — wait for stores to hydrate then redirect
+      if (!settingsHydrated || !profilesHydrated) return;
+      if (!onboardingComplete) {
+        router.replace('/(onboarding)/slide1');
+      } else if (profiles.length === 0) {
+        router.replace('/profile/new');
+      } else {
+        router.replace('/(tabs)');
+      }
+      return;
+    }
+
     if (!settingsHydrated || !profilesHydrated) return;
 
     if (!onboardingComplete && !inOnboarding) {

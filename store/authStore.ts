@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import {
   signInWithEmailAndPassword,
   signInWithCredential,
@@ -61,7 +61,7 @@ export const useAuthStore = create<AuthState>((set) => ({
           set({
             user: toAuthUser(firebaseUser),
             status: 'authenticated',
-            isFirstLogin: !accountSnap.exists,
+            isFirstLogin: !accountSnap.exists(),
           });
         } else {
           set({ user: null, status: 'unauthenticated', isFirstLogin: false });
@@ -91,7 +91,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       const credential = GoogleAuthProvider.credential(data?.idToken ?? '');
       await signInWithCredential(auth, credential);
     } catch (e: any) {
-      if (e.code !== 'SIGN_IN_CANCELLED') {
+      if (e.code !== statusCodes.SIGN_IN_CANCELLED) {
         set({ error: mapFirebaseError(e.code) });
       }
       throw e;

@@ -320,6 +320,7 @@
     "deleteAllTitle2": "Confirmer la suppression",
     "deleteAllMessage2": "Êtes-vous absolument sûr ? Cette action ne peut pas être annulée.",
     "deleteAllConfirm2": "Oui, tout supprimer",
+    "signOut": "Se déconnecter",
     "termsScreen": {
       "intro": "En utilisant Dosly, vous acceptez les conditions suivantes :",
       "section1Title": "1. Usage",

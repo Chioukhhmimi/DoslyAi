@@ -14,6 +14,7 @@ import { useSettingsStore } from '@store/settingsStore';
 import { useMedicationStore } from '@store/medicationStore';
 import { useProfileStore } from '@store/profileStore';
 import { useAuthStore } from '@store/authStore';
+import { deleteAllUserFirestoreData } from '@utils/migrationService';
 import { useIsRTL } from '@hooks/useIsRTL';
 import Constants from 'expo-constants';
 
@@ -85,6 +86,7 @@ export default function SettingsScreen() {
                   text: t('settings.deleteAllConfirm2'),
                   style: 'destructive',
                   onPress: async () => {
+                    await deleteAllUserFirestoreData(user!.uid);
                     await resetMedications();
                     await resetProfiles();
                     await resetSettings();
@@ -210,7 +212,7 @@ export default function SettingsScreen() {
         }}
       >
         <AppText style={{ color: '#B91C1C', fontSize: 16, fontFamily: 'PlusJakartaSans_600SemiBold' }}>
-          Sign out
+          {t('settings.signOut')}
         </AppText>
       </TouchableOpacity>
 
