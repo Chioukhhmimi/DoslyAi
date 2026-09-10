@@ -1,14 +1,5 @@
 import { create } from 'zustand';
-import {
-  dbGetAllMedications,
-  dbInsertMedication,
-  dbUpdateMedication,
-  dbDeleteMedication,
-  dbGetAllIntakeRecords,
-  dbInsertIntakeRecord,
-  dbDeleteAllMedications,
-  dbDeleteAllIntakeRecords,
-} from '@db/models/medicationModel';
+import { userRef } from '@utils/firebase';
 
 export type FrequencyType = 'daily' | 'weekly' | 'interval' | 'pattern';
 export type MedicationType = 'pill' | 'syrup' | 'injection' | 'supplement' | 'other';
@@ -16,9 +7,9 @@ export type MedicationType = 'pill' | 'syrup' | 'injection' | 'supplement' | 'ot
 export interface MedicationSchedule {
   times: string[];
   frequency: FrequencyType;
-  daysOfWeek?: number[]; // weekly: 0=Sun … 6=Sat
-  intervalDays?: number; // interval: every N days from startDate
-  pattern?: number[]; // pattern: repeating bit array e.g. [1,1,0]
+  daysOfWeek?: number[];
+  intervalDays?: number;
+  pattern?: number[];
 }
 
 export interface Medication {
@@ -58,13 +49,13 @@ interface MedicationState {
   intakeHistory: IntakeRecord[];
   hydrated: boolean;
 
-  hydrate: () => Promise<void>;
-  addMedication: (med: NewMedication) => void;
-  updateMedication: (id: string, data: Partial<Medication>) => void;
-  deleteMedication: (id: string) => void;
-  recordIntake: (record: Omit<IntakeRecord, 'id'>) => void;
+  hydrate: (uid: string) => Promise<void>;
+  addMedication: (uid: string, med: NewMedication) => Promise<void>;
+  updateMedication: (uid: string, id: string, data: Partial<Medication>) => Promise<void>;
+  deleteMedication: (uid: string, id: string) => Promise<void>;
+  recordIntake: (uid: string, record: Omit<IntakeRecord, 'id'>) => Promise<void>;
   getMedicationsForProfile: (profileId: string) => Medication[];
-  reset: () => Promise<void>;
+  reset: () => void;
 }
 
 export const useMedicationStore = create<MedicationState>((set, get) => ({
@@ -72,15 +63,17 @@ export const useMedicationStore = create<MedicationState>((set, get) => ({
   intakeHistory: [],
   hydrated: false,
 
-  hydrate: async () => {
-    const [medications, intakeHistory] = await Promise.all([
-      dbGetAllMedications(),
-      dbGetAllIntakeRecords(),
+  hydrate: async (uid) => {
+    const [medsSnap, intakeSnap] = await Promise.all([
+      userRef(uid).collection('medications').get(),
+      userRef(uid).collection('intake_records').get(),
     ]);
+    const medications = medsSnap.docs.map((d) => d.data() as Medication);
+    const intakeHistory = intakeSnap.docs.map((d) => d.data() as IntakeRecord);
     set({ medications, intakeHistory, hydrated: true });
   },
 
-  addMedication: (med) => {
+  addMedication: async (uid, med) => {
     const now = new Date().toISOString();
     const newMed: Medication = {
       ...med,
@@ -89,35 +82,31 @@ export const useMedicationStore = create<MedicationState>((set, get) => ({
       createdAt: now,
       updatedAt: now,
     };
-    dbInsertMedication(newMed);
+    await userRef(uid).collection('medications').doc(newMed.id).set(newMed);
     set((state) => ({ medications: [...state.medications, newMed] }));
   },
 
-  updateMedication: (id, data) => {
+  updateMedication: async (uid, id, data) => {
     const patch = { ...data, updatedAt: new Date().toISOString() };
-    dbUpdateMedication(id, patch);
+    await userRef(uid).collection('medications').doc(id).update(patch);
     set((state) => ({
       medications: state.medications.map((m) => (m.id === id ? { ...m, ...patch } : m)),
     }));
   },
 
-  deleteMedication: (id) => {
-    dbDeleteMedication(id);
+  deleteMedication: async (uid, id) => {
+    await userRef(uid).collection('medications').doc(id).delete();
     set((state) => ({ medications: state.medications.filter((m) => m.id !== id) }));
   },
 
-  recordIntake: (record) => {
+  recordIntake: async (uid, record) => {
     const newRecord: IntakeRecord = { ...record, id: Date.now().toString() };
-    dbInsertIntakeRecord(newRecord);
+    await userRef(uid).collection('intake_records').doc(newRecord.id).set(newRecord);
     set((state) => ({ intakeHistory: [...state.intakeHistory, newRecord] }));
   },
 
   getMedicationsForProfile: (profileId) =>
     get().medications.filter((m) => m.profileId === profileId),
 
-  reset: async () => {
-    await dbDeleteAllMedications();
-    await dbDeleteAllIntakeRecords();
-    set({ medications: [], intakeHistory: [], hydrated: false });
-  },
+  reset: () => set({ medications: [], intakeHistory: [], hydrated: false }),
 }));
