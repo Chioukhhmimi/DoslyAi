@@ -10,15 +10,17 @@ import { Spacing } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import { SUPPORTED_LANGUAGES, RTL_LANGUAGES, type LanguageCode } from '../../i18n';
 import { useSettingsStore } from '@store/settingsStore';
+import { useAuthStore } from '@store/authStore';
 
 import { AppText } from '@components/ui/AppText';
 
 export default function LanguageScreen() {
   const { t, i18n } = useTranslation();
   const setLanguage = useSettingsStore((s) => s.setLanguage);
+  const user = useAuthStore((s) => s.user);
 
   function changeLanguage(code: LanguageCode) {
-    setLanguage(code);
+    setLanguage(user!.uid, code);
     i18n.changeLanguage(code);
     I18nManager.forceRTL(RTL_LANGUAGES.includes(code));
   }

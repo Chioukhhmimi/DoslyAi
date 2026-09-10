@@ -11,6 +11,7 @@ import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import { useMedicationStore, NewMedication, Medication, IntakeRecord } from '@store/medicationStore';
+import { useAuthStore } from '@store/authStore';
 import { formatTime, formatDate, addDays, isSameDay } from '@utils/dateHelpers';
 import {
   cancelNotificationsForMedication,
@@ -32,7 +33,14 @@ export default function MedicationDetailScreen() {
   const { t } = useTranslation();
   const { id, edit } = useLocalSearchParams<{ id: string; edit?: string }>();
   const router = useRouter();
-  const { medications, updateMedication, deleteMedication, intakeHistory } = useMedicationStore();
+  const { medications, updateMedication: _updateMedication, deleteMedication: _deleteMedication, intakeHistory } = useMedicationStore();
+  const user = useAuthStore((s) => s.user);
+  function updateMedication(id: string, data: Parameters<typeof _updateMedication>[2]) {
+    _updateMedication(user!.uid, id, data);
+  }
+  function deleteMedication(id: string) {
+    _deleteMedication(user!.uid, id);
+  }
   const [editing, setEditing] = useState(edit === '1');
 
   const medication = medications.find((m) => m.id === id);

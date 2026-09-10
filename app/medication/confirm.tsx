@@ -3,6 +3,7 @@ import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMedicationStore } from '@store/medicationStore';
+import { useAuthStore } from '@store/authStore';
 import { snoozeDoseNotification } from '@hooks/useNotifications';
 import * as Haptics from 'expo-haptics';
 import { Colors } from '@constants/colors';
@@ -20,7 +21,11 @@ export default function ConfirmScreen() {
     scheduledAt: string;
   }>();
   const router = useRouter();
-  const { medications, recordIntake } = useMedicationStore();
+  const { medications, recordIntake: _recordIntake } = useMedicationStore();
+  const user = useAuthStore((s) => s.user);
+  function recordIntake(record: Parameters<typeof _recordIntake>[1]) {
+    _recordIntake(user!.uid, record);
+  }
   const [note, setNote] = useState('');
   const [showSnooze, setShowSnooze] = useState(false);
 

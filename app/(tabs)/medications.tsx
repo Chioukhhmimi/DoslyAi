@@ -13,6 +13,7 @@ import { FontSize } from '@constants/typography';
 import { SheetAction } from '@components/ui/SheetAction';
 import { useMedications } from '@hooks/useMedications';
 import { useMedicationStore, Medication } from '@store/medicationStore';
+import { useAuthStore } from '@store/authStore';
 import {
   cancelNotificationsForMedication,
   scheduleNotificationsForMedication,
@@ -32,7 +33,14 @@ const TYPE_COLOR: Record<string, string> = {
 function MedRow({ item }: { item: Medication }) {
   const { t } = useTranslation();
   const router = useRouter();
-  const { updateMedication, deleteMedication } = useMedicationStore();
+  const { updateMedication: _updateMedication, deleteMedication: _deleteMedication } = useMedicationStore();
+  const user = useAuthStore((s) => s.user);
+  function updateMedication(id: string, data: Parameters<typeof _updateMedication>[2]) {
+    _updateMedication(user!.uid, id, data);
+  }
+  function deleteMedication(id: string) {
+    _deleteMedication(user!.uid, id);
+  }
   const [sheetVisible, setSheetVisible] = useState(false);
   const freqLabel = t(`medication.freq.${item.schedule.frequency}`, {
     defaultValue: item.schedule.frequency,
@@ -112,7 +120,9 @@ export default function MedicationsScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const { medications } = useMedications();
-  const hydrate = useMedicationStore((s) => s.hydrate);
+  const _hydrate = useMedicationStore((s) => s.hydrate);
+  const user = useAuthStore((s) => s.user);
+  function hydrate() { return _hydrate(user!.uid); }
 
   const active = medications.filter((m) => !m.paused);
   const paused = medications.filter((m) => m.paused);

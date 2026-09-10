@@ -10,6 +10,7 @@ import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import { useSettingsStore } from '@store/settingsStore';
+import { useAuthStore } from '@store/authStore';
 
 import { AppText } from '@components/ui/AppText';
 
@@ -24,14 +25,20 @@ export default function NotificationsSettingsScreen() {
   const { t } = useTranslation();
   const {
     notificationsEnabled,
-    setNotificationsEnabled,
+    setNotificationsEnabled: _setNotificationsEnabled,
     quietHoursEnabled,
-    setQuietHoursEnabled,
+    setQuietHoursEnabled: _setQuietHoursEnabled,
     quietHoursStart,
-    setQuietHoursStart,
+    setQuietHoursStart: _setQuietHoursStart,
     quietHoursEnd,
-    setQuietHoursEnd,
+    setQuietHoursEnd: _setQuietHoursEnd,
   } = useSettingsStore();
+  const user = useAuthStore((s) => s.user);
+
+  function setNotificationsEnabled(v: boolean) { _setNotificationsEnabled(user!.uid, v); }
+  function setQuietHoursEnabled(v: boolean) { _setQuietHoursEnabled(user!.uid, v); }
+  function setQuietHoursStart(v: string) { _setQuietHoursStart(user!.uid, v); }
+  function setQuietHoursEnd(v: string) { _setQuietHoursEnd(user!.uid, v); }
 
   const [pickerTarget, setPickerTarget] = useState<'start' | 'end' | null>(null);
   const startDate = parseHHMM(quietHoursStart);

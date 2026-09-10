@@ -1,5 +1,6 @@
 import { useMedicationStore, Medication, IntakeRecord } from '@store/medicationStore';
 import { useProfileStore } from '@store/profileStore';
+import { useAuthStore } from '@store/authStore';
 import {
   isMedicationActiveOnDate,
   getScheduledDosesForDay,
@@ -11,12 +12,26 @@ export function useMedications() {
   const {
     medications,
     intakeHistory,
-    addMedication,
-    updateMedication,
-    deleteMedication,
-    recordIntake,
+    addMedication: _addMedication,
+    updateMedication: _updateMedication,
+    deleteMedication: _deleteMedication,
+    recordIntake: _recordIntake,
   } = useMedicationStore();
   const { activeProfileId } = useProfileStore();
+  const user = useAuthStore((s) => s.user);
+
+  function addMedication(med: Parameters<typeof _addMedication>[1]) {
+    _addMedication(user!.uid, med);
+  }
+  function updateMedication(id: string, data: Parameters<typeof _updateMedication>[2]) {
+    _updateMedication(user!.uid, id, data);
+  }
+  function deleteMedication(id: string) {
+    _deleteMedication(user!.uid, id);
+  }
+  function recordIntake(record: Parameters<typeof _recordIntake>[1]) {
+    _recordIntake(user!.uid, record);
+  }
 
   const profileMedications = medications.filter((m) => m.profileId === activeProfileId);
 

@@ -17,6 +17,7 @@ import { useMedications } from '@hooks/useMedications';
 import { useProfiles } from '@hooks/useProfiles';
 import { useScheduler } from '@hooks/useScheduler';
 import { useMedicationStore } from '@store/medicationStore';
+import { useAuthStore } from '@store/authStore';
 import { getScheduledDosesForDay } from '@utils/scheduleEngine';
 import { Medication } from '@store/medicationStore';
 
@@ -97,7 +98,8 @@ export default function HomeScreen() {
   const { todaySummary, streak, getUpcomingDoses } = useScheduler();
   const activeMedCount = todayMedications.length;
   const upcomingDoses = getUpcomingDoses(3);
-  const hydrateMedications = useMedicationStore((s) => s.hydrate);
+  const _hydrateMedications = useMedicationStore((s) => s.hydrate);
+  const user = useAuthStore((s) => s.user);
   const [showNotifCenter, setShowNotifCenter] = useState(false);
 
   const today = new Date();
@@ -137,7 +139,7 @@ export default function HomeScreen() {
   const sections = buildBucketSections(todayMedications, today, BUCKETS);
 
   async function handleRefresh() {
-    await hydrateMedications();
+    await _hydrateMedications(user!.uid);
   }
 
   return (

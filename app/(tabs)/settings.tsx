@@ -13,6 +13,7 @@ import { FontSize } from '@constants/typography';
 import { useSettingsStore } from '@store/settingsStore';
 import { useMedicationStore } from '@store/medicationStore';
 import { useProfileStore } from '@store/profileStore';
+import { useAuthStore } from '@store/authStore';
 import { useIsRTL } from '@hooks/useIsRTL';
 import Constants from 'expo-constants';
 
@@ -48,9 +49,20 @@ export default function SettingsScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const isRTL = useIsRTL();
-  const { biometricLock, setBiometricLock, reset: resetSettings } = useSettingsStore();
+  const { biometricLock, setBiometricLock: _setBiometricLock, reset: resetSettings } = useSettingsStore();
   const { reset: resetMedications } = useMedicationStore();
   const { profiles, activeProfileId, reset: resetProfiles } = useProfileStore();
+  const signOut = useAuthStore((s) => s.signOut);
+  const user = useAuthStore((s) => s.user);
+
+  function setBiometricLock(value: boolean) { _setBiometricLock(user!.uid, value); }
+
+  async function handleSignOut() {
+    resetProfiles();
+    resetMedications();
+    resetSettings();
+    await signOut();
+  }
   const activeProfile = profiles.find(p => p.id === activeProfileId);
   const [biometricAvailable, setBiometricAvailable] = useState(false);
 
@@ -185,6 +197,22 @@ export default function SettingsScreen() {
           variant="danger"
         />
       </Card>
+
+      <TouchableOpacity
+        onPress={handleSignOut}
+        style={{
+          marginTop: 24,
+          marginHorizontal: 16,
+          padding: 16,
+          backgroundColor: '#FEE2E2',
+          borderRadius: 12,
+          alignItems: 'center',
+        }}
+      >
+        <AppText style={{ color: '#B91C1C', fontSize: 16, fontFamily: 'PlusJakartaSans_600SemiBold' }}>
+          Sign out
+        </AppText>
+      </TouchableOpacity>
 
       <AppText style={styles.version}>
         {t('settings.version')} {Constants.expoConfig?.version}
