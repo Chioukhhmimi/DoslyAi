@@ -1,16 +1,25 @@
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import { getAuth } from '@react-native-firebase/auth';
+import { getFirestore } from '@react-native-firebase/firestore';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { WEB_CLIENT_ID } from '@constants/firebaseConfig';
 
-firestore().settings({ persistence: true });
-
+// v26 modular API: persistence is enabled by default on native.
 GoogleSignin.configure({ webClientId: WEB_CLIENT_ID });
 
-export { auth, firestore };
+export const auth = getAuth();
+
+// getFirestore() returns the Firestore interface, but the runtime value is
+// FirebaseFirestoreModule which has the legacy .collection()/.batch() methods.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const _db: any = getFirestore();
+export const firestore = _db as {
+  collection: (path: string) => any;
+  batch: () => any;
+  settings: (settings: Record<string, unknown>) => void;
+};
 
 export const userRef = (uid: string) =>
-  firestore().collection('users').doc(uid);
+  firestore.collection('users').doc(uid);
 
 export const mapFirebaseError = (code: string): string => {
   switch (code) {

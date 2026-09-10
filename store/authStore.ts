@@ -1,7 +1,16 @@
 import { create } from 'zustand';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import {
+  signInWithEmailAndPassword,
+  signInWithCredential,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  onAuthStateChanged,
+  updateProfile,
+  GoogleAuthProvider,
+} from '@react-native-firebase/auth';
+import type { User } from '@react-native-firebase/auth';
 import { auth, userRef, mapFirebaseError } from '@utils/firebase';
-import { FirebaseAuthTypes } from '@react-native-firebase/auth';
 
 export interface AuthUser {
   uid: string;
@@ -25,7 +34,7 @@ interface AuthState {
   clearError: () => void;
 }
 
-function toAuthUser(u: FirebaseAuthTypes.User): AuthUser {
+function toAuthUser(u: User): AuthUser {
   return {
     uid: u.uid,
     email: u.email,
@@ -43,7 +52,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   initialize: () =>
     new Promise<() => void>((resolve) => {
       let resolved = false;
-      const unsubscribe = auth().onAuthStateChanged(async (firebaseUser) => {
+      const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: User | null) => {
         if (firebaseUser) {
           const accountSnap = await userRef(firebaseUser.uid)
             .collection('account')
@@ -67,7 +76,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   signInWithEmail: async (email, password) => {
     set({ error: null });
     try {
-      await auth().signInWithEmailAndPassword(email, password);
+      await signInWithEmailAndPassword(auth, email, password);
     } catch (e: any) {
       set({ error: mapFirebaseError(e.code) });
       throw e;
@@ -79,8 +88,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       await GoogleSignin.hasPlayServices();
       const { data } = await GoogleSignin.signIn();
-      const credential = auth.GoogleAuthProvider.credential(data?.idToken ?? '');
-      await auth().signInWithCredential(credential);
+      const credential = GoogleAuthProvider.credential(data?.idToken ?? '');
+      await signInWithCredential(auth, credential);
     } catch (e: any) {
       if (e.code !== 'SIGN_IN_CANCELLED') {
         set({ error: mapFirebaseError(e.code) });
@@ -92,8 +101,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   register: async (email, password, displayName) => {
     set({ error: null });
     try {
-      const { user } = await auth().createUserWithEmailAndPassword(email, password);
-      await user.updateProfile({ displayName });
+      const { user } = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(user as any, { displayName });
     } catch (e: any) {
       set({ error: mapFirebaseError(e.code) });
       throw e;
@@ -103,7 +112,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   sendPasswordReset: async (email) => {
     set({ error: null });
     try {
-      await auth().sendPasswordResetEmail(email);
+      await sendPasswordResetEmail(auth, email);
       return true;
     } catch (e: any) {
       set({ error: mapFirebaseError(e.code) });
@@ -112,7 +121,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   signOut: async () => {
-    await auth().signOut();
+    await auth.signOut();
     try { await GoogleSignin.signOut(); } catch (_) {}
     set({ user: null, status: 'unauthenticated', isFirstLogin: false, error: null });
   },

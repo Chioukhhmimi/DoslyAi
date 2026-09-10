@@ -26,7 +26,7 @@ export async function migrateLocalDataToFirestore(uid: string): Promise<void> {
     dbGetSetting('activeProfileId'),
   ]);
 
-  const batch = firestore().batch();
+  const batch = firestore.batch();
   const base = userRef(uid);
 
   batch.set(base.collection('account').doc('data'), {

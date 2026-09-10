@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import type { QueryDocumentSnapshot, DocumentData } from '@react-native-firebase/firestore';
 import { userRef } from '@utils/firebase';
 
 export type FrequencyType = 'daily' | 'weekly' | 'interval' | 'pattern';
@@ -68,8 +69,8 @@ export const useMedicationStore = create<MedicationState>((set, get) => ({
       userRef(uid).collection('medications').get(),
       userRef(uid).collection('intake_records').get(),
     ]);
-    const medications = medsSnap.docs.map((d) => d.data() as Medication);
-    const intakeHistory = intakeSnap.docs.map((d) => d.data() as IntakeRecord);
+    const medications = medsSnap.docs.map((d: QueryDocumentSnapshot<DocumentData>) => d.data() as Medication);
+    const intakeHistory = intakeSnap.docs.map((d: QueryDocumentSnapshot<DocumentData>) => d.data() as IntakeRecord);
     set({ medications, intakeHistory, hydrated: true });
   },
 

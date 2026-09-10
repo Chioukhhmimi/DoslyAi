@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import type { QueryDocumentSnapshot, DocumentData } from '@react-native-firebase/firestore';
 import { userRef } from '@utils/firebase';
 
 export interface Profile {
@@ -40,7 +41,7 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
 
   hydrate: async (uid) => {
     const snap = await userRef(uid).collection('profiles').get();
-    const profiles = snap.docs.map((d) => d.data() as Profile);
+    const profiles = snap.docs.map((d: QueryDocumentSnapshot<DocumentData>) => d.data() as Profile);
 
     const accountSnap = await userRef(uid).collection('account').doc('data').get();
     const activeProfileId: string | null =
