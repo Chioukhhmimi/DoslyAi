@@ -1,6 +1,6 @@
 import '../i18n';
 import 'react-native-gesture-handler';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
@@ -25,13 +25,14 @@ import { getDatabase } from '@db/database';
 import { useProfileStore } from '@store/profileStore';
 import { useMedicationStore } from '@store/medicationStore';
 import { useSettingsStore } from '@store/settingsStore';
+import { useAuthStore } from '@store/authStore';
 import { useBiometric } from '@hooks/useBiometric';
 import { LockScreen } from '@components/ui/LockScreen';
 import { RTL_LANGUAGES } from '../i18n';
+import { migrateLocalDataToFirestore } from '@utils/migrationService';
 
 SplashScreen.preventAutoHideAsync();
 
-// expo-notifications crashes Expo Go on import (SDK 53+), so all usage is dynamic
 const isExpoGo = Constants.appOwnership === 'expo';
 
 if (!isExpoGo) {
@@ -51,14 +52,23 @@ if (!isExpoGo) {
 function NavigationGate({ ready }: { ready: boolean }) {
   const router = useRouter();
   const segments = useSegments();
+  const { status } = useAuthStore();
   const { onboardingComplete, hydrated: settingsHydrated } = useSettingsStore();
   const { profiles, hydrated: profilesHydrated } = useProfileStore();
 
   useEffect(() => {
-    if (!ready || !settingsHydrated || !profilesHydrated) return;
+    if (!ready || status === 'loading') return;
 
+    const inAuth = segments[0] === '(auth)';
     const inOnboarding = segments[0] === '(onboarding)';
     const inProfile = segments[0] === 'profile';
+
+    if (status === 'unauthenticated') {
+      if (!inAuth) router.replace('/(auth)/login');
+      return;
+    }
+
+    if (!settingsHydrated || !profilesHydrated) return;
 
     if (!onboardingComplete && !inOnboarding) {
       router.replace('/(onboarding)/slide1');
@@ -68,7 +78,7 @@ function NavigationGate({ ready }: { ready: boolean }) {
     if (onboardingComplete && profiles.length === 0 && !inProfile && !inOnboarding) {
       router.replace('/profile/new');
     }
-  }, [ready, onboardingComplete, profiles.length, settingsHydrated, profilesHydrated, segments]);
+  }, [ready, status, onboardingComplete, profiles.length, settingsHydrated, profilesHydrated, segments]);
 
   return null;
 }
@@ -93,12 +103,19 @@ export default function RootLayout() {
   } | null>(null);
   const router = useRouter();
 
+  const authInitialize = useAuthStore((s) => s.initialize);
+  const authStatus = useAuthStore((s) => s.status);
+  const authUser = useAuthStore((s) => s.user);
+  const isFirstLogin = useAuthStore((s) => s.isFirstLogin);
+
   const hydrateSettings = useSettingsStore((s) => s.hydrate);
   const hydrateProfiles = useProfileStore((s) => s.hydrate);
   const hydrateMedications = useMedicationStore((s) => s.hydrate);
   const language = useSettingsStore((s) => s.language);
   const layoutKey = useSettingsStore((s) => s.layoutKey);
   const isRTL = RTL_LANGUAGES.includes(language);
+
+  const unsubscribeRef = useRef<(() => void) | null>(null);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function extractNotifData(response: any) {
@@ -116,9 +133,10 @@ export default function RootLayout() {
     async function init() {
       try {
         await getDatabase();
-        await Promise.all([hydrateSettings(), hydrateProfiles(), hydrateMedications()]);
+        const unsub = await authInitialize();
+        unsubscribeRef.current = unsub;
       } catch (e) {
-        console.error('DB init failed', e);
+        console.error('Auth init failed', e);
       } finally {
         setReady(true);
       }
@@ -130,7 +148,32 @@ export default function RootLayout() {
       }
     }
     init();
+    return () => { unsubscribeRef.current?.(); };
   }, []);
+
+  useEffect(() => {
+    if (authStatus !== 'authenticated' || !authUser) return;
+
+    async function hydrateFromFirestore() {
+      const uid = authUser!.uid;
+
+      if (isFirstLogin) {
+        try {
+          await migrateLocalDataToFirestore(uid);
+        } catch (e) {
+          console.warn('Migration failed, will retry on next login', e);
+        }
+      }
+
+      await Promise.all([
+        hydrateSettings(uid),
+        hydrateProfiles(uid),
+        hydrateMedications(uid),
+      ]);
+    }
+
+    hydrateFromFirestore();
+  }, [authStatus, authUser?.uid]);
 
   useEffect(() => {
     if (isExpoGo) return;
@@ -165,6 +208,7 @@ export default function RootLayout() {
         {locked && <LockScreen onUnlock={unlock} />}
         <NavigationGate ready={ready} />
         <Stack key={layoutKey} screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(auth)" />
           <Stack.Screen name="(tabs)" />
           <Stack.Screen
             name="medication/confirm"
