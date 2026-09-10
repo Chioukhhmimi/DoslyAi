@@ -400,5 +400,36 @@
     "purple": "Mauve",
     "lime": "Citron vert",
     "amber": "Ambré"
+  },
+  "auth": {
+    "loginTitle": "Bon retour",
+    "registerTitle": "Créer un compte",
+    "forgotTitle": "Réinitialiser le mot de passe",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "name": "Nom complet",
+    "signIn": "Se connecter",
+    "createAccount": "Créer un compte",
+    "continueWithGoogle": "Continuer avec Google",
+    "forgotPasswordLink": "Mot de passe oublié ?",
+    "noAccount": "Pas encore de compte ?",
+    "alreadyHaveAccount": "Déjà un compte ?",
+    "signInLink": "Se connecter",
+    "createLink": "En créer un",
+    "resetPasswordSent": "Un lien de réinitialisation a été envoyé à votre e-mail.",
+    "sendResetLink": "Envoyer le lien",
+    "orDivider": "ou",
+    "errors": {
+      "emailInUse": "Un compte avec cet e-mail existe déjà.",
+      "invalidCredential": "E-mail ou mot de passe incorrect.",
+      "tooManyRequests": "Trop de tentatives. Réessayez plus tard.",
+      "networkError": "Pas de connexion internet.",
+      "weakPassword": "Le mot de passe doit comporter au moins 8 caractères.",
+      "passwordMismatch": "Les mots de passe ne correspondent pas.",
+      "emailRequired": "L'e-mail est requis.",
+      "passwordRequired": "Le mot de passe est requis.",
+      "nameRequired": "Le nom est requis."
+    }
   }
 }

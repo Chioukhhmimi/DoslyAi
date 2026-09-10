@@ -400,5 +400,36 @@
     "purple": "Purple",
     "lime": "Lime",
     "amber": "Amber"
+  },
+  "auth": {
+    "loginTitle": "Welcome back",
+    "registerTitle": "Create account",
+    "forgotTitle": "Reset password",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "name": "Full name",
+    "signIn": "Sign in",
+    "createAccount": "Create account",
+    "continueWithGoogle": "Continue with Google",
+    "forgotPasswordLink": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "signInLink": "Sign in",
+    "createLink": "Create one",
+    "resetPasswordSent": "A reset link has been sent to your email.",
+    "sendResetLink": "Send reset link",
+    "orDivider": "or",
+    "errors": {
+      "emailInUse": "An account with this email already exists.",
+      "invalidCredential": "Incorrect email or password.",
+      "tooManyRequests": "Too many attempts. Try again later.",
+      "networkError": "No internet connection.",
+      "weakPassword": "Password must be at least 8 characters.",
+      "passwordMismatch": "Passwords do not match.",
+      "emailRequired": "Email is required.",
+      "passwordRequired": "Password is required.",
+      "nameRequired": "Name is required."
+    }
   }
 }

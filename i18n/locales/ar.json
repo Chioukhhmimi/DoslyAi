@@ -400,5 +400,36 @@
     "purple": "أرجواني",
     "lime": "ليموني",
     "amber": "كهرماني"
+  },
+  "auth": {
+    "loginTitle": "مرحباً بعودتك",
+    "registerTitle": "إنشاء حساب",
+    "forgotTitle": "إعادة تعيين كلمة المرور",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "name": "الاسم الكامل",
+    "signIn": "تسجيل الدخول",
+    "createAccount": "إنشاء حساب",
+    "continueWithGoogle": "المتابعة مع Google",
+    "forgotPasswordLink": "نسيت كلمة المرور؟",
+    "noAccount": "ليس لديك حساب؟",
+    "alreadyHaveAccount": "لديك حساب بالفعل؟",
+    "signInLink": "تسجيل الدخول",
+    "createLink": "أنشئ واحداً",
+    "resetPasswordSent": "تم إرسال رابط إعادة التعيين إلى بريدك الإلكتروني.",
+    "sendResetLink": "إرسال الرابط",
+    "orDivider": "أو",
+    "errors": {
+      "emailInUse": "يوجد حساب بهذا البريد الإلكتروني بالفعل.",
+      "invalidCredential": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+      "tooManyRequests": "محاولات كثيرة جداً. حاول مرة أخرى لاحقاً.",
+      "networkError": "لا يوجد اتصال بالإنترنت.",
+      "weakPassword": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.",
+      "passwordMismatch": "كلمتا المرور غير متطابقتين.",
+      "emailRequired": "البريد الإلكتروني مطلوب.",
+      "passwordRequired": "كلمة المرور مطلوبة.",
+      "nameRequired": "الاسم مطلوب."
+    }
   }
 }
