@@ -1,19 +1,26 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
-  Text,
-  TextInput,
+  Image,
   TouchableOpacity,
   StyleSheet,
-  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore } from '@store/authStore';
 import { useIsRTL } from '@hooks/useIsRTL';
+import { Colors } from '@constants/colors';
+import { Spacing, Radius } from '@constants/spacing';
+import { FontSize } from '@constants/typography';
+import { Button } from '@components/ui/Button';
+import { Input } from '@components/ui/Input';
+import { AppText } from '@components/ui/AppText';
+import { LanguageSwitcher } from '@components/ui/LanguageSwitcher';
 
 export default function LoginScreen() {
   const { t } = useTranslation();
@@ -30,17 +37,13 @@ export default function LoginScreen() {
   const textAlign = isRTL ? 'right' : 'left';
 
   async function handleEmailLogin() {
-    if (!email.trim()) return;
-    if (!password) return;
+    if (!email.trim() || !password) return;
     setLoading(true);
     clearError();
     try {
       await signInWithEmail(email.trim().toLowerCase(), password);
-    } catch (_) {
-      // error is set in authStore
-    } finally {
-      setLoading(false);
-    }
+    } catch (_) {}
+    finally { setLoading(false); }
   }
 
   async function handleGoogleLogin() {
@@ -48,196 +51,177 @@ export default function LoginScreen() {
     clearError();
     try {
       await signInWithGoogle();
-    } catch (_) {
-      // error is set in authStore
-    } finally {
-      setGoogleLoading(false);
-    }
+    } catch (_) {}
+    finally { setGoogleLoading(false); }
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.flex}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <Text style={[styles.title, { textAlign }]}>{t('auth.loginTitle')}</Text>
+    <SafeAreaView style={styles.safe}>
+      <View style={styles.topBar}>
+        <View style={styles.topBarSpacer} />
+        <LanguageSwitcher />
+      </View>
 
-        {error ? (
-          <View style={styles.errorBox}>
-            <Text style={styles.errorText}>{t(error)}</Text>
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.logoRow}>
+            <Image source={require('../../assets/icon.png')} style={styles.logoIcon} />
+            <AppText style={styles.logoText}>Dosly</AppText>
           </View>
-        ) : null}
 
-        <TextInput
-          style={[styles.input, { textAlign }]}
-          placeholder={t('auth.email')}
-          placeholderTextColor="#9CA3AF"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
+          <AppText variant="h1" style={[styles.title, { textAlign }]}>
+            {t('auth.loginTitle')}
+          </AppText>
+          <AppText variant="body" style={[styles.subtitle, { textAlign }]}>
+            {t('auth.loginSubtitle', 'Connectez-vous pour continuer')}
+          </AppText>
 
-        <View style={styles.passwordRow}>
-          <TextInput
-            style={[styles.input, styles.flex, { textAlign }]}
+          {error ? (
+            <View style={styles.errorBox}>
+              <AppText style={styles.errorText}>{t(error)}</AppText>
+            </View>
+          ) : null}
+
+          <Input
+            placeholder={t('auth.email')}
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+            textAlign={textAlign}
+          />
+
+          <Input
             placeholder={t('auth.password')}
-            placeholderTextColor="#9CA3AF"
             value={password}
             onChangeText={setPassword}
             secureTextEntry={!showPassword}
             autoCapitalize="none"
+            textAlign={textAlign}
+            rightElement={
+              <TouchableOpacity onPress={() => setShowPassword((v) => !v)} activeOpacity={0.7}>
+                <Ionicons
+                  name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                  size={20}
+                  color={Colors.textSecondary}
+                />
+              </TouchableOpacity>
+            }
           />
+
           <TouchableOpacity
-            style={styles.eyeBtn}
-            onPress={() => setShowPassword((v) => !v)}
+            style={styles.forgotBtn}
+            onPress={() => router.push('/(auth)/forgot')}
           >
-            <Text style={styles.eyeText}>{showPassword ? '🙈' : '👁'}</Text>
+            <AppText style={styles.forgotText}>{t('auth.forgotPasswordLink')}</AppText>
           </TouchableOpacity>
-        </View>
 
-        <TouchableOpacity
-          style={styles.forgotBtn}
-          onPress={() => router.push('/(auth)/forgot')}
-        >
-          <Text style={[styles.forgotText, { textAlign }]}>{t('auth.forgotPasswordLink')}</Text>
-        </TouchableOpacity>
+          <Button
+            label={t('auth.signIn')}
+            onPress={handleEmailLogin}
+            loading={loading}
+            style={styles.btnSpacing}
+          />
 
-        <TouchableOpacity
-          style={[styles.primaryBtn, loading && styles.disabled]}
-          onPress={handleEmailLogin}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.primaryBtnText}>{t('auth.signIn')}</Text>
-          )}
-        </TouchableOpacity>
+          <View style={styles.dividerRow}>
+            <View style={styles.dividerLine} />
+            <AppText style={styles.dividerText}>{t('auth.orDivider')}</AppText>
+            <View style={styles.dividerLine} />
+          </View>
 
-        <View style={styles.dividerRow}>
-          <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>{t('auth.orDivider')}</Text>
-          <View style={styles.dividerLine} />
-        </View>
+          <Button
+            label={t('auth.continueWithGoogle')}
+            variant="secondary"
+            onPress={handleGoogleLogin}
+            loading={googleLoading}
+            style={styles.btnSpacing}
+          />
 
-        <TouchableOpacity
-          style={[styles.googleBtn, googleLoading && styles.disabled]}
-          onPress={handleGoogleLogin}
-          disabled={googleLoading}
-        >
-          {googleLoading ? (
-            <ActivityIndicator color="#374151" />
-          ) : (
-            <Text style={styles.googleBtnText}>{t('auth.continueWithGoogle')}</Text>
-          )}
-        </TouchableOpacity>
-
-        <View style={styles.footerRow}>
-          <Text style={styles.footerText}>{t('auth.noAccount')} </Text>
-          <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
-            <Text style={styles.linkText}>{t('auth.createLink')}</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          <View style={styles.footerRow}>
+            <AppText style={styles.footerText}>{t('auth.noAccount')} </AppText>
+            <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
+              <AppText style={styles.linkText}>{t('auth.createLink')}</AppText>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: Colors.background },
   flex: { flex: 1 },
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.sm,
+  },
+  topBarSpacer: { flex: 1 },
   container: {
     flexGrow: 1,
-    padding: 24,
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.xl,
     justifyContent: 'center',
-    backgroundColor: '#fff',
   },
-  title: {
-    fontSize: 28,
-    fontFamily: 'PlusJakartaSans_700Bold',
-    color: '#111827',
-    marginBottom: 24,
-  },
-  errorBox: {
-    backgroundColor: '#FEE2E2',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
-  },
-  errorText: {
-    color: '#B91C1C',
-    fontSize: 14,
-    fontFamily: 'PlusJakartaSans_400Regular',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 12,
-    padding: 14,
-    fontSize: 16,
-    fontFamily: 'PlusJakartaSans_400Regular',
-    color: '#111827',
-    marginBottom: 12,
-    backgroundColor: '#F9FAFB',
-  },
-  passwordRow: {
+  logoRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    justifyContent: 'center',
+    gap: Spacing.sm,
+    marginBottom: Spacing.xl,
+    marginTop: Spacing.lg,
   },
-  eyeBtn: {
-    position: 'absolute',
-    right: 14,
-    padding: 4,
+  logoIcon: { width: 40, height: 40, borderRadius: Radius.sm },
+  logoText: {
+    fontSize: FontSize.xl,
+    fontWeight: '700',
+    color: Colors.primary,
   },
-  eyeText: { fontSize: 18 },
-  forgotBtn: { alignSelf: 'flex-end', marginBottom: 20 },
-  forgotText: { color: '#6B7280', fontSize: 14, fontFamily: 'PlusJakartaSans_400Regular' },
-  primaryBtn: {
-    backgroundColor: '#4F46E5',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    marginBottom: 16,
+  title: {
+    color: Colors.textPrimary,
+    marginBottom: Spacing.xs,
   },
-  primaryBtnText: {
-    color: '#fff',
-    fontSize: 16,
-    fontFamily: 'PlusJakartaSans_600SemiBold',
+  subtitle: {
+    color: Colors.textSecondary,
+    marginBottom: Spacing.lg,
   },
-  disabled: { opacity: 0.6 },
+  errorBox: {
+    backgroundColor: Colors.dangerLight,
+    borderRadius: Radius.sm,
+    padding: Spacing.sm,
+    marginBottom: Spacing.md,
+  },
+  errorText: { color: Colors.dangerText, fontSize: FontSize.sm },
+  forgotBtn: { alignSelf: 'flex-end', marginBottom: Spacing.md, marginTop: -Spacing.xs },
+  forgotText: { color: Colors.textSecondary, fontSize: FontSize.sm },
+  btnSpacing: { marginBottom: Spacing.sm },
   dividerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 16,
+    marginVertical: Spacing.md,
   },
-  dividerLine: { flex: 1, height: 1, backgroundColor: '#E5E7EB' },
+  dividerLine: { flex: 1, height: 1, backgroundColor: Colors.border },
   dividerText: {
-    marginHorizontal: 12,
-    color: '#9CA3AF',
-    fontSize: 14,
-    fontFamily: 'PlusJakartaSans_400Regular',
-  },
-  googleBtn: {
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    marginBottom: 24,
-    backgroundColor: '#fff',
-  },
-  googleBtnText: {
-    color: '#374151',
-    fontSize: 16,
-    fontFamily: 'PlusJakartaSans_600SemiBold',
+    marginHorizontal: Spacing.sm,
+    color: Colors.textSecondary,
+    fontSize: FontSize.sm,
   },
   footerRow: {
     flexDirection: 'row',
     justifyContent: 'center',
+    marginTop: Spacing.lg,
   },
-  footerText: { color: '#6B7280', fontSize: 14, fontFamily: 'PlusJakartaSans_400Regular' },
-  linkText: { color: '#4F46E5', fontSize: 14, fontFamily: 'PlusJakartaSans_600SemiBold' },
+  footerText: { color: Colors.textSecondary, fontSize: FontSize.sm },
+  linkText: { color: Colors.primary, fontSize: FontSize.sm, fontWeight: '600' },
 });

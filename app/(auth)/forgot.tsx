@@ -1,18 +1,25 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
-  Text,
-  TextInput,
+  Image,
   TouchableOpacity,
   StyleSheet,
-  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore } from '@store/authStore';
 import { useIsRTL } from '@hooks/useIsRTL';
+import { Colors } from '@constants/colors';
+import { Spacing, Radius } from '@constants/spacing';
+import { FontSize } from '@constants/typography';
+import { Button } from '@components/ui/Button';
+import { Input } from '@components/ui/Input';
+import { AppText } from '@components/ui/AppText';
+import { LanguageSwitcher } from '@components/ui/LanguageSwitcher';
 
 export default function ForgotScreen() {
   const { t } = useTranslation();
@@ -35,90 +42,109 @@ export default function ForgotScreen() {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.flex}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <View style={styles.container}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-          <Text style={styles.backText}>←</Text>
+    <SafeAreaView style={styles.safe}>
+      <View style={styles.topBar}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn} activeOpacity={0.7}>
+          <Ionicons name="arrow-back" size={22} color={Colors.textPrimary} />
         </TouchableOpacity>
-
-        <Text style={[styles.title, { textAlign }]}>{t('auth.forgotTitle')}</Text>
-
-        {sent ? (
-          <View style={styles.successBox}>
-            <Text style={styles.successText}>{t('auth.resetPasswordSent')}</Text>
-          </View>
-        ) : (
-          <>
-            {error ? (
-              <View style={styles.errorBox}>
-                <Text style={styles.errorText}>{t(error)}</Text>
-              </View>
-            ) : null}
-
-            <TextInput
-              style={[styles.input, { textAlign }]}
-              placeholder={t('auth.email')}
-              placeholderTextColor="#9CA3AF"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
-
-            <TouchableOpacity
-              style={[styles.primaryBtn, loading && styles.disabled]}
-              onPress={handleReset}
-              disabled={loading}
-            >
-              {loading ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.primaryBtnText}>{t('auth.sendResetLink')}</Text>
-              )}
-            </TouchableOpacity>
-          </>
-        )}
+        <View style={styles.topBarSpacer} />
+        <LanguageSwitcher />
       </View>
-    </KeyboardAvoidingView>
+
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <View style={styles.container}>
+          <View style={styles.logoRow}>
+            <Image source={require('../../assets/icon.png')} style={styles.logoIcon} />
+            <AppText style={styles.logoText}>Dosly</AppText>
+          </View>
+
+          <AppText variant="h1" style={[styles.title, { textAlign }]}>
+            {t('auth.forgotTitle')}
+          </AppText>
+
+          {sent ? (
+            <View style={styles.successBox}>
+              <AppText style={styles.successText}>{t('auth.resetPasswordSent')}</AppText>
+            </View>
+          ) : (
+            <>
+              {error ? (
+                <View style={styles.errorBox}>
+                  <AppText style={styles.errorText}>{t(error)}</AppText>
+                </View>
+              ) : null}
+
+              <Input
+                placeholder={t('auth.email')}
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+                textAlign={textAlign}
+              />
+
+              <Button
+                label={t('auth.sendResetLink')}
+                onPress={handleReset}
+                loading={loading}
+              />
+            </>
+          )}
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: Colors.background },
   flex: { flex: 1 },
-  container: { flex: 1, padding: 24, justifyContent: 'center', backgroundColor: '#fff' },
-  backBtn: { position: 'absolute', top: 60, left: 24 },
-  backText: { fontSize: 22, color: '#374151' },
-  title: {
-    fontSize: 28,
-    fontFamily: 'PlusJakartaSans_700Bold',
-    color: '#111827',
-    marginBottom: 24,
-  },
-  errorBox: { backgroundColor: '#FEE2E2', borderRadius: 8, padding: 12, marginBottom: 16 },
-  errorText: { color: '#B91C1C', fontSize: 14, fontFamily: 'PlusJakartaSans_400Regular' },
-  successBox: { backgroundColor: '#D1FAE5', borderRadius: 8, padding: 16 },
-  successText: { color: '#065F46', fontSize: 15, fontFamily: 'PlusJakartaSans_400Regular' },
-  input: {
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 12,
-    padding: 14,
-    fontSize: 16,
-    fontFamily: 'PlusJakartaSans_400Regular',
-    color: '#111827',
-    marginBottom: 16,
-    backgroundColor: '#F9FAFB',
-  },
-  primaryBtn: {
-    backgroundColor: '#4F46E5',
-    borderRadius: 12,
-    padding: 16,
+  topBar: {
+    flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.sm,
+    gap: Spacing.sm,
   },
-  primaryBtnText: { color: '#fff', fontSize: 16, fontFamily: 'PlusJakartaSans_600SemiBold' },
-  disabled: { opacity: 0.6 },
+  backBtn: { padding: Spacing.xs },
+  topBarSpacer: { flex: 1 },
+  container: {
+    flex: 1,
+    paddingHorizontal: Spacing.lg,
+    justifyContent: 'center',
+  },
+  logoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.sm,
+    marginBottom: Spacing.xl,
+  },
+  logoIcon: { width: 40, height: 40, borderRadius: Radius.sm },
+  logoText: {
+    fontSize: FontSize.xl,
+    fontWeight: '700',
+    color: Colors.primary,
+  },
+  title: {
+    color: Colors.textPrimary,
+    marginBottom: Spacing.md,
+  },
+  errorBox: {
+    backgroundColor: Colors.dangerLight,
+    borderRadius: Radius.sm,
+    padding: Spacing.sm,
+    marginBottom: Spacing.md,
+  },
+  errorText: { color: Colors.dangerText, fontSize: FontSize.sm },
+  successBox: {
+    backgroundColor: Colors.successLight,
+    borderRadius: Radius.sm,
+    padding: Spacing.md,
+  },
+  successText: { color: Colors.successText, fontSize: FontSize.md },
 });

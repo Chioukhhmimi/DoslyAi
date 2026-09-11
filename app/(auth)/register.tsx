@@ -1,19 +1,26 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
-  Text,
-  TextInput,
+  Image,
   TouchableOpacity,
   StyleSheet,
-  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore } from '@store/authStore';
 import { useIsRTL } from '@hooks/useIsRTL';
+import { Colors } from '@constants/colors';
+import { Spacing, Radius } from '@constants/spacing';
+import { FontSize } from '@constants/typography';
+import { Button } from '@components/ui/Button';
+import { Input } from '@components/ui/Input';
+import { AppText } from '@components/ui/AppText';
+import { LanguageSwitcher } from '@components/ui/LanguageSwitcher';
 
 export default function RegisterScreen() {
   const { t } = useTranslation();
@@ -25,6 +32,8 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -46,143 +55,166 @@ export default function RegisterScreen() {
     setLoading(true);
     try {
       await register(email.trim().toLowerCase(), password, name.trim());
-    } catch (_) {
-      // error set in authStore
-    } finally {
-      setLoading(false);
-    }
+    } catch (_) {}
+    finally { setLoading(false); }
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.flex}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-          <Text style={styles.backText}>←</Text>
+    <SafeAreaView style={styles.safe}>
+      <View style={styles.topBar}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn} activeOpacity={0.7}>
+          <Ionicons name="arrow-back" size={22} color={Colors.textPrimary} />
         </TouchableOpacity>
+        <View style={styles.topBarSpacer} />
+        <LanguageSwitcher />
+      </View>
 
-        <Text style={[styles.title, { textAlign }]}>{t('auth.registerTitle')}</Text>
-
-        {displayError ? (
-          <View style={styles.errorBox}>
-            <Text style={styles.errorText}>{displayError}</Text>
-          </View>
-        ) : null}
-
-        <TextInput
-          style={[styles.input, { textAlign }]}
-          placeholder={t('auth.name')}
-          placeholderTextColor="#9CA3AF"
-          value={name}
-          onChangeText={setName}
-          autoCapitalize="words"
-        />
-
-        <TextInput
-          style={[styles.input, { textAlign }]}
-          placeholder={t('auth.email')}
-          placeholderTextColor="#9CA3AF"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-
-        <TextInput
-          style={[styles.input, { textAlign }]}
-          placeholder={t('auth.password')}
-          placeholderTextColor="#9CA3AF"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          autoCapitalize="none"
-        />
-
-        <TextInput
-          style={[styles.input, { textAlign }]}
-          placeholder={t('auth.confirmPassword')}
-          placeholderTextColor="#9CA3AF"
-          value={confirm}
-          onChangeText={setConfirm}
-          secureTextEntry
-          autoCapitalize="none"
-        />
-
-        <TouchableOpacity
-          style={[styles.primaryBtn, loading && styles.disabled]}
-          onPress={handleRegister}
-          disabled={loading}
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          {loading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.primaryBtnText}>{t('auth.createAccount')}</Text>
-          )}
-        </TouchableOpacity>
+          <View style={styles.logoRow}>
+            <Image source={require('../../assets/icon.png')} style={styles.logoIcon} />
+            <AppText style={styles.logoText}>Dosly</AppText>
+          </View>
 
-        <View style={styles.footerRow}>
-          <Text style={styles.footerText}>{t('auth.alreadyHaveAccount')} </Text>
-          <TouchableOpacity onPress={() => router.back()}>
-            <Text style={styles.linkText}>{t('auth.signInLink')}</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          <AppText variant="h1" style={[styles.title, { textAlign }]}>
+            {t('auth.registerTitle')}
+          </AppText>
+
+          {displayError ? (
+            <View style={styles.errorBox}>
+              <AppText style={styles.errorText}>{displayError}</AppText>
+            </View>
+          ) : null}
+
+          <Input
+            placeholder={t('auth.name')}
+            value={name}
+            onChangeText={setName}
+            autoCapitalize="words"
+            textAlign={textAlign}
+          />
+
+          <Input
+            placeholder={t('auth.email')}
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+            textAlign={textAlign}
+          />
+
+          <Input
+            placeholder={t('auth.password')}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+            autoCapitalize="none"
+            textAlign={textAlign}
+            rightElement={
+              <TouchableOpacity onPress={() => setShowPassword((v) => !v)} activeOpacity={0.7}>
+                <Ionicons
+                  name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                  size={20}
+                  color={Colors.textSecondary}
+                />
+              </TouchableOpacity>
+            }
+          />
+
+          <Input
+            placeholder={t('auth.confirmPassword')}
+            value={confirm}
+            onChangeText={setConfirm}
+            secureTextEntry={!showConfirm}
+            autoCapitalize="none"
+            textAlign={textAlign}
+            rightElement={
+              <TouchableOpacity onPress={() => setShowConfirm((v) => !v)} activeOpacity={0.7}>
+                <Ionicons
+                  name={showConfirm ? 'eye-off-outline' : 'eye-outline'}
+                  size={20}
+                  color={Colors.textSecondary}
+                />
+              </TouchableOpacity>
+            }
+          />
+
+          <Button
+            label={t('auth.createAccount')}
+            onPress={handleRegister}
+            loading={loading}
+            style={styles.btnSpacing}
+          />
+
+          <View style={styles.footerRow}>
+            <AppText style={styles.footerText}>{t('auth.alreadyHaveAccount')} </AppText>
+            <TouchableOpacity onPress={() => router.back()}>
+              <AppText style={styles.linkText}>{t('auth.signInLink')}</AppText>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: Colors.background },
   flex: { flex: 1 },
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.sm,
+    gap: Spacing.sm,
+  },
+  backBtn: { padding: Spacing.xs },
+  topBarSpacer: { flex: 1 },
   container: {
     flexGrow: 1,
-    padding: 24,
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.xl,
     justifyContent: 'center',
-    backgroundColor: '#fff',
   },
-  backBtn: { marginBottom: 16 },
-  backText: { fontSize: 22, color: '#374151' },
+  logoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.sm,
+    marginBottom: Spacing.xl,
+    marginTop: Spacing.lg,
+  },
+  logoIcon: { width: 40, height: 40, borderRadius: Radius.sm },
+  logoText: {
+    fontSize: FontSize.xl,
+    fontWeight: '700',
+    color: Colors.primary,
+  },
   title: {
-    fontSize: 28,
-    fontFamily: 'PlusJakartaSans_700Bold',
-    color: '#111827',
-    marginBottom: 24,
+    color: Colors.textPrimary,
+    marginBottom: Spacing.md,
   },
   errorBox: {
-    backgroundColor: '#FEE2E2',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
+    backgroundColor: Colors.dangerLight,
+    borderRadius: Radius.sm,
+    padding: Spacing.sm,
+    marginBottom: Spacing.md,
   },
-  errorText: { color: '#B91C1C', fontSize: 14, fontFamily: 'PlusJakartaSans_400Regular' },
-  input: {
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 12,
-    padding: 14,
-    fontSize: 16,
-    fontFamily: 'PlusJakartaSans_400Regular',
-    color: '#111827',
-    marginBottom: 12,
-    backgroundColor: '#F9FAFB',
+  errorText: { color: Colors.dangerText, fontSize: FontSize.sm },
+  btnSpacing: { marginTop: Spacing.xs, marginBottom: Spacing.md },
+  footerRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: Spacing.sm,
   },
-  primaryBtn: {
-    backgroundColor: '#4F46E5',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    marginTop: 8,
-    marginBottom: 20,
-  },
-  primaryBtnText: {
-    color: '#fff',
-    fontSize: 16,
-    fontFamily: 'PlusJakartaSans_600SemiBold',
-  },
-  disabled: { opacity: 0.6 },
-  footerRow: { flexDirection: 'row', justifyContent: 'center' },
-  footerText: { color: '#6B7280', fontSize: 14, fontFamily: 'PlusJakartaSans_400Regular' },
-  linkText: { color: '#4F46E5', fontSize: 14, fontFamily: 'PlusJakartaSans_600SemiBold' },
+  footerText: { color: Colors.textSecondary, fontSize: FontSize.sm },
+  linkText: { color: Colors.primary, fontSize: FontSize.sm, fontWeight: '600' },
 });
