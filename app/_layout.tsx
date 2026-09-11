@@ -229,6 +229,7 @@ export default function RootLayout() {
         {locked && <LockScreen onUnlock={unlock} />}
         <NavigationGate ready={ready} />
         <Stack key={layoutKey} screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(onboarding)" />
           <Stack.Screen name="(auth)" />
           <Stack.Screen name="(tabs)" />
           <Stack.Screen
