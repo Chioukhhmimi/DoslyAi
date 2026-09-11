@@ -42,8 +42,11 @@ export default function LoginScreen() {
     clearError();
     try {
       await signInWithEmail(email.trim().toLowerCase(), password);
-    } catch (_) {}
-    finally { setLoading(false); }
+    } catch (_) {
+      // error surfaced via authStore.error
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleGoogleLogin() {
@@ -51,8 +54,11 @@ export default function LoginScreen() {
     clearError();
     try {
       await signInWithGoogle();
-    } catch (_) {}
-    finally { setGoogleLoading(false); }
+    } catch (_) {
+      // error surfaced via authStore.error
+    } finally {
+      setGoogleLoading(false);
+    }
   }
 
   return (
@@ -180,7 +186,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: Spacing.sm,
     marginBottom: Spacing.xl,
-    marginTop: Spacing.lg,
+    marginTop: Spacing.xl,
   },
   logoIcon: { width: 40, height: 40, borderRadius: Radius.sm },
   logoText: {

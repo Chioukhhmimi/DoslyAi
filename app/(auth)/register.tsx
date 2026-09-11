@@ -55,8 +55,11 @@ export default function RegisterScreen() {
     setLoading(true);
     try {
       await register(email.trim().toLowerCase(), password, name.trim());
-    } catch (_) {}
-    finally { setLoading(false); }
+    } catch (_) {
+      // error surfaced via authStore.error
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -96,7 +99,7 @@ export default function RegisterScreen() {
           <Input
             placeholder={t('auth.name')}
             value={name}
-            onChangeText={setName}
+            onChangeText={(v) => { setName(v); setLocalError(null); }}
             autoCapitalize="words"
             textAlign={textAlign}
           />
@@ -104,7 +107,7 @@ export default function RegisterScreen() {
           <Input
             placeholder={t('auth.email')}
             value={email}
-            onChangeText={setEmail}
+            onChangeText={(v) => { setEmail(v); setLocalError(null); }}
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
@@ -114,7 +117,7 @@ export default function RegisterScreen() {
           <Input
             placeholder={t('auth.password')}
             value={password}
-            onChangeText={setPassword}
+            onChangeText={(v) => { setPassword(v); setLocalError(null); }}
             secureTextEntry={!showPassword}
             autoCapitalize="none"
             textAlign={textAlign}
@@ -132,7 +135,7 @@ export default function RegisterScreen() {
           <Input
             placeholder={t('auth.confirmPassword')}
             value={confirm}
-            onChangeText={setConfirm}
+            onChangeText={(v) => { setConfirm(v); setLocalError(null); }}
             secureTextEntry={!showConfirm}
             autoCapitalize="none"
             textAlign={textAlign}
@@ -190,7 +193,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: Spacing.sm,
     marginBottom: Spacing.xl,
-    marginTop: Spacing.lg,
+    marginTop: Spacing.xl,
   },
   logoIcon: { width: 40, height: 40, borderRadius: Radius.sm },
   logoText: {

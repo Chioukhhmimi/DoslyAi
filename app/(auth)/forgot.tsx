@@ -6,6 +6,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -55,7 +56,11 @@ export default function ForgotScreen() {
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <View style={styles.container}>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
           <View style={styles.logoRow}>
             <Image source={require('../../assets/icon.png')} style={styles.logoIcon} />
             <AppText style={styles.logoText}>Dosly</AppText>
@@ -94,7 +99,7 @@ export default function ForgotScreen() {
               />
             </>
           )}
-        </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -113,8 +118,9 @@ const styles = StyleSheet.create({
   backBtn: { padding: Spacing.xs },
   topBarSpacer: { flex: 1 },
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.xl,
     justifyContent: 'center',
   },
   logoRow: {
@@ -123,6 +129,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: Spacing.sm,
     marginBottom: Spacing.xl,
+    marginTop: Spacing.xl,
   },
   logoIcon: { width: 40, height: 40, borderRadius: Radius.sm },
   logoText: {

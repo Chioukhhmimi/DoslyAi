@@ -404,6 +404,7 @@
   },
   "auth": {
     "loginTitle": "مرحباً بعودتك",
+    "loginSubtitle": "سجّل دخولك للمتابعة",
     "registerTitle": "إنشاء حساب",
     "forgotTitle": "إعادة تعيين كلمة المرور",
     "email": "البريد الإلكتروني",

@@ -404,6 +404,7 @@
   },
   "auth": {
     "loginTitle": "Bon retour",
+    "loginSubtitle": "Connectez-vous pour continuer",
     "registerTitle": "Créer un compte",
     "forgotTitle": "Réinitialiser le mot de passe",
     "email": "E-mail",

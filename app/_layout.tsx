@@ -58,18 +58,21 @@ function NavigationGate({ ready }: { ready: boolean }) {
 
   useEffect(() => {
     if (!ready) return;
+    if (status === 'loading') return;
 
     const inAuth = segments[0] === '(auth)';
     const inOnboarding = segments[0] === '(onboarding)';
     const inProfile = segments[0] === 'profile';
+
+    // For authenticated users, onboardingComplete defaults false until hydration —
+    // wait for settings to load before deciding whether to show onboarding
+    if (status === 'authenticated' && !settingsHydrated) return;
 
     // Onboarding first — no auth required
     if (!onboardingComplete && !inOnboarding) {
       router.replace('/(onboarding)/slide1');
       return;
     }
-
-    if (status === 'loading') return;
 
     if (status === 'unauthenticated') {
       if (!inAuth) router.replace('/(auth)/login');
@@ -184,7 +187,9 @@ export default function RootLayout() {
             .collection('account')
             .doc('data')
             .set({ onboardingComplete: localOnboarding, language: localLang }, { merge: true });
-        } catch (_) {}
+        } catch (e) {
+          console.warn('Failed to sync onboarding state to Firestore — user may see onboarding again on next cold start', e);
+        }
       }
 
       await Promise.all([
