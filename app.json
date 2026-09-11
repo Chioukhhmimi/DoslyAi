@@ -12,11 +12,16 @@
       "bundleIdentifier": "com.dosly.app"
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#E6F4FE"
       },
-      "package": "com.dosly.app"
+      "package": "com.dosly.app",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -43,7 +48,10 @@
       [
         "rn-mlkit-ocr",
         {
-          "androidScriptModels": ["latin", "arabic"]
+          "androidScriptModels": [
+            "latin",
+            "arabic"
+          ]
         }
       ],
       [
@@ -58,6 +66,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "0fbc5119-d99d-4242-ad65-e80e0240870b"
+      }
+    },
+    "owner": "hmimichioukh"
   }
 }

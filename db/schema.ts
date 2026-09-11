@@ -9,7 +9,7 @@
  *       expo-sqlite's SQLiteDatabase API (useSQLiteContext / openDatabaseAsync).
  */
 
-export const DB_NAME = 'meditrack.db';
+export const DB_NAME = 'dosly.db';
 
 export const SCHEMA_VERSION = 1;
 

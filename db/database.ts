@@ -10,7 +10,7 @@ let _db: SQLiteDatabase | null = null;
 
 export async function getDatabase(): Promise<SQLiteDatabase> {
   if (_db) return _db;
-  _db = await openDatabaseAsync('meditrack.db');
+  _db = await openDatabaseAsync('dosly.db');
   await runMigrations(_db);
   return _db;
 }

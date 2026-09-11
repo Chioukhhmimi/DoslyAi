@@ -44,7 +44,7 @@ export async function exportCSV(
   });
 
   const csv = [header, ...rows].join('\n');
-  const path = `${FileSystem.cacheDirectory}meditrack_export.csv`;
+  const path = `${FileSystem.cacheDirectory}dosly_export.csv`;
   await FileSystem.writeAsStringAsync(path, csv, { encoding: FileSystem.EncodingType.UTF8 });
   await Sharing.shareAsync(path, { mimeType: 'text/csv', dialogTitle: 'Exporter CSV' });
 }
@@ -93,7 +93,7 @@ export async function exportPDF(
   th { background: #f3f4f6; padding: 8px; text-align: left; border-bottom: 2px solid #e5e7eb; }
   td { padding: 8px; border-bottom: 1px solid #e5e7eb; }
 </style></head><body>
-<h1>MediTrack — Rapport d'observance</h1>
+<h1>Dosly — Rapport d'observance</h1>
 <p class="subtitle">${formatDate(fromDate.toISOString().split('T')[0])} – ${formatDate(toDate.toISOString().split('T')[0])}</p>
 <div class="stats">
   <div class="stat"><div class="stat-value">${pct}%</div><div class="stat-label">Observance</div></div>
@@ -129,7 +129,7 @@ export async function exportJSON(
     records: filtered,
   };
 
-  const path = `${FileSystem.cacheDirectory}meditrack_export.json`;
+  const path = `${FileSystem.cacheDirectory}dosly_export.json`;
   await FileSystem.writeAsStringAsync(path, JSON.stringify(payload, null, 2), {
     encoding: FileSystem.EncodingType.UTF8,
   });

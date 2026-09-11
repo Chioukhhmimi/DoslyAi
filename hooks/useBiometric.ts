@@ -24,7 +24,7 @@ export function useBiometric() {
     }
 
     const result = await LocalAuthentication.authenticateAsync({
-      promptMessage: 'Déverrouillez MediTrack',
+      promptMessage: 'Déverrouillez Dosly',
       fallbackLabel: 'Utiliser le code',
       cancelLabel: 'Annuler',
       disableDeviceFallback: false,

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "592322654818",
+    "project_id": "dosly-f6f86",
+    "storage_bucket": "dosly-f6f86.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:592322654818:android:69052f8b10a9c8185f573b",
+        "android_client_info": {
+          "package_name": "com.dosly.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcEZyQF_dRng0GzMnV-Bf7kRuIeqG2Ib0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
