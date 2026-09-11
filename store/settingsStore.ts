@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { userRef } from '@utils/firebase';
 import { type LanguageCode } from '../i18n';
+import i18n from '../i18n';
 
 interface SettingsState {
   language: LanguageCode;
@@ -16,8 +17,10 @@ interface SettingsState {
 
   hydrate: (uid: string) => Promise<void>;
   setLanguage: (uid: string, lang: LanguageCode) => Promise<void>;
+  setLanguageLocal: (lang: LanguageCode) => void;
   bumpLayoutKey: () => void;
   completeOnboarding: (uid: string) => Promise<void>;
+  completeOnboardingLocal: () => void;
   setNotificationsEnabled: (uid: string, enabled: boolean) => Promise<void>;
   setQuietHoursEnabled: (uid: string, enabled: boolean) => Promise<void>;
   setQuietHoursStart: (uid: string, time: string) => Promise<void>;
@@ -42,7 +45,7 @@ async function persist(uid: string, patch: Record<string, unknown>) {
   await userRef(uid).collection('account').doc('data').set(patch, { merge: true });
 }
 
-export const useSettingsStore = create<SettingsState>((set) => ({
+export const useSettingsStore = create<SettingsState>((set, get) => ({
   ...DEFAULTS,
   hydrated: false,
   layoutKey: 0,
@@ -50,9 +53,11 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   hydrate: async (uid) => {
     const snap = await userRef(uid).collection('account').doc('data').get();
     const data = snap.data() ?? {};
+    const current = get();
+    const language = (data.language as LanguageCode) ?? current.language;
     set({
-      language: (data.language as LanguageCode) ?? DEFAULTS.language,
-      onboardingComplete: data.onboardingComplete ?? false,
+      language,
+      onboardingComplete: current.onboardingComplete || (data.onboardingComplete ?? false),
       notificationsEnabled: data.notificationsEnabled ?? true,
       quietHoursEnabled: data.quietHoursEnabled ?? false,
       quietHoursStart: data.quietHoursStart ?? '22:00',
@@ -61,17 +66,31 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       seenSwipeHint: false,
       hydrated: true,
     });
+    if (i18n.language !== language) i18n.changeLanguage(language);
   },
 
   setLanguage: async (uid, language) => {
     await persist(uid, { language });
     set({ language });
+    if (i18n.language !== language) i18n.changeLanguage(language);
   },
+
+  setLanguageLocal: (language) => {
+    set({ language });
+    if (i18n.language !== language) i18n.changeLanguage(language);
+  },
+
   bumpLayoutKey: () => set((s) => ({ layoutKey: s.layoutKey + 1 })),
+
   completeOnboarding: async (uid) => {
     await persist(uid, { onboardingComplete: true });
     set({ onboardingComplete: true });
   },
+
+  completeOnboardingLocal: () => {
+    set({ onboardingComplete: true });
+  },
+
   setNotificationsEnabled: async (uid, notificationsEnabled) => {
     await persist(uid, { notificationsEnabled });
     set({ notificationsEnabled });
