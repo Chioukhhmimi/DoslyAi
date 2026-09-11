@@ -8,3 +8,4 @@ export { Toast } from './Toast';
 export { TagInput } from './TagInput';
 export { NotificationCenter } from './NotificationCenter';
 export type { NotificationItem } from './NotificationCenter';
+export { LanguageSwitcher } from './LanguageSwitcher';
