@@ -5,7 +5,7 @@ import { Colors } from '@constants/colors';
 import { Spacing, Radius } from '@constants/spacing';
 import { FontSize } from '@constants/typography';
 import { Button } from '@components/ui/Button';
-
+import { LanguageSwitcher } from '@components/ui/LanguageSwitcher';
 import { AppText } from '../ui/AppText';
 
 interface OnboardingSlideProps {
@@ -32,8 +32,13 @@ export function OnboardingSlide({
   totalSlides,
 }: OnboardingSlideProps) {
   const { t } = useTranslation();
+
   return (
     <SafeAreaView style={styles.safe}>
+      <View style={styles.topBar}>
+        <View style={styles.topBarSpacer} />
+        <LanguageSwitcher />
+      </View>
       <View style={styles.container}>
         <View style={[styles.illustration, { backgroundColor: illustrationColor }]} />
 
@@ -70,7 +75,16 @@ export function OnboardingSlide({
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.background },
-  container: { flex: 1, padding: Spacing.md },
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingTop: Spacing.sm,
+    paddingBottom: Spacing.xs,
+  },
+  topBarSpacer: { flex: 1 },
+  container: { flex: 1, paddingHorizontal: Spacing.md, paddingBottom: Spacing.md },
   illustration: { flex: 1, borderRadius: Radius.xl, marginBottom: Spacing.xl },
   dots: { flexDirection: 'row', justifyContent: 'center', marginBottom: Spacing.lg, gap: 6 },
   dot: { height: 8, borderRadius: 4 },
