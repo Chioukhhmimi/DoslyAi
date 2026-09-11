@@ -19,7 +19,6 @@ import {
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
 import { getDatabase } from '@db/database';
 import { useProfileStore } from '@store/profileStore';
@@ -30,6 +29,7 @@ import { useBiometric } from '@hooks/useBiometric';
 import { LockScreen } from '@components/ui/LockScreen';
 import { RTL_LANGUAGES } from '../i18n';
 import { migrateLocalDataToFirestore } from '@utils/migrationService';
+import { userRef } from '@utils/firebase';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -57,11 +57,19 @@ function NavigationGate({ ready }: { ready: boolean }) {
   const { profiles, hydrated: profilesHydrated } = useProfileStore();
 
   useEffect(() => {
-    if (!ready || status === 'loading') return;
+    if (!ready) return;
 
     const inAuth = segments[0] === '(auth)';
     const inOnboarding = segments[0] === '(onboarding)';
     const inProfile = segments[0] === 'profile';
+
+    // Onboarding first — no auth required
+    if (!onboardingComplete && !inOnboarding) {
+      router.replace('/(onboarding)/slide1');
+      return;
+    }
+
+    if (status === 'loading') return;
 
     if (status === 'unauthenticated') {
       if (!inAuth) router.replace('/(auth)/login');
@@ -69,12 +77,9 @@ function NavigationGate({ ready }: { ready: boolean }) {
     }
 
     // Authenticated from here on
-    if (inAuth) {
-      // Returning user just logged in — wait for stores to hydrate then redirect
+    if (inAuth || inOnboarding) {
       if (!settingsHydrated || !profilesHydrated) return;
-      if (!onboardingComplete) {
-        router.replace('/(onboarding)/slide1');
-      } else if (profiles.length === 0) {
+      if (profiles.length === 0) {
         router.replace('/profile/new');
       } else {
         router.replace('/(tabs)');
@@ -84,12 +89,7 @@ function NavigationGate({ ready }: { ready: boolean }) {
 
     if (!settingsHydrated || !profilesHydrated) return;
 
-    if (!onboardingComplete && !inOnboarding) {
-      router.replace('/(onboarding)/slide1');
-      return;
-    }
-
-    if (onboardingComplete && profiles.length === 0 && !inProfile && !inOnboarding) {
+    if (onboardingComplete && profiles.length === 0 && !inProfile) {
       router.replace('/profile/new');
     }
   }, [ready, status, onboardingComplete, profiles.length, settingsHydrated, profilesHydrated, segments]);
@@ -98,7 +98,6 @@ function NavigationGate({ ready }: { ready: boolean }) {
 }
 
 export default function RootLayout() {
-  const { i18n } = useTranslation();
   const [ready, setReady] = useState(false);
   const [fontsLoaded] = useFonts({
     PlusJakartaSans_400Regular,
@@ -177,6 +176,15 @@ export default function RootLayout() {
         } catch (e) {
           console.warn('Migration failed, will retry on next login', e);
         }
+        // Sync local onboarding completion + language choice for new users
+        const { onboardingComplete: localOnboarding, language: localLang } =
+          useSettingsStore.getState();
+        try {
+          await userRef(uid)
+            .collection('account')
+            .doc('data')
+            .set({ onboardingComplete: localOnboarding, language: localLang }, { merge: true });
+        } catch (_) {}
       }
 
       await Promise.all([
@@ -208,12 +216,6 @@ export default function RootLayout() {
   useEffect(() => {
     if (ready && fontsLoaded) SplashScreen.hideAsync();
   }, [ready, fontsLoaded]);
-
-  useEffect(() => {
-    if (language && i18n.language !== language) {
-      i18n.changeLanguage(language);
-    }
-  }, [language]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1, direction: isRTL ? 'rtl' : 'ltr' }}>
