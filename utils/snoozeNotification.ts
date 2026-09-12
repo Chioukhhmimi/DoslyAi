@@ -12,14 +12,14 @@ export async function snoozeDoseNotification(
     return; // expo-notifications unavailable in Expo Go
   }
 
-  const identifier = `${medication.id}_${scheduledDate.getTime()}`;
+  const identifier = `med:${medication.id}:${scheduledDate.getTime()}`;
   const all = await Notifications.getAllScheduledNotificationsAsync();
   if (all.find((n) => n.identifier === identifier)) {
     await Notifications.cancelScheduledNotificationAsync(identifier);
   }
   const newTime = new Date(Date.now() + minutes * 60 * 1000);
   await Notifications.scheduleNotificationAsync({
-    identifier: `${medication.id}_snooze_${newTime.getTime()}`,
+    identifier: `med:${medication.id}:snooze:${newTime.getTime()}`,
     content: {
       title: `💊 ${medication.name}`,
       body: `${medication.doseQuantity} ${medication.unit} — rappel`,
@@ -28,6 +28,6 @@ export async function snoozeDoseNotification(
         scheduledAt: scheduledDate.toISOString(),
       },
     },
-    trigger: { date: newTime } as any,
+    trigger: { type: 'date', date: newTime } as any,
   });
 }

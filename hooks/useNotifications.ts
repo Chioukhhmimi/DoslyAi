@@ -44,7 +44,7 @@ export async function scheduleNotificationsForMedication(medication: Medication)
         })
         .map((scheduledAt) =>
           N.scheduleNotificationAsync({
-            identifier: `${medication.id}_${scheduledAt.getTime()}`,
+            identifier: `med:${medication.id}:${scheduledAt.getTime()}`,
             content: {
               title: `💊 ${medication.name}`,
               body: `${medication.doseQuantity} ${medication.unit}`,
@@ -62,7 +62,7 @@ export async function scheduleNotificationsForMedication(medication: Medication)
       reminderDate.setDate(reminderDate.getDate() - medication.refillReminderDays);
       if (reminderDate > new Date()) {
         await N.scheduleNotificationAsync({
-          identifier: `refill_${medication.id}`,
+          identifier: `refill:${medication.id}`,
           content: {
             title: `💊 ${medication.name}`,
             body: 'Il est temps de renouveler votre ordonnance.',
@@ -84,7 +84,7 @@ export async function cancelNotificationsForMedication(medicationId: string): Pr
     const scheduled = await N.getAllScheduledNotificationsAsync();
     await Promise.allSettled(
       scheduled
-        .filter((n) => n.identifier.startsWith(medicationId))
+        .filter((n) => n.identifier.startsWith(`med:${medicationId}:`) || n.identifier === `refill:${medicationId}`)
         .map((n) => N.cancelScheduledNotificationAsync(n.identifier)),
     );
   } catch {
@@ -100,14 +100,14 @@ export async function snoozeDoseNotification(
   if (isExpoGo) return;
   try {
     const N = await import('expo-notifications');
-    const identifier = `${medication.id}_${scheduledDate.getTime()}`;
+    const identifier = `med:${medication.id}:${scheduledDate.getTime()}`;
     const all = await N.getAllScheduledNotificationsAsync();
     if (all.find((n) => n.identifier === identifier)) {
       await N.cancelScheduledNotificationAsync(identifier);
     }
     const newTime = new Date(Date.now() + minutes * 60 * 1000);
     await N.scheduleNotificationAsync({
-      identifier: `${medication.id}_snooze_${newTime.getTime()}`,
+      identifier: `med:${medication.id}:snooze:${newTime.getTime()}`,
       content: {
         title: `💊 ${medication.name}`,
         body: `${medication.doseQuantity} ${medication.unit} — rappel`,
