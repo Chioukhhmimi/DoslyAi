@@ -352,7 +352,8 @@
     "dose": "Dose",
     "status": "Statut",
     "notes": "Notes",
-    "reportTitle": "Rapport d'observance"
+    "reportTitle": "Rapport d'observance",
+    "unit": "Unité"
   },
   "lock": {
     "subtitle": "Protégé par biométrie",

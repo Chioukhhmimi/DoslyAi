@@ -29,7 +29,7 @@ export async function exportCSV(
     return d >= fromDate && d <= toDate;
   });
 
-  const header = ['Date', i18n.t('export.time'), i18n.t('export.medication'), i18n.t('export.dose'), i18n.t('export.dose'), i18n.t('export.status'), i18n.t('export.notes')].join(',');
+  const header = ['Date', i18n.t('export.time'), i18n.t('export.medication'), i18n.t('export.dose'), i18n.t('export.unit'), i18n.t('export.status'), i18n.t('export.notes')].join(',');
 
   const rows = filtered.map((r) => {
     const med = medications.find((m) => m.id === r.medicationId);

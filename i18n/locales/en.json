@@ -352,7 +352,8 @@
     "dose": "Dose",
     "status": "Status",
     "notes": "Notes",
-    "reportTitle": "Adherence Report"
+    "reportTitle": "Adherence Report",
+    "unit": "Unit"
   },
   "lock": {
     "subtitle": "Protected by biometrics",

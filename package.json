@@ -44,11 +44,16 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@react-native/jest-preset": "^0.87.1",
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react-native": "^14.0.1",
     "@types/react": "~19.2.2",
     "babel-plugin-module-resolver": "^5.0.3",
     "babel-preset-expo": "^57.0.10",
     "eslint": "^10.9.1",
     "eslint-config-universe": "^16.0.0",
+    "jest": "^29.7.0",
+    "jest-expo": "^57.0.5",
     "prettier": "^3.9.6",
     "typescript": "~6.0.3"
   },
@@ -59,7 +64,44 @@
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
     "lint": "eslint app components hooks store utils --ext .ts,.tsx",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.[jt]sx?$": ["babel-jest", { "presets": ["babel-preset-expo"] }]
+    },
+    "setupFiles": [
+      "<rootDir>/__tests__/setup.ts"
+    ],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/$1",
+      "^@components/(.*)$": "<rootDir>/components/$1",
+      "^@hooks/(.*)$": "<rootDir>/hooks/$1",
+      "^@store/(.*)$": "<rootDir>/store/$1",
+      "^@db/(.*)$": "<rootDir>/db/$1",
+      "^@i18n/(.*)$": "<rootDir>/i18n/$1",
+      "^@constants/(.*)$": "<rootDir>/constants/$1",
+      "^@utils/(.*)$": "<rootDir>/utils/$1",
+      "^@assets/(.*)$": "<rootDir>/assets/$1",
+      "^../i18n$": "<rootDir>/__tests__/__mocks__/i18n.ts",
+      "^expo-print$": "<rootDir>/__tests__/__mocks__/expo-print.ts",
+      "^expo-sharing$": "<rootDir>/__tests__/__mocks__/expo-sharing.ts",
+      "^expo-file-system/legacy$": "<rootDir>/__tests__/__mocks__/expo-file-system.ts"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|zustand)"
+    ],
+    "testMatch": ["**/__tests__/**/*.test.ts", "**/__tests__/**/*.test.tsx"],
+    "collectCoverageFrom": [
+      "utils/**/*.ts",
+      "hooks/**/*.ts",
+      "store/**/*.ts",
+      "!**/*.d.ts"
+    ]
   },
   "private": true
 }
