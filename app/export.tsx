@@ -146,7 +146,7 @@ export default function ExportScreen() {
       )}
 
       {dateRangeError && (
-        <AppText style={styles.dateError}>End date must be after start date</AppText>
+        <AppText style={styles.dateError}>{t('medication.form.endAfterStart')}</AppText>
       )}
 
       <AppText style={styles.rangeSummary}>

@@ -346,7 +346,13 @@
     "csv": "تصدير CSV",
     "pdf": "تصدير PDF",
     "json": "تصدير JSON",
-    "generating": "جارٍ الإنشاء…"
+    "generating": "جارٍ الإنشاء…",
+    "time": "الوقت",
+    "medication": "الدواء",
+    "dose": "الجرعة",
+    "status": "الحالة",
+    "notes": "ملاحظات",
+    "reportTitle": "تقرير الالتزام"
   },
   "lock": {
     "subtitle": "محمي ببصمة",

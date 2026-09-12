@@ -346,7 +346,13 @@
     "csv": "Export CSV",
     "pdf": "Export PDF",
     "json": "Export JSON",
-    "generating": "Génération en cours…"
+    "generating": "Génération en cours…",
+    "time": "Heure",
+    "medication": "Médicament",
+    "dose": "Dose",
+    "status": "Statut",
+    "notes": "Notes",
+    "reportTitle": "Rapport d'observance"
   },
   "lock": {
     "subtitle": "Protégé par biométrie",
