@@ -65,45 +65,65 @@ export const useMedicationStore = create<MedicationState>((set, get) => ({
   hydrated: false,
 
   hydrate: async (uid) => {
-    const [medsSnap, intakeSnap] = await Promise.all([
-      userRef(uid).collection('medications').get(),
-      userRef(uid).collection('intake_records').get(),
-    ]);
-    const medications = medsSnap.docs.map((d: QueryDocumentSnapshot<DocumentData>) => d.data() as Medication);
-    const intakeHistory = intakeSnap.docs.map((d: QueryDocumentSnapshot<DocumentData>) => d.data() as IntakeRecord);
-    set({ medications, intakeHistory, hydrated: true });
+    try {
+      const [medsSnap, intakeSnap] = await Promise.all([
+        userRef(uid).collection('medications').get(),
+        userRef(uid).collection('intake_records').get(),
+      ]);
+      const medications = medsSnap.docs.map((d: QueryDocumentSnapshot<DocumentData>) => d.data() as Medication);
+      const intakeHistory = intakeSnap.docs.map((d: QueryDocumentSnapshot<DocumentData>) => d.data() as IntakeRecord);
+      set({ medications, intakeHistory, hydrated: true });
+    } catch (e) {
+      console.error('[MedicationStore] hydrate failed:', e);
+    }
   },
 
   addMedication: async (uid, med) => {
-    const now = new Date().toISOString();
-    const newMed: Medication = {
-      ...med,
-      id: crypto.randomUUID(),
-      paused: false,
-      createdAt: now,
-      updatedAt: now,
-    };
-    await userRef(uid).collection('medications').doc(newMed.id).set(newMed);
-    set((state) => ({ medications: [...state.medications, newMed] }));
+    try {
+      const now = new Date().toISOString();
+      const newMed: Medication = {
+        ...med,
+        id: crypto.randomUUID(),
+        paused: false,
+        createdAt: now,
+        updatedAt: now,
+      };
+      await userRef(uid).collection('medications').doc(newMed.id).set(newMed);
+      set((state) => ({ medications: [...state.medications, newMed] }));
+    } catch (e) {
+      console.error('[MedicationStore] addMedication failed:', e);
+    }
   },
 
   updateMedication: async (uid, id, data) => {
-    const patch = { ...data, updatedAt: new Date().toISOString() };
-    await userRef(uid).collection('medications').doc(id).update(patch);
-    set((state) => ({
-      medications: state.medications.map((m) => (m.id === id ? { ...m, ...patch } : m)),
-    }));
+    try {
+      const patch = { ...data, updatedAt: new Date().toISOString() };
+      await userRef(uid).collection('medications').doc(id).update(patch);
+      set((state) => ({
+        medications: state.medications.map((m) => (m.id === id ? { ...m, ...patch } : m)),
+      }));
+    } catch (e) {
+      console.error('[MedicationStore] updateMedication failed:', e);
+    }
   },
 
   deleteMedication: async (uid, id) => {
-    await userRef(uid).collection('medications').doc(id).delete();
-    set((state) => ({ medications: state.medications.filter((m) => m.id !== id) }));
+    try {
+      await userRef(uid).collection('medications').doc(id).delete();
+      set((state) => ({ medications: state.medications.filter((m) => m.id !== id) }));
+    } catch (e) {
+      console.error('[MedicationStore] deleteMedication failed:', e);
+    }
   },
 
   recordIntake: async (uid, record) => {
-    const newRecord: IntakeRecord = { ...record, id: crypto.randomUUID() };
-    await userRef(uid).collection('intake_records').doc(newRecord.id).set(newRecord);
-    set((state) => ({ intakeHistory: [...state.intakeHistory, newRecord] }));
+    try {
+      const newRecord: IntakeRecord = { ...record, id: crypto.randomUUID() };
+      await userRef(uid).collection('intake_records').doc(newRecord.id).set(newRecord);
+      set((state) => ({ intakeHistory: [...state.intakeHistory, newRecord] }));
+    } catch (e) {
+      console.error('[MedicationStore] recordIntake failed:', e);
+    }
   },
 
   getMedicationsForProfile: (profileId) =>
