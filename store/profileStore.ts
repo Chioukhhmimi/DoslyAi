@@ -53,7 +53,7 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
   addProfile: async (uid, data) => {
     const newProfile: Profile = {
       ...data,
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       createdAt: new Date().toISOString(),
     };
     await userRef(uid).collection('profiles').doc(newProfile.id).set(newProfile);

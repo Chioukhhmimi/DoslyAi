@@ -78,7 +78,7 @@ export const useMedicationStore = create<MedicationState>((set, get) => ({
     const now = new Date().toISOString();
     const newMed: Medication = {
       ...med,
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       paused: false,
       createdAt: now,
       updatedAt: now,
@@ -101,7 +101,7 @@ export const useMedicationStore = create<MedicationState>((set, get) => ({
   },
 
   recordIntake: async (uid, record) => {
-    const newRecord: IntakeRecord = { ...record, id: Date.now().toString() };
+    const newRecord: IntakeRecord = { ...record, id: crypto.randomUUID() };
     await userRef(uid).collection('intake_records').doc(newRecord.id).set(newRecord);
     set((state) => ({ intakeHistory: [...state.intakeHistory, newRecord] }));
   },
