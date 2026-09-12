@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
+import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from '@store/settingsStore';
 
 export function useBiometric() {
+  const { t } = useTranslation();
   const biometricLock = useSettingsStore((s) => s.biometricLock);
   const [locked, setLocked] = useState(false);
   const appState = useRef<AppStateStatus>(AppState.currentState);
@@ -23,15 +25,19 @@ export function useBiometric() {
       return;
     }
 
-    const result = await LocalAuthentication.authenticateAsync({
-      promptMessage: 'Déverrouillez Dosly',
-      fallbackLabel: 'Utiliser le code',
-      cancelLabel: 'Annuler',
-      disableDeviceFallback: false,
-    });
+    try {
+      const result = await LocalAuthentication.authenticateAsync({
+        promptMessage: t('lock.unlock') + ' Dosly',
+        fallbackLabel: t('lock.useCode'),
+        disableDeviceFallback: false,
+      });
 
-    setLocked(!result.success);
-    authenticating.current = false;
+      setLocked(!result.success);
+    } catch {
+      setLocked(false);
+    } finally {
+      authenticating.current = false;
+    }
   }
 
   useEffect(() => {

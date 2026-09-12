@@ -356,7 +356,8 @@
   },
   "lock": {
     "subtitle": "محمي ببصمة",
-    "unlock": "فتح القفل"
+    "unlock": "فتح القفل",
+    "useCode": "استخدام الرمز"
   },
   "scheduler": {
     "days": {

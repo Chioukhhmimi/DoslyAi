@@ -356,7 +356,8 @@
   },
   "lock": {
     "subtitle": "Protégé par biométrie",
-    "unlock": "Déverrouiller"
+    "unlock": "Déverrouiller",
+    "useCode": "Utiliser le code"
   },
   "scheduler": {
     "days": {
