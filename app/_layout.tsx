@@ -27,6 +27,7 @@ import { useSettingsStore } from '@store/settingsStore';
 import { useAuthStore } from '@store/authStore';
 import { useBiometric } from '@hooks/useBiometric';
 import { LockScreen } from '@components/ui/LockScreen';
+import { ErrorBoundary } from '@components/ui/ErrorBoundary';
 import { RTL_LANGUAGES } from '../i18n';
 import { migrateLocalDataToFirestore } from '@utils/migrationService';
 import { userRef } from '@utils/firebase';
@@ -223,25 +224,27 @@ export default function RootLayout() {
   }, [ready, fontsLoaded]);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1, direction: isRTL ? 'rtl' : 'ltr' }}>
-      <SafeAreaProvider>
-        <StatusBar style="dark" />
-        {locked && <LockScreen onUnlock={unlock} />}
-        <NavigationGate ready={ready} />
-        <Stack key={layoutKey} screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(onboarding)" />
-          <Stack.Screen name="(auth)" />
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen
-            name="medication/confirm"
-            options={{ presentation: 'transparentModal', animation: 'fade' }}
-          />
-          <Stack.Screen name="profile" />
-          <Stack.Screen name="settings" />
-          <Stack.Screen name="export" />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+    <ErrorBoundary>
+      <GestureHandlerRootView style={{ flex: 1, direction: isRTL ? 'rtl' : 'ltr' }}>
+        <SafeAreaProvider>
+          <StatusBar style="dark" />
+          {locked && <LockScreen onUnlock={unlock} />}
+          <NavigationGate ready={ready} />
+          <Stack key={layoutKey} screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(onboarding)" />
+            <Stack.Screen name="(auth)" />
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen
+              name="medication/confirm"
+              options={{ presentation: 'transparentModal', animation: 'fade' }}
+            />
+            <Stack.Screen name="profile" />
+            <Stack.Screen name="settings" />
+            <Stack.Screen name="export" />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
+    </ErrorBoundary>
   );
 }
