@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { View, SectionList, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
@@ -104,35 +104,32 @@ export default function HomeScreen() {
 
   const today = new Date();
 
-  const notifItems = useMemo(() => {
-    const items: NotificationItem[] = [];
-    for (const med of todayMedications) {
-      const doses = getScheduledDosesForDay(med, today);
-      for (const dose of doses) {
-        const hh = String(dose.getHours()).padStart(2, '0');
-        const mm = String(dose.getMinutes()).padStart(2, '0');
-        const record = getIntakeForDose(med.id, dose.toISOString());
-        const isPending = !record?.takenAt && !record?.skipped;
-        const isMissedDose = !record?.takenAt && dose < new Date();
-        const status: NotificationItem['status'] = record?.takenAt ? 'taken'
-          : record?.skipped ? 'skipped'
-          : isMissedDose ? 'missed'
-          : 'pending';
-        items.push({
-          id: `${med.id}_${dose.getTime()}`,
-          medicationName: med.name,
-          dose: `${med.doseQuantity} ${med.unit}`,
-          scheduledTime: `${hh}:${mm}`,
-          status,
-          onMarkTaken: isPending ? () => recordIntake({
-            medicationId: med.id, profileId: med.profileId,
-            scheduledAt: dose.toISOString(), takenAt: new Date().toISOString(),
-          }) : undefined,
-        });
-      }
+  const notifItems: NotificationItem[] = [];
+  for (const med of todayMedications) {
+    const doses = getScheduledDosesForDay(med, today);
+    for (const dose of doses) {
+      const hh = String(dose.getHours()).padStart(2, '0');
+      const mm = String(dose.getMinutes()).padStart(2, '0');
+      const record = getIntakeForDose(med.id, dose.toISOString());
+      const isPending = !record?.takenAt && !record?.skipped;
+      const isMissedDose = !record?.takenAt && dose < new Date();
+      const status: NotificationItem['status'] = record?.takenAt ? 'taken'
+        : record?.skipped ? 'skipped'
+        : isMissedDose ? 'missed'
+        : 'pending';
+      notifItems.push({
+        id: `${med.id}_${dose.getTime()}`,
+        medicationName: med.name,
+        dose: `${med.doseQuantity} ${med.unit}`,
+        scheduledTime: `${hh}:${mm}`,
+        status,
+        onMarkTaken: isPending ? () => recordIntake({
+          medicationId: med.id, profileId: med.profileId,
+          scheduledAt: dose.toISOString(), takenAt: new Date().toISOString(),
+        }) : undefined,
+      });
     }
-    return items;
-  }, [todayMedications, intakeHistory, recordIntake]);
+  }
 
   const BUCKETS = BUCKET_KEYS.map((b) => ({
     ...b,

@@ -53,50 +53,56 @@ if (!isExpoGo) {
 function NavigationGate({ ready }: { ready: boolean }) {
   const router = useRouter();
   const segments = useSegments();
-  const { status } = useAuthStore();
-  const { onboardingComplete, hydrated: settingsHydrated } = useSettingsStore();
-  const { profiles, hydrated: profilesHydrated } = useProfileStore();
+  const isNavigating = useRef(false);
+
+  const status = useAuthStore((s) => s.status);
+  const onboardingComplete = useSettingsStore((s) => s.onboardingComplete);
+  const settingsHydrated = useSettingsStore((s) => s.hydrated);
+  const profileCount = useProfileStore((s) => s.profiles.length);
+  const profilesHydrated = useProfileStore((s) => s.hydrated);
+
+  const seg0 = segments[0] ?? '';
 
   useEffect(() => {
     if (!ready) return;
     if (status === 'loading') return;
+    if (isNavigating.current) return;
 
-    const inAuth = segments[0] === '(auth)';
-    const inOnboarding = segments[0] === '(onboarding)';
-    const inProfile = segments[0] === 'profile';
+    const inAuth = seg0 === '(auth)';
+    const inOnboarding = seg0 === '(onboarding)';
+    const inProfile = seg0 === 'profile';
 
-    // For authenticated users, onboardingComplete defaults false until hydration —
-    // wait for settings to load before deciding whether to show onboarding
     if (status === 'authenticated' && !settingsHydrated) return;
 
-    // Onboarding first — no auth required
+    function navigate(href: string) {
+      isNavigating.current = true;
+      router.replace(href as any);
+      // Reset guard after navigation settles
+      setTimeout(() => { isNavigating.current = false; }, 500);
+    }
+
     if (!onboardingComplete && !inOnboarding) {
-      router.replace('/(onboarding)/slide1');
+      navigate('/(onboarding)/slide1');
       return;
     }
 
     if (status === 'unauthenticated') {
-      if (!inAuth) router.replace('/(auth)/login');
+      if (!inAuth) navigate('/(auth)/login');
       return;
     }
 
-    // Authenticated from here on
     if (inAuth || inOnboarding) {
       if (!settingsHydrated || !profilesHydrated) return;
-      if (profiles.length === 0) {
-        router.replace('/profile/new');
-      } else {
-        router.replace('/(tabs)');
-      }
+      navigate(profileCount === 0 ? '/profile/new' : '/(tabs)');
       return;
     }
 
     if (!settingsHydrated || !profilesHydrated) return;
 
-    if (onboardingComplete && profiles.length === 0 && !inProfile) {
-      router.replace('/profile/new');
+    if (onboardingComplete && profileCount === 0 && !inProfile) {
+      navigate('/profile/new');
     }
-  }, [ready, status, onboardingComplete, profiles.length, settingsHydrated, profilesHydrated, segments[0]]);
+  }, [ready, status, onboardingComplete, profileCount, settingsHydrated, profilesHydrated, seg0]);
 
   return null;
 }
