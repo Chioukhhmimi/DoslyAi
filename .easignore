@@ -1,0 +1,6 @@
+.agents/
+.claude/
+__tests__/
+docs/
+*.test.ts
+*.test.tsx
