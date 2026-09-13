@@ -77,6 +77,7 @@ export default function ScanScreen() {
     setScreen('processing');
     try {
       const photo = await cameraRef.current.takePictureAsync({ quality: 1.0 });
+      if (!photo) { setScreen('camera'); return; }
       await runOCR(photo.uri);
     } catch {
       setScreen('camera');

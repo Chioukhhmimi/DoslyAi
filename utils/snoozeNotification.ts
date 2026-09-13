@@ -1,4 +1,5 @@
 import { Medication } from '@store/medicationStore';
+import i18n from '../i18n';
 
 export async function snoozeDoseNotification(
   medication: Medication,
@@ -22,7 +23,7 @@ export async function snoozeDoseNotification(
     identifier: `med:${medication.id}:snooze:${newTime.getTime()}`,
     content: {
       title: `💊 ${medication.name}`,
-      body: `${medication.doseQuantity} ${medication.unit} — rappel`,
+      body: `${medication.doseQuantity} ${medication.unit} — ${i18n.t('medication.confirm.snoozeTitle')}`,
       data: {
         medicationId: medication.id,
         scheduledAt: scheduledDate.toISOString(),

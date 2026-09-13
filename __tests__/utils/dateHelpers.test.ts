@@ -283,10 +283,9 @@ describe('parseHHmm', () => {
   // not NaN, but the minutes element is undefined; `undefined ?? 0` gives 0.
   // The hours value is 800 (not a valid hour), not NaN.
   // The function has no validation for strings without a colon separator.
-  it('BUG: no colon guard — "0800" yields hours=800 and minutes=0 instead of {hours:8, minutes:0}', () => {
+  it('no-colon guard — "0800" returns {hours:0, minutes:0} instead of overflowing', () => {
     const result = parseHHmm('0800');
-    // hours receives Number('0800') = 800, which is truthy, so ?? 0 is not applied
-    expect(result.hours).toBe(800);
+    expect(result.hours).toBe(0);
     expect(result.minutes).toBe(0);
   });
 });

@@ -40,6 +40,7 @@ export function getDayOfWeek(date: Date): number {
 }
 
 export function parseHHmm(time: string): { hours: number; minutes: number } {
+  if (!time.includes(':')) return { hours: 0, minutes: 0 };
   const [h, m] = time.split(':').map(Number);
   return { hours: h ?? 0, minutes: m ?? 0 };
 }

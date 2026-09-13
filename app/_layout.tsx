@@ -96,7 +96,7 @@ function NavigationGate({ ready }: { ready: boolean }) {
     if (onboardingComplete && profiles.length === 0 && !inProfile) {
       router.replace('/profile/new');
     }
-  }, [ready, status, onboardingComplete, profiles.length, settingsHydrated, profilesHydrated, segments]);
+  }, [ready, status, onboardingComplete, profiles.length, settingsHydrated, profilesHydrated, segments[0]]);
 
   return null;
 }

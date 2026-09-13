@@ -21,16 +21,20 @@ export function useMedications() {
   const user = useAuthStore((s) => s.user);
 
   function addMedication(med: Parameters<typeof _addMedication>[1]) {
-    _addMedication(user!.uid, med);
+    if (!user) return;
+    _addMedication(user.uid, med);
   }
   function updateMedication(id: string, data: Parameters<typeof _updateMedication>[2]) {
-    _updateMedication(user!.uid, id, data);
+    if (!user) return;
+    _updateMedication(user.uid, id, data);
   }
   function deleteMedication(id: string) {
-    _deleteMedication(user!.uid, id);
+    if (!user) return;
+    _deleteMedication(user.uid, id);
   }
   function recordIntake(record: Parameters<typeof _recordIntake>[1]) {
-    _recordIntake(user!.uid, record);
+    if (!user) return;
+    _recordIntake(user.uid, record);
   }
 
   const profileMedications = medications.filter((m) => m.profileId === activeProfileId);

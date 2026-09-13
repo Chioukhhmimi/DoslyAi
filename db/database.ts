@@ -55,6 +55,6 @@ export async function deleteAllData(): Promise<void> {
     await db.execAsync('DELETE FROM intake_records');
     await db.execAsync('DELETE FROM medications');
     await db.execAsync('DELETE FROM profiles');
-    await db.execAsync("DELETE FROM settings WHERE key != 'onboardingComplete'");
+    await db.execAsync("DELETE FROM settings WHERE key NOT IN ('onboardingComplete', 'language')");
   });
 }

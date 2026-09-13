@@ -1,17 +1,6 @@
-/**
- * Database schema for expo-sqlite (local offline-first storage).
- *
- * WatermelonDB (@nozbe/watermelondb) is installed but requires a custom
- * Expo Dev Client build to use its native SQLite adapter. For managed
- * Expo workflow, expo-sqlite is the safe default.
- *
- * TODO: Implement SQLite table creation and migration runner using
- *       expo-sqlite's SQLiteDatabase API (useSQLiteContext / openDatabaseAsync).
- */
-
 export const DB_NAME = 'dosly.db';
 
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 4;
 
 export const CREATE_PROFILES_TABLE = `
   CREATE TABLE IF NOT EXISTS profiles (
