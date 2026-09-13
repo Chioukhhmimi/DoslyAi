@@ -313,6 +313,7 @@
       "sharedDataValue": "Aucune"
     },
     "privacyBody": "Dosly stocke toutes vos données localement sur votre appareil. Aucune donnée personnelle n'est transmise à des serveurs externes. Vos informations médicales restent entièrement privées et sous votre contrôle.\n\nLes données suivantes sont stockées localement :\n• Profils patients (nom, date de naissance, relation)\n• Médicaments et plannings de prise\n• Historique des prises\n\nVous pouvez supprimer toutes vos données à tout moment en désinstallant l'application.",
+    "readFullPrivacy": "Lire la politique complète",
     "deleteAllBtn": "Supprimer toutes les données",
     "deleteAllTitle": "Supprimer toutes les données",
     "deleteAllMessage": "Cette action est irréversible. Tous vos médicaments, profils et historique seront supprimés.",
