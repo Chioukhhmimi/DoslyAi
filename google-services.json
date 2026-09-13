@@ -12,7 +12,20 @@
           "package_name": "com.dosly.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "592322654818-4puojjj8srk6bv6sjek2ju77dr1suplh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dosly.app",
+            "certificate_hash": "a4e806fd5f9ff8e448319fcf3f94520d4be21baa"
+          }
+        },
+        {
+          "client_id": "592322654818-gj5trs447arol2nvfr53tq9f8ql189gv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAcEZyQF_dRng0GzMnV-Bf7kRuIeqG2Ib0"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "592322654818-gj5trs447arol2nvfr53tq9f8ql189gv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
